@@ -7,26 +7,20 @@
         padding: 0px;
       }
     </style>
+    <script src="js/jquery-2.0.0b2.js"></script>
+    <script src="js/detectMoveOrDrag.js"></script>    
   </head>
   <body>
-    <canvas id="myCanvas" width="578" height="400"></canvas>
-    <canvas id="myCanvas1" width="578" height="100"></canvas>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <p class="mouseEvents"></p>
+    <p class="mouseOrNot">No Mouse.</p>
     <script>
-      var touchMode = false
-      var ox = 5
-      var oy = 5
-      var mouseX = -5000
-      var mouseY = -5000
-      var inMouse = false
+      var ox = 5, oy = 5
+      var mouseX = -5000, mouseY = -5000, inMouse = false
       var canvas = document.getElementById('myCanvas');
-      var canvas1 = document.getElementById('myCanvas1');
 
-      function writeMessage(canvas, message) {
-        var context = canvas1.getContext('2d');
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.font = '14pt Calibri';
-        context.fillStyle = 'black';
-        context.fillText(message, 10, 25);
+      function writeMessage(message) {
+        $('p.mouseEvents').text(message)
       }
 
       function drawCanvas() {
@@ -54,7 +48,7 @@
         };
       }
       
-      if( !touchMode )
+      if( !isMouseMoveNotDrag )
       {
         canvas.addEventListener('mousedown', function(evt) {
           var mousePos = getMousePos(canvas, evt);
@@ -63,7 +57,7 @@
           inMouse = true
 
           var message = 'mousedown ' + mousePos.x + ',' + mousePos.y;
-          writeMessage(canvas1, message)
+          writeMessage(message)
 
         }, false);
 
@@ -72,7 +66,7 @@
           inMouse = false
 
           var message = 'mouseup ' + mousePos.x + ',' + mousePos.y;
-          writeMessage(canvas1, message)
+          writeMessage(message)
 
         }, false);
 
@@ -86,7 +80,7 @@
             mouseY = mousePos.y
 
             var message = 'mousemove ' + mousePos.x + ',' + mousePos.y;
-            writeMessage(canvas1, message)
+            writeMessage(message)
           }
         }, false);
       }
