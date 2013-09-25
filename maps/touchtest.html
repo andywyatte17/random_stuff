@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 5px;
+        padding: 5px;
+      }
+      </style>
+    <!-- <script src="js/jquery-2.0.0b2.js"></script> -->
+  </head>
+  <body>
+	<canvas width="700" height="350" id="myCanvas"></canvas>
+    <p>
+    <div class="mouseOrNot" style="font-weight:bold">No Mouse.</div>
+    <div id="mouseEvents"></div>
+    </p>
+    <script>
+      var canvas = document.getElementById('myCanvas');
+
+      function writeMessage(message) {
+        var myDiv = document.getElementById('mouseEvents');
+        myDiv.innerHTML = message
+      }
+            
+      function getTouchPos(evt) {
+        return {
+          x: evt.touches.item(0).screenX,
+          y: evt.touches.item(0).screenY
+        };
+      }
+      
+      var touchStartFn = function(evt) {
+		evt.preventDefault();
+        var mousePos = getTouchPos(evt);
+        var message = 'touchstart ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(message)
+      };
+      
+      var touchMoveFn = function(evt) {
+        var mousePos = getTouchPos(evt);
+        var message = 'touchmove ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(message)
+      };
+      
+      var touchEndFn = function(evt) {
+        var mousePos = getTouchPos(evt);
+        var message = 'touchend ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(message)
+      };
+      
+      canvas.addEventListener('touchstart', touchStartFn, false);
+      canvas.addEventListener('touchmove', touchMoveFn, false);
+      canvas.addEventListener('touchend', touchEndFn, false);
+      
+      </script>
+  </body>
+</html>
