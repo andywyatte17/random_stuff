@@ -3,34 +3,45 @@
   <head>
     <style>
       body {
-        margin: 0px;
-        padding: 0px;
+        margin: 5px;
+        padding: 5px;
       }
     </style>
     <script src="js/jquery-2.0.0b2.js"></script>
     <script src="js/detectMoveOrDrag.js"></script>    
+    <script src="js/mapConfig.js"></script>
   </head>
   <body>
-    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <h2 class="map_title">_map_title_</h2>
+    <canvas id="myCanvas" width="800" height="500"></canvas>
     <p class="mouseEvents"></p>
     <p class="mouseOrNot">No Mouse.</p>
     <script>
-      var ox = 5, oy = 5
+      var ox = 0, oy = 0
       var mouseX = -5000, mouseY = -5000, inMouse = false
       var canvas = document.getElementById('myCanvas');
+      
+      //$('#myCanvas').width( canvas_width )
+      //$('#myCanvas').height( canvas_height )
+      
+      $('h2.map_title').text(map_title);
+      if( !debug_mouse ) {
+        $('p.mouseEvents').hide();
+        $('p.mouseOrNot').hide();
+      }
 
       function writeMessage(message) {
-        $('p.mouseEvents').text(message)
+        if(debug_mouse)
+          $('p.mouseEvents').text(message)
       }
 
       function drawCanvas() {
         var context = canvas.getContext('2d');
-        context.clearRect(0,0,canvas.width,canvas.height)
+        context.clearRect(0, 0, canvas.width, canvas.height)
         // context.drawImage(imageObj, ox, oy);
-        var zoom = 15
-        for(var w = 16372; w<=16376; w++)
-          for(var h=10891; h<=10892; h++)
-            context.drawImage( imageMap[w][h], ox + (w-16372)*256, oy + (h-10891)*256 );
+        for(var w = tileW_lo; w<=tileW_hi; w++)
+          for(var h = tileH_lo; h<=tileH_hi; h++)
+            context.drawImage( imageMap[w][h], ox + (w-tileW_lo)*256, oy + (h-tileH_lo)*256 );
       }
 
       function getMousePos(canvas, evt) {
@@ -61,15 +72,6 @@
 
         }, false);
 
-        canvas.addEventListener('mouseup', function(evt) {
-          var mousePos = getMousePos(canvas, evt);
-          inMouse = false
-
-          var message = 'mouseup ' + mousePos.x + ',' + mousePos.y;
-          writeMessage(message)
-
-        }, false);
-
         canvas.addEventListener('mousemove', function(evt) {
           if (inMouse) {
             var mousePos = getMousePos(canvas, evt);
@@ -78,11 +80,12 @@
             drawCanvas()
             mouseX = mousePos.x
             mouseY = mousePos.y
-
             var message = 'mousemove ' + mousePos.x + ',' + mousePos.y;
             writeMessage(message)
           }
         }, false);
+                
+        canvas.addEventListener('mouseup', function(evt) { inMouse = false }, false );
       }
       else
       {
@@ -115,17 +118,16 @@
        */
       
       var imageMap = {};
-      var zoom = 15
-      for(var w = 16372; w<=16376; w++)
+      for(var w=tileW_lo; w<=tileW_hi; w++)
       {
         imageMap[w] = {};
-        for(var h=10891; h<=10892; h++)
+        for(var h=tileH_lo; h<=tileH_hi; h++)
         {
           var io = new Image();
           io.onload = function() {
             drawCanvas()
           };
-          io.src = 'tiles/' + zoom + '/' + w + '/' + h + '.png';
+          io.src = 'tiles/' + tile_zoom + '/' + w + '/' + h + '.png';
           imageMap[w][h] = io;
         }
       }
