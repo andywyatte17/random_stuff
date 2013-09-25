@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="578" height="400"></canvas>
+    <canvas id="myCanvas1" width="578" height="100"></canvas>
+    <script>
+      var touchMode = false
+      var ox = 5
+      var oy = 5
+      var mouseX = -5000
+      var mouseY = -5000
+      var inMouse = false
+      var canvas = document.getElementById('myCanvas');
+      var canvas1 = document.getElementById('myCanvas1');
+
+      function writeMessage(canvas, message) {
+        var context = canvas1.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.font = '14pt Calibri';
+        context.fillStyle = 'black';
+        context.fillText(message, 10, 25);
+      }
+
+      function drawCanvas() {
+        var context = canvas.getContext('2d');
+        context.clearRect(0,0,canvas.width,canvas.height)
+        // context.drawImage(imageObj, ox, oy);
+        var zoom = 15
+        for(var w = 16372; w<=16376; w++)
+          for(var h=10891; h<=10892; h++)
+            context.drawImage( imageMap[w][h], ox + (w-16372)*256, oy + (h-10891)*256 );
+      }
+
+      function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+
+      function getTouchPos(evt) {
+        return {
+          x: evt.touches.item(0).screenX,
+          y: evt.touches.item(0).screenY
+        };
+      }
+      
+      if( !touchMode )
+      {
+        canvas.addEventListener('mousedown', function(evt) {
+          var mousePos = getMousePos(canvas, evt);
+          mouseX = mousePos.x
+          mouseY = mousePos.y
+          inMouse = true
+
+          var message = 'mousedown ' + mousePos.x + ',' + mousePos.y;
+          writeMessage(canvas1, message)
+
+        }, false);
+
+        canvas.addEventListener('mouseup', function(evt) {
+          var mousePos = getMousePos(canvas, evt);
+          inMouse = false
+
+          var message = 'mouseup ' + mousePos.x + ',' + mousePos.y;
+          writeMessage(canvas1, message)
+
+        }, false);
+
+        canvas.addEventListener('mousemove', function(evt) {
+          if (inMouse) {
+            var mousePos = getMousePos(canvas, evt);
+            ox += mousePos.x - mouseX
+            oy += mousePos.y - mouseY
+            drawCanvas()
+            mouseX = mousePos.x
+            mouseY = mousePos.y
+
+            var message = 'mousemove ' + mousePos.x + ',' + mousePos.y;
+            writeMessage(canvas1, message)
+          }
+        }, false);
+      }
+      else
+      {
+        canvas.addEventListener('touchstart', function(evt) {
+          var mousePos = getTouchPos(evt);
+          mouseX = mousePos.x
+          mouseY = mousePos.y
+          var message = 'touchstart ' + mousePos.x + ',' + mousePos.y;
+          writeMessage(canvas1, message)
+        }, false);
+
+        canvas.addEventListener('touchmove', function(evt) {
+            var mousePos = getTouchPos(evt);
+            ox += mousePos.x - mouseX
+            oy += mousePos.y - mouseY
+            drawCanvas()
+            mouseX = mousePos.x
+            mouseY = mousePos.y
+            var message = 'touchmove ' + mousePos.x + ',' + mousePos.y;
+            writeMessage(canvas1, message)
+        }, false);
+      }
+
+      /*
+      var imageObj = new Image();
+      imageObj.onload = function() {
+        drawCanvas()
+      };
+      imageObj.src = 'http://www.html5canvastutorials.com/demos/assets/darth-vader.jpg';
+       */
+      
+      var imageMap = {};
+      var zoom = 15
+      for(var w = 16372; w<=16376; w++)
+      {
+        imageMap[w] = {};
+        for(var h=10891; h<=10892; h++)
+        {
+          var io = new Image();
+          io.onload = function() {
+            drawCanvas()
+          };
+          io.src = 'tiles/' + zoom + '/' + w + '/' + h + '.png';
+          imageMap[w][h] = io;
+        }
+      }
+      
+    </script>
+  </body>
+</html>
