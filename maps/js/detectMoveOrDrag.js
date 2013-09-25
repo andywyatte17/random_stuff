@@ -9,7 +9,8 @@ $(document).on('mousemove', detectMouse);
 function detectMouse(e) {
   if(e.which || e.button)
     return;
-  isMouseMove = true
-  $('p.mouseOrNot').text("Mouse Detected!");
+  isMouseMoveNotDrag = true
+  mouseMoveStateChanged()
+  $('div.mouseOrNot').text("Mouse Detected!");
   $(document).off('mousemove', detectMouse);
 }

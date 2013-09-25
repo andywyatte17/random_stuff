@@ -6,16 +6,18 @@
         margin: 5px;
         padding: 5px;
       }
-    </style>
+      </style>
     <script src="js/jquery-2.0.0b2.js"></script>
     <script src="js/detectMoveOrDrag.js"></script>    
     <script src="js/mapConfig.js"></script>
   </head>
   <body>
     <h2 class="map_title">_map_title_</h2>
-    <canvas id="myCanvas" width="800" height="500"></canvas>
-    <p class="mouseEvents"></p>
-    <p class="mouseOrNot">No Mouse.</p>
+    <canvas id="myCanvas" width="950" height="325"></canvas>
+    <p>
+    <div class="mouseOrNot" style="font-weight:bold">No Mouse.</div>
+    <div class="mouseEvents"></div>
+    </p>
     <script>
       var ox = 0, oy = 0
       var mouseX = -5000, mouseY = -5000, inMouse = false
@@ -26,24 +28,32 @@
       
       $('h2.map_title').text(map_title);
       if( !debug_mouse ) {
-        $('p.mouseEvents').hide();
-        $('p.mouseOrNot').hide();
+        $('div.mouseEvents').hide();
+        $('div.mouseOrNot').hide();
       }
-
+      
+      $('#myCanvas').bind('contextmenu', function(e){
+                          return false;
+                          }); 
+      
       function writeMessage(message) {
         if(debug_mouse)
-          $('p.mouseEvents').text(message)
+        $('div.mouseEvents').text(message)
       }
-
+      
+      function ValidateOxOy() {
+        if(ox>0) ox = 0;
+        if(oy>0) oy = 0;
+      }
+      
       function drawCanvas() {
         var context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height)
-        // context.drawImage(imageObj, ox, oy);
         for(var w = tileW_lo; w<=tileW_hi; w++)
-          for(var h = tileH_lo; h<=tileH_hi; h++)
-            context.drawImage( imageMap[w][h], ox + (w-tileW_lo)*256, oy + (h-tileH_lo)*256 );
+        for(var h = tileH_lo; h<=tileH_hi; h++)
+        context.drawImage( imageMap[w][h], ox + (w-tileW_lo)*256, oy + (h-tileH_lo)*256 );
       }
-
+      
       function getMousePos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return {
@@ -51,7 +61,7 @@
           y: evt.clientY - rect.top
         };
       }
-
+      
       function getTouchPos(evt) {
         return {
           x: evt.touches.item(0).screenX,
@@ -59,63 +69,88 @@
         };
       }
       
-      if( !isMouseMoveNotDrag )
-      {
-        canvas.addEventListener('mousedown', function(evt) {
-          var mousePos = getMousePos(canvas, evt);
-          mouseX = mousePos.x
-          mouseY = mousePos.y
-          inMouse = true
-
-          var message = 'mousedown ' + mousePos.x + ',' + mousePos.y;
-          writeMessage(message)
-
-        }, false);
-
-        canvas.addEventListener('mousemove', function(evt) {
-          if (inMouse) {
-            var mousePos = getMousePos(canvas, evt);
-            ox += mousePos.x - mouseX
-            oy += mousePos.y - mouseY
-            drawCanvas()
-            mouseX = mousePos.x
-            mouseY = mousePos.y
-            var message = 'mousemove ' + mousePos.x + ',' + mousePos.y;
-            writeMessage(message)
-          }
-        }, false);
-                
-        canvas.addEventListener('mouseup', function(evt) { inMouse = false }, false );
-      }
-      else
-      {
-        canvas.addEventListener('touchstart', function(evt) {
-          var mousePos = getTouchPos(evt);
-          mouseX = mousePos.x
-          mouseY = mousePos.y
-          var message = 'touchstart ' + mousePos.x + ',' + mousePos.y;
-          writeMessage(canvas1, message)
-        }, false);
-
-        canvas.addEventListener('touchmove', function(evt) {
-            var mousePos = getTouchPos(evt);
-            ox += mousePos.x - mouseX
-            oy += mousePos.y - mouseY
-            drawCanvas()
-            mouseX = mousePos.x
-            mouseY = mousePos.y
-            var message = 'touchmove ' + mousePos.x + ',' + mousePos.y;
-            writeMessage(canvas1, message)
-        }, false);
-      }
-
-      /*
-      var imageObj = new Image();
-      imageObj.onload = function() {
-        drawCanvas()
+      var mouseDownFn = function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        mouseX = mousePos.x
+        mouseY = mousePos.y
+        inMouse = true
+        
+        var message = 'mousedown ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(message)
       };
-      imageObj.src = 'http://www.html5canvastutorials.com/demos/assets/darth-vader.jpg';
-       */
+      
+      var mouseMoveFn = function(evt) {
+        if (inMouse) {
+          var mousePos = getMousePos(canvas, evt);
+          ox += mousePos.x - mouseX
+          oy += mousePos.y - mouseY
+          ValidateOxOy()
+          drawCanvas()
+          mouseX = mousePos.x
+          mouseY = mousePos.y
+          var message = 'mousemove ' + mousePos.x + ',' + mousePos.y + '{' + ox + ',' + oy + '}';
+          writeMessage(message)
+        }
+      };
+
+      var mouseUpFn = function(evt) {
+        if (inMouse) {
+          inMouse = false
+          var mousePos = getMousePos(canvas, evt);
+          var message = 'mouseup ' + mousePos.x + ',' + mousePos.y + '{' + ox + ',' + oy + '}';
+          writeMessage(message)
+        }
+      };
+      
+      var touchStartFn = function(evt) {
+        var mousePos = getTouchPos(evt);
+        mouseX = mousePos.x
+        mouseY = mousePos.y
+        var message = 'touchstart ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(message)
+      };
+      
+      var touchMoveFn = function(evt) {
+        var mousePos = getTouchPos(evt);
+        ox += mousePos.x - mouseX
+        oy += mousePos.y - mouseY
+        ValidateOxOy()
+        drawCanvas()
+        mouseX = mousePos.x
+        mouseY = mousePos.y
+        var message = 'touchmove ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(message)
+      };
+      
+      var touchEndFn = function(evt) {
+        var mousePos = getTouchPos(evt);
+        var message = 'touchend ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(message)
+      };
+      
+      function mouseMoveStateChanged() {
+        canvas.removeEventListener('mousedown', mouseDownFn, false);
+        canvas.removeEventListener('mousemove', mouseMoveFn, false);
+        canvas.removeEventListener('mouseup', mouseUpFn, false);
+        canvas.removeEventListener('touchstart', touchStartFn, false);
+        canvas.removeEventListener('touchmove', touchMoveFn, false);
+        canvas.removeEventListener('touchend', touchEndFn, false);
+        
+        if( isMouseMoveNotDrag )
+        {
+          canvas.addEventListener('mousedown', mouseDownFn, false);
+          canvas.addEventListener('mousemove', mouseMoveFn, false);
+          canvas.addEventListener('mouseup', mouseUpFn, false);
+        }
+        else
+        {
+          canvas.addEventListener('touchstart', touchStartFn, false);
+          canvas.addEventListener('touchmove', touchMoveFn, false);
+          canvas.addEventListener('touchend', touchEndFn, false);
+        }
+      }
+      
+      mouseMoveStateChanged();
       
       var imageMap = {};
       for(var w=tileW_lo; w<=tileW_hi; w++)
@@ -132,6 +167,6 @@
         }
       }
       
-    </script>
+      </script>
   </body>
 </html>
