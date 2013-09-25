@@ -15,7 +15,7 @@
     <h3 id="map_title">_map_title_</h3>
     <canvas id="myCanvas" width="950" height="400"></canvas>
     <p>
-		<div id="mouseStuffTable">
+      <div id="mouseStuffTable">
           <div id="mouseOrNot" style="width:50%;float:left;display:inline-block;">&nbsp;</div>
           <div id="mouseEvents">&nbsp;</div>
       </div>
@@ -35,8 +35,8 @@
       }
       
       function ValidateOxOy() {
-		var left = -(tileW_hi-tileW_lo+1)*256 + canvas.width;
-		var top = -(tileH_hi-tileH_lo+1)*256 + canvas.height;
+        var left = -(tileW_hi-tileW_lo+1)*256 + canvas.width;
+        var top = -(tileH_hi-tileH_lo+1)*256 + canvas.height;
         if(ox>0) ox = 0;
         if(ox<left) ox = left;
         if(oy>0) oy = 0;
@@ -47,8 +47,22 @@
         var context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height)
         for(var w = tileW_lo; w<=tileW_hi; w++)
-        for(var h = tileH_lo; h<=tileH_hi; h++)
-        context.drawImage( imageMap[w][h], ox + (w-tileW_lo)*256, oy + (h-tileH_lo)*256 );
+          for(var h = tileH_lo; h<=tileH_hi; h++)
+          {
+            var px = ox + (w-tileW_lo)*256;
+            var py = oy + (h-tileH_lo)*256;
+            if( (px+255)<0 ) continue;
+            if( (py+255)<0 ) continue;
+            if( (px-255)>canvas.width ) continue;
+            if( (py-255)>canvas.height ) continue;
+
+            if( !imageMap[w][h].src || imageMap[w][h].src=='' ) {
+              imageMap[w][h].src = imageStr[w][h];
+              imageTryLoading[w][h] = true;
+            }
+            else
+              context.drawImage( imageMap[w][h], px, py );
+          }
       }
       
       function getMousePos(canvas, evt) {
@@ -76,8 +90,8 @@
       };
       
       var mouseMoveFn = function(evt) {
-		if (!evt.buttons )
-		  inMouse = false
+        if (!evt.buttons )
+          inMouse = false
         if (inMouse) {
           var mousePos = getMousePos(canvas, evt);
           ox += mousePos.x - mouseX
@@ -101,7 +115,7 @@
       };
       
       var touchStartFn = function(evt) {
-		evt.preventDefault();  // Important! touchMove won't work well without this
+        evt.preventDefault();  // Important! touchMove won't work well without this
         var mousePos = getTouchPos(evt);
         mouseX = mousePos.x
         mouseY = mousePos.y
@@ -135,20 +149,21 @@
       canvas.addEventListener('touchmove', touchMoveFn, false);
       canvas.addEventListener('touchend', touchEndFn, false);
       
-      var imageMap = {};
+      var imageMap = {}, imageStr = {};
       for(var w=tileW_lo; w<=tileW_hi; w++)
       {
         imageMap[w] = {};
+        imageStr[w] = {};
         for(var h=tileH_lo; h<=tileH_hi; h++)
         {
           var io = new Image();
-          io.onload = function() {
-            drawCanvas()
-          };
-          io.src = 'tiles/' + tile_zoom + '/' + w + '/' + h + '.png';
+          io.onload = function() { drawCanvas(); };
+          imageStr[w][h] = 'tiles/' + tile_zoom + '/' + w + '/' + h + '.png';
           imageMap[w][h] = io;
+          // imageMap[w][h].src = imageStr[w][h];
         }
       }
+      drawCanvas();
       
       </script>
   </body>

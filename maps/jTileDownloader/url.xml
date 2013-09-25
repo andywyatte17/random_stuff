@@ -3,8 +3,10 @@
 <properties>
 <entry key="Type">UrlSquare</entry>
 <entry key="OutputLocation">tiles</entry>
+<entry key="OverwriteExistingFiles">true</entry>
 <entry key="PasteUrl">http://www.openstreetmap.org/?lat=51.523271&amp;lon=-0.105743&amp;zoom=11&amp;layers=B000TTF</entry>
-<entry key="TileServer">http://a.tile.openstreetmap.org</entry>
+<!-- <entry key="TileServer">http://a.tile.openstreetmap.org</entry> -->
+<entry key="TileServer">http://otile1.mqcdn.com/tiles/1.0.0/map</entry>
 <entry key="OutputZoomLevel">16</entry>
 <entry key="Radius">2</entry>
 </properties>
