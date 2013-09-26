@@ -1,1 +1,1 @@
-var tileW_lo = 32745;var tileW_hi = 32752;var tileH_lo = 21782;var tileH_hi = 21792;var tile_zoom = 16;var map_title = 'Map of London'var debug_mouse = true// var canvas_width = 800// var canvas_height = 500
+var cfg = { 'wLo' : 32745, 'wHi' : 32752,  'hLo' : 21782, 'hHi' : 21792,  'zoom' : 16, 'title' : 'Map of London',  'extension' : '.png',  'debug_mouse' : true};
