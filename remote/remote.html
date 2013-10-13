@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>load demo</title>
+  <style>
+  body {
+    font-size: 12px;
+    font-family: Arial;
+  }
+  </style>
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+</head>
+<body>
+ 
+<a id="link" href="#">Blah blah blah</a>
+
+<script>
+$("a#link").click(function(){
+    $.post("http://0.0.0.0:8000/right",
+       function(data) {
+         alert("Data Loaded: " + data);
+       }
+    );
+    return false;
+});
+</script>
+
+</body>
+</html>
