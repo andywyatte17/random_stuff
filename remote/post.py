@@ -9,24 +9,22 @@ PORT = 8000
 
 class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
+    def do_POST_op(self, path):
+        if( path=='/right' ):
+            print 'Do right!'
+        if( path=='/left' ):
+            print 'Do left!'
+
     def do_GET(self):
         logging.error(self.headers)
         SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
     def do_POST(self):
-        print "Post!", datetime.datetime.now()
-        pprint ( self.path )
-
-        logging.error(self.headers)
-        form = cgi.FieldStorage(
-            fp=self.rfile,
-            headers=self.headers,
-            environ={'REQUEST_METHOD':'POST',
-                     'CONTENT_TYPE':self.headers['Content-Type'],
-                     })
-        for item in form.list:
-            logging.error(item)
-        SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+        self.do_POST_op( self.path )
+        self.send_response(200)
+        self.send_header('Content-type','text')
+        self.end_headers()
+        self.wfile.write( self.path )
 
 Handler = ServerHandler
 

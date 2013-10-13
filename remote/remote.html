@@ -13,11 +13,21 @@
 </head>
 <body>
  
-<a id="link" href="#">Blah blah blah</a>
+<a id="right_op" href="#">Right</a>
+<a id="left_op" href="#">Left</a>
 
 <script>
-$("a#link").click(function(){
+$("a#right_op").click(function(){
     $.post("http://0.0.0.0:8000/right",
+       function(data) {
+         alert("Data Loaded: " + data);
+       }
+    );
+    return false;
+});
+
+$("a#left_op").click(function(){
+    $.post("http://0.0.0.0:8000/left",
        function(data) {
          alert("Data Loaded: " + data);
        }
