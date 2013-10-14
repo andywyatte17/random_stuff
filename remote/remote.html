@@ -7,31 +7,38 @@
   body {
     font-size: 12px;
     font-family: Arial;
+	background-color:#ffc;
   }
   </style>
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 </head>
 <body>
  
-<a id="right_op" href="#">Right</a>
-<a id="left_op" href="#">Left</a>
+<form>
+Password: <input type="text" id="textPassword" value="50" style="font-size: 30px">
+</form>
+<br/>
+<button id="left_op" style="height: 125px; width: 180px; font-size: 48px">Left</button>
+<button id="right_op" style="height: 125px; width: 180px; font-size: 48px">Right</button>
 
 <script>
-$("a#right_op").click(function(){
-    $( "a#right_op" ).text( "Right..." );
+$("#right_op").click(function(){
+    $( "#right_op" ).text( "Right..." );
     $.post("/right",
+	   "password=" + $( "#textPassword" ).text(),
        function(data) {
-         $( "a#right_op" ).text( "Right" );
+         $( "#right_op" ).text( "Right" );
        }
     );
     return false;
 });
 
-$("a#left_op").click(function(){
-    $( "a#left_op" ).text( "Left..." );
+$("#left_op").click(function(){
+    $( "#left_op" ).text( "Left..." );
     $.post("/left",
+	   "password=" + $( "#textPassword" ).text(),
        function(data) {
-         $( "a#left_op" ).text( "Left" );
+         $( "#left_op" ).text( "Left" );
        }
     );
     return false;

@@ -5,15 +5,29 @@ import cgi
 import datetime
 from pprint import pprint
 
+
 PORT = 8000
+
+SendKeyIsWin32 = False
+try:
+    import win32com.client
+    SendKeyIsWin32 = True
+except: 
+    pass
+
+def SendKey(keys):
+    if SendKeyIsWin32:
+        shell = win32com.client.Dispatch("WScript.Shell")
+        shell.SendKeys(keys, 0)
+    return
 
 class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_POST_op(self, path):
         if( path=='/right' ):
-            print 'Do right!'
+            SendKey("{RIGHT}")
         if( path=='/left' ):
-            print 'Do left!'
+            SendKey("{LEFT}")
 
     def do_GET(self):
         logging.error(self.headers)
@@ -21,6 +35,11 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         self.do_POST_op( self.path )
+
+        length = int( self.headers['Content-Length'] )
+        post_data = self.rfile.read(length).decode('utf-8')
+        print post_data
+
         self.send_response(200)
         self.send_header('Content-type','text')
         self.end_headers()
