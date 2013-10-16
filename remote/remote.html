@@ -5,7 +5,7 @@
   <title>load demo</title>
   <style>
   body {
-    font-size: 12px;
+    font-size: 1.5em;
     font-family: Arial;
 	background-color:#ffc;
   }
@@ -14,16 +14,14 @@
 </head>
 <body>
  
-<form>
-Password: <input type="text" id="textPassword" value="50" style="font-size: 30px">
-</form>
+Passcode: <input type="text" id="textPassword" value="50" style="font-size: 30px; width: 200px">
 <br/>
-<button id="left_op" style="height: 125px; width: 180px; font-size: 48px">Left</button>
-<button id="right_op" style="height: 125px; width: 180px; font-size: 48px">Right</button>
+<button id="left_op" style="height: 125px; width: 180px; font-size: 2em">Left</button>
+<button id="right_op" style="height: 125px; width: 180px; font-size: 2em">Right</button>
 
-<script>
+<script type="text/javascript">
 $("#right_op").click(function(){
-    $( "#right_op" ).text( "Right..." );
+    $( "#right_op" ).text( ".Right." );
     $.post("/right",
 	   $( "#textPassword" ).val(),
        function(data) {
@@ -34,7 +32,7 @@ $("#right_op").click(function(){
 });
 
 $("#left_op").click(function(){
-    $( "#left_op" ).text( "Left..." );
+    $( "#left_op" ).text( ".Left." );
     $.post("/left",
 	   $( "#textPassword" ).val(),
        function(data) {
