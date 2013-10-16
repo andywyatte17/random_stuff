@@ -25,7 +25,7 @@ Password: <input type="text" id="textPassword" value="50" style="font-size: 30px
 $("#right_op").click(function(){
     $( "#right_op" ).text( "Right..." );
     $.post("/right",
-	   "password=" + $( "#textPassword" ).text(),
+	   $( "#textPassword" ).val(),
        function(data) {
          $( "#right_op" ).text( "Right" );
        }
@@ -36,7 +36,7 @@ $("#right_op").click(function(){
 $("#left_op").click(function(){
     $( "#left_op" ).text( "Left..." );
     $.post("/left",
-	   "password=" + $( "#textPassword" ).text(),
+	   $( "#textPassword" ).val(),
        function(data) {
          $( "#left_op" ).text( "Left" );
        }

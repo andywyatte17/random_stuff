@@ -5,6 +5,8 @@ import cgi
 import datetime
 import random
 from pprint import pprint
+import os
+import platform
 
 PORT = 8000
 
@@ -14,25 +16,44 @@ def RandomCodeGen():
 CODE = "{0:x}".format(RandomCodeGen())
 open("code.txt", "w").write(CODE)
 
-SendKeyIsWin32 = False
-try:
-	import win32com.client
-	SendKeyIsWin32 = True
-except: 
-	pass
+class SendKeyOS:
+	(Dunno, WinXX, OSX) = range(0, 3)
+
+sendKeyOS = SendKeyOS.Dunno
+
+platSys = platform.system()
+if platSys=="Darwin":
+	sendKeyOS = SendKeyOS.OSX
+if platSys=="Windows":
+	sendKeyOS = SendKeyOS.WinXX
+
+if sendKeyOS==SendKeyOS.WinXX:
+	try:
+		import win32com.client
+	except:
+		print "You must install pyWin32"
+		exit(1)
 
 def SendKey(keys):
-	if SendKeyIsWin32:
+	if sendKeyOS==SendKeyOS.WinXX:
 		shell = win32com.client.Dispatch("WScript.Shell")
 		shell.SendKeys(keys, 0)
+	if sendKeyOS==SendKeyOS.OSX:
+		# Keycode list... http://apple.stackexchange.com/questions/36943/how-do-i-automate-a-key-press-in-applescript
+		kc = 0
+		if keys=="{RIGHT}": kc = 124
+		if keys=="{LEFT}": kc = 123
+		if kc:
+			cmd = """ osascript -e 'tell application "System Events" to key code {0}' """.format( kc )
+			os.system(cmd)
 	return
 
 class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	def do_POST_op(self, path):
-		if( path=='/right' ):
+		if path=='/right':
 			SendKey("{RIGHT}")
 			print "Sending {RIGHT}"
-		if( path=='/left' ):
+		if path=='/left':
 			SendKey("{LEFT}")
 			print "Sending {LEFT}"
 
@@ -43,7 +64,7 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	def do_POST(self):
 		length = int( self.headers['Content-Length'] )
 		post_data = self.rfile.read(length).decode('utf-8')
-		# print "post_data=", post_data
+		print "post_data=", post_data
 		if post_data==CODE:
 			self.do_POST_op( self.path )
 		self.send_response(200)
