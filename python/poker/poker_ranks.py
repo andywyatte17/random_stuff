@@ -20,7 +20,7 @@ def card_to_high_value(card):
   if card=='A': return 14
   return int(card)
 
-def card_to_high_value_favouring_x(card, x):
+def card_to_high_value_x(card, x):
   if card==x: return 1000
   if card=='J': return 11
   if card=='Q': return 12
@@ -28,8 +28,17 @@ def card_to_high_value_favouring_x(card, x):
   if card=='A': return 14
   return int(card)
 
+def card_to_high_value_xy(card, x, y):
+  if card==x: return 2000
+  if card==y: return 1000
+  if card=='J': return 11
+  if card=='Q': return 12
+  if card=='K': return 13
+  if card=='A': return 14
+  return int(card)
+
 def group_for_pairs(combin):
-  combinS = sorted(combin, key = lambda x : -card_to_high_value(x[0]) )
+  combinS = sorted(combin, key=lambda x : card_to_high_value(x[0]), reverse=True)
   runs = [len(list(group)) for key, group in groupby(combinS, key=lambda x:x[0])]
   return ( runs, combinS )
 
@@ -59,14 +68,25 @@ def is_three_of_kind(combin):
 
 def is_two_pairs(combin):
   g4p = group_for_pairs(combin)
-  pprint.pprint( ("is_two_pairs", g4p) )
+  if g4p[0]==[1,2,2]:
+    rv = sorted(combin, key = lambda x : card_to_high_value_xy(x[0], g4p[1][2][0], g4p[1][4][0]), reverse=True )
+    # pprint.pprint( ("is_two_pairs", rv) )
+    return rv
+  if g4p[0]==[2,1,2]:
+    rv = sorted(combin, key = lambda x : card_to_high_value_xy(x[0], g4p[1][1][0], g4p[1][4][0]), reverse=True )
+    # pprint.pprint( ("is_two_pairs", rv) )
+    return rv
+  if g4p[0]==[2,2,1]:
+    rv = sorted(combin, key = lambda x : card_to_high_value_xy(x[0], g4p[1][0][0], g4p[1][2][0]), reverse=True )
+    # pprint.pprint( ("is_two_pairs", rv) )
+    return rv
   return None
 
 def is_pair(combin):
   return None
 
 def is_high_card(combin):
-  rv = sorted(combin, key = lambda x : -card_to_high_value(x[0]) )
+  rv = sorted(combin, key = lambda x : card_to_high_value(x[0]), reverse=True )
   # pprint.pprint( ("is_high_card", rv ) )
   return rv
 
