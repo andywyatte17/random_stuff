@@ -8,6 +8,7 @@
 #include <vector>
 #include <initializer_list>
 #include <set>
+#include <unordered_set>
 
 using namespace std;
 
@@ -96,8 +97,8 @@ private:
   }
   bool IsStraight() const
   {
-    const int specialCase[] = { 12,3,2,1,0 };
-    if( equal(specialCase, specialCase+5, cards) )
+    const int AceLoStraight[] = { 12,3,2,1,0 };
+    if( equal(AceLoStraight, AceLoStraight+5, cards) )
       return true;
     for( size_t i=1; i<5; i++)
       if( cards[i-1]-1 != cards[i] )
@@ -107,50 +108,18 @@ private:
   void Process()
   {
   	sort( begin(cards), end(cards), [](int a, int b) -> bool { return a>b; } );
+
+    int frequency[13] = { 0,0,0,0,0,0,0,0,0,0,0,0,0 };
+    for_each( begin(cards), end(cards), [&](int card) { ++frequency[card]; } );
+    stable_sort(begin(cards), end(cards),
+                [&](const int& cardA, const int& cardB)
+                { return frequency[cardA] > frequency[cardB]; } );
     
-    struct CountCtrl { unsigned count; int elements[5]; };
-    CountCtrl countCtrl[5];
-    unsigned ccCount = 0;
-    {
-      int ix = 0;
-      int counts[] = { 0,0,0,0,0 };
-      for_each(counts,
-        adjacent_count( begin(cards), end(cards), &counts[0] ),
-        [&](int r)
-        {
-          CountCtrl cc;
-          cc.count = r;
-          for(int i=0; i<r; i++) cc.elements[i] = ix++;
-          countCtrl[ccCount++] = cc;
-        }
-      );
-    }
-    
-    std::stable_sort(countCtrl, countCtrl+ccCount,
-      [](const CountCtrl& a, const CountCtrl& b)
-      {
-        return a.count > b.count;
-      }
-    );
-    
-    auto tmp = *this;
-    auto hhIt = &cards[0];
     fill_n(sequence, 5, 0);
-    auto seqIt = &sequence[0];
-    for_each( countCtrl, countCtrl+ccCount,
-      [&](const CountCtrl& cc)
-      {
-        for_each(cc.elements, cc.elements + cc.count,
-          [&](int index) { *hhIt++ = tmp.cards[index]; } );
-        *seqIt++ = cc.count;
-      }
-    );
+    adjacent_count( begin(cards), end(cards), sequence );
     
-    if(ccCount==5)
+    if(sequence[4]==1)
       is_straight = IsStraight();
-    
-    //if(countCtrl.size()<5)
-    //  printf("%s\n", this->Dbx().c_str());
   }
 };
 
@@ -163,7 +132,7 @@ int main()
     cout << h1.Dbx() << " > " << h2.Dbx() << " = " << !!comp << endl;
   }
 
-  set<uint64_t> primes;
+  unordered_set<uint64_t> primes;
   vector< pair<Hand,int> > hands;
   hands.reserve(10000);
   for(int i=0; i<52; i++)
@@ -184,10 +153,6 @@ int main()
 
   std::sort(hands.begin(), hands.end(),
    [](const pair<Hand,int>& a, const pair<Hand,int>& b) { return b.first>a.first; } );
-  //cout << s.size() << endl;
-
-  //for(auto i=s.begin(), e=s.end(); i!=e; ++i)
-  //  cout << i->second.Dbx() << endl;
 
   // Assign values to each hand
   hands[0].second = 0;
@@ -199,8 +164,11 @@ int main()
       i->second = l->second+1;
   }
   
+  //for(auto i=hands.begin(), e=hands.end(); i!=e; ++i)
+  //  cout << i->first.Dbx() << " " << i->second << " " << i->first.Prime() << endl;
+
   for(auto i=hands.begin(), e=hands.end(); i!=e; ++i)
-    cout << i->first.Dbx() << " " << i->second << " " << i->first.Prime() << endl;
+    cout << i->first.Prime() << "," << i->second << endl;
     
   cout << "Number of unique hands = " << hands.size() << endl;
 

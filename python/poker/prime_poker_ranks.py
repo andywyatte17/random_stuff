@@ -1,0 +1,1 @@
+d = dict()with open('prime_poker_ranks.txt', 'rb') as f:  for line in f:    if not '#' in line :      bits = line.split(',')      prime = int(bits[0])      value = int(bits[1])      d[prime] = value
