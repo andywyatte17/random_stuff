@@ -108,8 +108,9 @@ private:
   {
   	sort( begin(cards), end(cards), [](int a, int b) -> bool { return a>b; } );
     
-    struct CountCtrl { unsigned count; vector<int> elements; };
-    vector<CountCtrl> countCtrl;
+    struct CountCtrl { unsigned count; int elements[5]; };
+    CountCtrl countCtrl[5];
+    unsigned ccCount = 0;
     {
       int ix = 0;
       int counts[] = { 0,0,0,0,0 };
@@ -119,13 +120,13 @@ private:
         {
           CountCtrl cc;
           cc.count = r;
-          for(int i=0; i<r; i++) cc.elements.push_back( ix++ );
-          countCtrl.push_back(cc);
+          for(int i=0; i<r; i++) cc.elements[i] = ix++;
+          countCtrl[ccCount++] = cc;
         }
       );
     }
     
-    std::stable_sort(begin(countCtrl), end(countCtrl),
+    std::stable_sort(countCtrl, countCtrl+ccCount,
       [](const CountCtrl& a, const CountCtrl& b)
       {
         return a.count > b.count;
@@ -136,16 +137,16 @@ private:
     auto hhIt = &cards[0];
     fill_n(sequence, 5, 0);
     auto seqIt = &sequence[0];
-    for_each( countCtrl.begin(), countCtrl.end(),
+    for_each( countCtrl, countCtrl+ccCount,
       [&](const CountCtrl& cc)
       {
-        for_each(cc.elements.begin(), cc.elements.end(),
+        for_each(cc.elements, cc.elements + cc.count,
           [&](int index) { *hhIt++ = tmp.cards[index]; } );
         *seqIt++ = cc.count;
       }
     );
     
-    if(countCtrl.size()==5)
+    if(ccCount==5)
       is_straight = IsStraight();
     
     //if(countCtrl.size()<5)
@@ -164,6 +165,7 @@ int main()
 
   set<uint64_t> primes;
   vector< pair<Hand,int> > hands;
+  hands.reserve(10000);
   for(int i=0; i<52; i++)
     for(int j=i+1; j<52; j++)
       for(int k=j+1; k<52; k++)
