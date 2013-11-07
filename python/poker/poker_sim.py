@@ -1,39 +1,16 @@
 import pprint
 import itertools
 from random import shuffle
-from poker_ranks import *
+from prime_poker_ranks import get_card_values
+import sys
+from optparse import OptionParser
 
 def make_pack():
   pack = list()
-  for i in ['2','3','4','5','6','7','8','9','10','J','Q','K','A']:
-    for j in ['Sp','Cb','Dm','Ht']:
+  for i in ['2','3','4','5','6','7','8','9','T','J','Q','K','A']:
+    for j in ['S','C','D','H']:
       pack.append( (i,j) )
   return pack
-
-def card_value_less(card_pair1, card_pair2):
-  #pprint.pprint( ("card_pair1", card_pair1 ) )
-  #pprint.pprint( ("card_pair2", card_pair2 ) )
-  return card_to_high_value( card_pair1[0] ) < card_to_high_value( card_pair2[0] )
-
-def compare_hand_tuple_less_0(hand_tuple1, hand_tuple2):
-  if hand_tuple1[0]<hand_tuple2[0]:
-    return True
-  if hand_tuple2[0]<hand_tuple1[0]:
-    return False
-  for i in range(0,5):
-    if card_value_less( hand_tuple1[2][i], hand_tuple2[2][i] ):
-      return True
-    if card_value_less( hand_tuple2[2][i], hand_tuple1[2][i] ):
-      return False
-  return False
-
-def compare_hand_tuple_less(hand_tuple1, hand_tuple2):
-  res = compare_hand_tuple_less_0(hand_tuple1, hand_tuple2)
-  #if hand_tuple1[0]==hand_tuple2[0]:
-  #  pprint.pprint( (hand_tuple1,hand_tuple2) )
-  #  print "a less-than b?",res
-  #  raw_input()
-  return res
 
 def draw_and_remove(pack):
   shuffle( pack )
@@ -45,6 +22,15 @@ def draw_and_remove_value(pack, val):
   shuffle( pack )
   for i in pack:
     if i[0]==val:
+      draw = i
+      pack.remove(i)
+      return draw
+  return None
+
+def draw_and_remove_value(pack, val, suit):
+  shuffle( pack )
+  for i in pack:
+    if i[0]==val and i[1]==suit:
       draw = i
       pack.remove(i)
       return draw
@@ -71,11 +57,13 @@ def hand_poker_value(hand, pool):
   for i in pool[:]: hand_plus_pool.append(i)
   # pprint.pprint( ("hand_plus_pool", hand_plus_pool ) )
   combins = list( itertools.combinations(hand_plus_pool, 5 ) )
+  best_value = 0
   for combin in combins:
-    tup = find_poker_value(combin)
-    if not hand_tuple or compare_hand_tuple_less(hand_tuple, tup):
-      hand_tuple = tup
-  return hand_tuple
+    new_value = get_card_values(combin)
+    if not hand_tuple or new_value > best_value:
+      hand_tuple = combin
+      best_value = new_value
+  return ( hand_tuple, best_value )
 
 def winning_hand(pack_in, my_hand, pool, no_players):
   if not pool:
@@ -94,41 +82,55 @@ def winning_hand(pack_in, my_hand, pool, no_players):
     other_hand = ( draw_and_remove(pack), draw_and_remove(pack) )
     other_hands.append( ( other_hand, hand_poker_value(other_hand, pool) ) )
     # pprint.pprint( ("other_hands", other_hands ) )
+
   best_hand_value = my_hand_value
   for other_hand in other_hands:
-    compLess = compare_hand_tuple_less(best_hand_value[1], other_hand[1])
-    # pprint.pprint( ("my_h v other_hand", best_hand_value[1], other_hand[1], compLess ) )
-    if compLess:
+    if other_hand[1][1] > my_hand_value[1][1] :
       best_hand_value = other_hand
+
   return ( best_hand_value, my_hand_value )
 
-# pprint.pprint(pack)
+def main(runs = 4096):
+  # pprint.pprint(pack)
 
-pack = make_pack()
-shuffle( pack )
-# pprint.pprint( pack )
+  pack = make_pack()
+  shuffle( pack )
+  # pprint.pprint( pack )
 
-print "Texas Hold 'Em Simulator"
-no_players = 8
-print "Number of players =", no_players
+  print "Texas Hold 'Em Simulator"
+  no_players = 4
+  print "Number of players =", no_players
 
-# my_hand = ( draw_and_remove(pack), draw_and_remove(pack)
-my_hand = ( draw_and_remove_value(pack, 'A'), draw_and_remove_value(pack, 'A') )
-print "Your hand:"
-pprint.pprint( my_hand )
-print "Number remains:", len(pack)
+  # my_hand = ( draw_and_remove(pack), draw_and_remove(pack)
+  my_hand = ( draw_and_remove_value(pack, '2', 'H'), draw_and_remove_value(pack, '7', 'S') )
+  print "Your hand:"
+  pprint.pprint( my_hand )
+  print "Number remains:", len(pack)
 
-win_count = 0
-lose_count = 0
-end = 1024*16-1
-for i in range(0, end+1):
-  win_hand = winning_hand(pack, my_hand, None, no_players)
-  #print "<"
-  #pprint.pprint( win_hand )
-  #print ">"
-  if win_hand[0][0]==my_hand:
-    win_count = win_count + 1
+  win_count = 0
+  lose_count = 0
+  end = runs
+  for i in range(0, end+1):
+    win_hand = winning_hand(pack, my_hand, None, no_players)
+    #print "<"
+    #pprint.pprint( win_hand )
+    #print ">"
+    if win_hand[0][0]==my_hand:
+      win_count = win_count + 1
+    else:
+      lose_count = lose_count + 1
+    if i==end or ((i%512)==511):
+      pprint.pprint( ("win v loss", win_count, lose_count, "{0}%".format(100.0*win_count / (win_count+lose_count))) )
+
+if __name__ == "__main__":
+  parser = OptionParser()
+  parser.add_option("--profile", "-p", dest="profile", default=False, action="store_true",
+                    help="Profile the performance of the program")
+  parser.add_option("--runs", "-r", dest="runs",
+                    help="Perform RUNS number of tests", default=4096, metavar="RUNS")
+  (options, args) = parser.parse_args()
+  if options.profile:
+    import cProfile
+    cProfile.run( 'main({0})'.format( int(options.runs) ) )
   else:
-    lose_count = lose_count + 1
-  if i==end or ((i%128)==127):
-    pprint.pprint( ("win v loss", win_count, lose_count, "{0}%".format(100.0*win_count / (win_count+lose_count))) )
+    main( int(options.runs) )
