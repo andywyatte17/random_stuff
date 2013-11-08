@@ -1,10 +1,22 @@
 import pprint
 import itertools
 from random import shuffle
-from prime_poker_ranks import get_card_values
+from prime_poker_ranks import get_card_values, card_to_high_value
 import sys
 from optparse import OptionParser
 
+def hand_as_string(hand, sort):
+  hand = hand if not sort else sorted(hand,
+                                      key=lambda card: card_to_high_value(card[0]),
+                                      reverse=True)
+  s = ""
+  for part in hand:
+    s = s + part[0]
+  s = s + ";"
+  for part in hand:
+    s = s + part[1]
+  return s
+    
 def make_pack():
   pack = list()
   for i in ['2','3','4','5','6','7','8','9','T','J','Q','K','A']:
@@ -65,6 +77,9 @@ def hand_poker_value(hand, pool):
       best_value = new_value
   return ( hand_tuple, best_value )
 
+# returns:
+# ( best_hand_value... ( ( card1, card2 ), ( ( card1... card5 ), score ) ),
+#   my_hand_value...   (..as above..) )
 def winning_hand(pack_in, my_hand, pool, no_players):
   if not pool:
     pool = list()
@@ -90,7 +105,7 @@ def winning_hand(pack_in, my_hand, pool, no_players):
 
   return ( best_hand_value, my_hand_value )
 
-def main(runs = 4096):
+def main(runs = 4096, debug_it = False):
   # pprint.pprint(pack)
 
   pack = make_pack()
@@ -104,17 +119,24 @@ def main(runs = 4096):
   # my_hand = ( draw_and_remove(pack), draw_and_remove(pack)
   my_hand = ( draw_and_remove_value(pack, '2', 'H'), draw_and_remove_value(pack, '7', 'S') )
   print "Your hand:"
-  pprint.pprint( my_hand )
-  print "Number remains:", len(pack)
+  print hand_as_string(my_hand, False)
 
   win_count = 0
   lose_count = 0
   end = runs
   for i in range(0, end+1):
     win_hand = winning_hand(pack, my_hand, None, no_players)
-    #print "<"
-    #pprint.pprint( win_hand )
-    #print ">"
+
+    if debug_it:
+      #print "<"
+      #pprint.pprint(win_hand)
+      print " Your hand", hand_as_string(win_hand[1][0], True), hand_as_string(win_hand[1][1][0], True)
+      if win_hand[1][0]!=win_hand[0][0]:
+        print "..Win hand", hand_as_string(win_hand[0][0], True), hand_as_string(win_hand[0][1][0], True)
+      #print ">"
+      if i==0 : print "Press <enter>"
+      raw_input()
+    
     if win_hand[0][0]==my_hand:
       win_count = win_count + 1
     else:
@@ -126,6 +148,8 @@ if __name__ == "__main__":
   parser = OptionParser()
   parser.add_option("--profile", "-p", dest="profile", default=False, action="store_true",
                     help="Profile the performance of the program")
+  parser.add_option("--debug", "-d", dest="debug_it", default=False, action="store_true",
+                    help="Show the results of each hand for debugging")
   parser.add_option("--runs", "-r", dest="runs",
                     help="Perform RUNS number of tests", default=4096, metavar="RUNS")
   (options, args) = parser.parse_args()
@@ -133,4 +157,4 @@ if __name__ == "__main__":
     import cProfile
     cProfile.run( 'main({0})'.format( int(options.runs) ) )
   else:
-    main( int(options.runs) )
+    main( int(options.runs), options.debug_it )
