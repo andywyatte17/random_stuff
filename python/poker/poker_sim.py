@@ -1,6 +1,5 @@
 import pprint
 import itertools
-from random import shuffle
 from prime_poker_ranks import get_card_values, card_to_high_value
 import sys
 from optparse import OptionParser
@@ -24,14 +23,12 @@ def make_pack():
       pack.append( (i,j) )
   return pack
 
-def draw_and_remove(pack):
-  shuffle( pack )
-  draw = pack[0]
+def draw_and_remove(pack, rng):
+  draw = pack[ rng.randint(0,len(pack)-1) ]
   pack.remove(draw)
   return draw
 
 def draw_and_remove_value(pack, val):
-  shuffle( pack )
   for i in pack:
     if i[0]==val:
       draw = i
@@ -40,7 +37,6 @@ def draw_and_remove_value(pack, val):
   return None
 
 def draw_and_remove_value(pack, val, suit):
-  shuffle( pack )
   for i in pack:
     if i[0]==val and i[1]==suit:
       draw = i
@@ -80,13 +76,12 @@ def hand_poker_value(hand, pool):
 # returns:
 # ( best_hand_value... ( ( card1, card2 ), ( ( card1... card5 ), score ) ),
 #   my_hand_value...   (..as above..) )
-def winning_hand(pack_in, my_hand, pool, no_players):
+def winning_hand(pack_in, my_hand, pool, no_players, rng):
   if not pool:
     pool = list()
   pack = list( pack_in[:] )
-  shuffle( pack )
   while len(pool)<5:
-    pool.append( draw_and_remove(pack) )
+    pool.append( draw_and_remove(pack, rng) )
   # print "Other hands"
   # pprint.pprint( other_hands )
   # print "Pool"
@@ -94,7 +89,7 @@ def winning_hand(pack_in, my_hand, pool, no_players):
   my_hand_value = ( my_hand, hand_poker_value(my_hand, pool) )
   other_hands = list()
   for i in range(1, no_players):
-    other_hand = ( draw_and_remove(pack), draw_and_remove(pack) )
+    other_hand = ( draw_and_remove(pack, rng), draw_and_remove(pack, rng) )
     other_hands.append( ( other_hand, hand_poker_value(other_hand, pool) ) )
     # pprint.pprint( ("other_hands", other_hands ) )
 
@@ -105,27 +100,39 @@ def winning_hand(pack_in, my_hand, pool, no_players):
 
   return ( best_hand_value, my_hand_value )
 
-def main(runs = 4096, debug_it = False):
+def main(runs = 4096, debug_it = False, card_hand="????", no_players=4):
+  import random
+  rng = random.Random()
+  rng.seed(0)
+
   # pprint.pprint(pack)
 
   pack = make_pack()
-  shuffle( pack )
   # pprint.pprint( pack )
 
   print "Texas Hold 'Em Simulator"
-  no_players = 4
   print "Number of players =", no_players
 
-  # my_hand = ( draw_and_remove(pack), draw_and_remove(pack)
-  my_hand = ( draw_and_remove_value(pack, '2', 'H'), draw_and_remove_value(pack, '7', 'S') )
+  if card_hand != '' and card_hand[0]!='?':
+    print card_hand
+    my_hand = ( draw_and_remove_value(pack, card_hand[0], card_hand[1].upper()),
+                draw_and_remove_value(pack, card_hand[2], card_hand[3].upper()) )
+  else:
+    my_hand = ( draw_and_remove(pack, rng), draw_and_remove(pack, rng) )
+    # my_hand = ( draw_and_remove_value(pack, '2', 'H'), draw_and_remove_value(pack, '7', 'S') )
+  
   print "Your hand:"
   print hand_as_string(my_hand, False)
 
   win_count = 0
   lose_count = 0
   end = runs
+  display_results_points = []
+  for i in range(1,11):
+    display_results_points.append( (end*i)/10 )
+  
   for i in range(0, end+1):
-    win_hand = winning_hand(pack, my_hand, None, no_players)
+    win_hand = winning_hand(pack, my_hand, None, no_players, rng)
 
     if debug_it:
       #print "<"
@@ -141,10 +148,13 @@ def main(runs = 4096, debug_it = False):
       win_count = win_count + 1
     else:
       lose_count = lose_count + 1
-    if i==end or ((i%512)==511):
-      pprint.pprint( ("win v loss", win_count, lose_count, "{0}%".format(100.0*win_count / (win_count+lose_count))) )
+    if i in display_results_points:
+      print "\twin v loss: {0:8d}, {1:8d}, {2:2.2f}%".format(
+	    win_count, lose_count, 100.0*win_count / (win_count+lose_count))
 
 if __name__ == "__main__":
+  # Heads-up pre-flop odds:
+  # http://www.caniwin.com/texasholdem/preflop/heads-up.php
   parser = OptionParser()
   parser.add_option("--profile", "-p", dest="profile", default=False, action="store_true",
                     help="Profile the performance of the program")
@@ -152,9 +162,13 @@ if __name__ == "__main__":
                     help="Show the results of each hand for debugging")
   parser.add_option("--runs", "-r", dest="runs",
                     help="Perform RUNS number of tests", default=4096, metavar="RUNS")
+  parser.add_option("--hand", "", dest="hand",
+                    help="Supply a card hand, in the form AdKs", default="????", metavar="CARD_HAND")
+  parser.add_option("--no_players", "-n", dest="no_players",
+                    help="Number of players", default=4, metavar="NUM_PLAYERS")
   (options, args) = parser.parse_args()
   if options.profile:
     import cProfile
     cProfile.run( 'main({0})'.format( int(options.runs) ) )
   else:
-    main( int(options.runs), options.debug_it )
+    main( int(options.runs), options.debug_it, options.hand, int(options.no_players) )
