@@ -7,7 +7,8 @@ import json
 import sys
 from random import shuffle
 import argparse
-import os
+import os, time, stat
+from filecache import FileCache
 
 '''
 {
@@ -17,6 +18,7 @@ import os
 }
 '''
 
+cache = FileCache()
 theport = 1234
 debugZips = False
 zipFiles = []
@@ -47,31 +49,48 @@ def ParseConfig():
     with open(jsonPath, 'r') as f:
         js = json.load(f)
         for zf in js['zipFiles']:
-            zipFiles.append( (zf, zipfile.ZipFile(zf, 'r') ) )
+            zipFiles.append( (zf, zipfile.ZipFile(zf, 'r'), os.stat(zf)[stat.ST_MTIME] ) )
         root = js['root']
         rootHtml = js['rootHtml']
-    pprint.pprint(zipFiles)
-    print "root", root
-    print "rootHtml", rootHtml
+    # pprint.pprint(zipFiles)
+    # print "root", root
+    # print "rootHtml", rootHtml
 
 class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def SendAs(self, path, contentType):
+        global cache
         global zipFiles
         global root
         if not path.startswith('/') :
             path = '/' + path
         altPath = root + path
         altPath = altPath.encode('utf8')
-        # print "\naltPath",altPath,"\n"
-        for zfp,zf in zipFiles :
+        #print "\naltPath",altPath,"\n"
+        someBytes, mtime = cache.IsInCache(altPath)
+        if someBytes:
+            dbxAltPath = altPath
+            if len(dbxAltPath)>30:
+                dbxAltPath = "..."+dbxAltPath[-26:]
+            print "\nServing cached content - {0}\n".format(dbxAltPath)
+            self.send_response(200)
+            self.send_header('Content-type', contentType)
+            self.send_header('Last-Modified', self.date_time_string(mtime))
+            self.end_headers()
+            self.wfile.write(someBytes)
+            return
+        for zfp,zf,zfMTime in zipFiles :
             try:
                 with zf.open(altPath, 'r') as f:
                     self.send_response(200)
                     self.send_header('Content-type', contentType)
+                    self.send_header('Last-Modified', self.date_time_string(zfMTime))
+                    print self.date_time_string(zfMTime)
                     self.end_headers()
-                    self.wfile.write(f.read())
+                    someBytes = f.read()
+                    self.wfile.write(someBytes)
+                    cache.CacheIfRelevant(altPath, someBytes, zfMTime)
                     return
-            except:
+            except KeyError as e:
                 pass
         self.send_error(404)
 
@@ -95,7 +114,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 def DebugZips():
     s = "DebugZips"
     print "\n" + s + "\n" + "-" * len(s)
-    for zfp,zf in zipFiles:
+    for zfp,zf,zfMTime in zipFiles:
         print "Zipfile:", zfp, len(zf.namelist()), "\n"
         print "index.htm(l):"
         for x in zf.namelist():
