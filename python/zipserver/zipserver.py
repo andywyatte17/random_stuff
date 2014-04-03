@@ -6,6 +6,8 @@ from urlparse import urlparse
 import json
 import sys
 from random import shuffle
+import argparse
+import os
 
 '''
 {
@@ -15,6 +17,8 @@ from random import shuffle
 }
 '''
 
+theport = 1234
+debugZips = False
 zipFiles = []
 root = ''
 rootHtml = ''
@@ -24,21 +28,22 @@ CONTENT_TYPES = { ".htm":'text/html', ".html":'text/html', \
   ".jpg":'image/jpeg', ".jpeg":'image/jpeg'
 }
 
-
-def ProbableRoot(nl):
-    indexHtmlLoc = []
-    for x in nl:
-        if x.endswith('index.htm') or x.endswith('index.html'):
-            indexHtmlLoc.append(x)
-    if len(indexHtmlLoc)<1 :
-        return '?'
-    return min(indexHtmlLoc, key=lambda x: len(x))
-        
 def ParseConfig():
+    global debugZips
     global root
     global zipFiles
     global rootHtml
-    jsonPath = sys.argv[2]
+    global theport
+    parser = argparse.ArgumentParser(description='Run a web server, serving files from a zip file')
+    parser.add_argument('port', metavar='port', type=int, help='a port number on which files will be served.')
+    parser.add_argument('json_config_file', metavar='json_config_file', type=str,\
+      help='a json-format configuration file giving details about location of zip files and other settings.')
+    parser.add_argument('--debugZips', dest='debugZips', action='store_true', default=False, \
+      help='Show some debugging information about the zips passed in json_config_file and exit.')
+    args = parser.parse_args()
+    theport = args.port
+    jsonPath = args.json_config_file
+    debugZips = args.debugZips
     with open(jsonPath, 'r') as f:
         js = json.load(f)
         for zf in js['zipFiles']:
@@ -50,15 +55,14 @@ def ParseConfig():
     print "rootHtml", rootHtml
 
 class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
-    def sendAs(self, path, contentType):
-        print("sendAs", path, contentType)
+    def SendAs(self, path, contentType):
         global zipFiles
         global root
         if not path.startswith('/') :
             path = '/' + path
         altPath = root + path
         altPath = altPath.encode('utf8')
-        print "\naltPath",altPath,"\n"
+        # print "\naltPath",altPath,"\n"
         for zfp,zf in zipFiles :
             try:
                 with zf.open(altPath, 'r') as f:
@@ -72,7 +76,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.send_error(404)
 
     def do_GET(self):
-        print "\ndo_GET:" + self.path + "\n"
+        # print "\ndo_GET:" + self.path + "\n"
         o = urlparse(self.path)
         # print "path=", o.path
 
@@ -83,23 +87,41 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             return
         for key in CONTENT_TYPES.iterkeys():
             if o.path.endswith(key):
-                self.sendAs(o.path, CONTENT_TYPES[key])
+                self.SendAs(o.path, CONTENT_TYPES[key])
                 return
-        self.sendAs(o.path, 'application/octet-stream')
+        self.SendAs(o.path, 'application/octet-stream')
         return
 
-ParseConfig()
-for zfp,zf in zipFiles:
-    print "Zipfile:", zfp, len(zf.namelist())
-    nl = list(zf.namelist())
-    for i in range(0,10):
-       print "  {0}".format(nl[(i * len(nl)-1) / 9] )
-    print "Probably root:", ProbableRoot(nl)
+def DebugZips():
+    s = "DebugZips"
+    print "\n" + s + "\n" + "-" * len(s)
+    for zfp,zf in zipFiles:
+        print "Zipfile:", zfp, len(zf.namelist()), "\n"
+        print "index.htm(l):"
+        for x in zf.namelist():
+            if x.find('/index.')>=0:
+                print "\t{0}".format(x)
+        print "\nfolders:"
+        folderSet = set()
+        for x in zf.namelist():
+            head, tail = os.path.split(x)
+            folderSet.add(head)
+        for x in folderSet:
+            print "\t" + x
     print "\n"
 
-theport = int(sys.argv[1])
-Handler = MyHandler
-pywebserver = SocketServer.TCPServer(("", theport), Handler)
+def main():
+    ParseConfig()
+    if debugZips:
+        DebugZips()
+        exit(0)
+        return
 
-print "Python based web server. Serving at port", theport
-pywebserver.serve_forever()
+    Handler = MyHandler
+    pywebserver = SocketServer.TCPServer(("", theport), Handler)
+    
+    print "Python based web server. Serving at port", theport
+    pywebserver.serve_forever()
+
+if __name__ == "__main__":
+    main()
