@@ -18,6 +18,12 @@ from random import shuffle
 zipFiles = []
 root = ''
 rootHtml = ''
+CONTENT_TYPES = { ".htm":'text/html', ".html":'text/html', \
+  ".svg":"image/svg+xml", ".png":"image/png", ".css":'text/css',
+  ".js":'application/javascript', 
+  ".jpg":'image/jpeg', ".jpeg":'image/jpeg'
+}
+
 
 def ProbableRoot(nl):
     indexHtmlLoc = []
@@ -60,6 +66,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     self.send_header('Content-type', contentType)
                     self.end_headers()
                     self.wfile.write(f.read())
+                    return
             except:
                 pass
         self.send_error(404)
@@ -74,21 +81,10 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_header('Location', rootHtml)
             self.end_headers()
             return
-        if o.path.endswith(".html") or o.path.endswith(".htm"):
-            self.sendAs(o.path, 'text/html')
-            return
-        if o.path.endswith(".css"):
-            self.sendAs(o.path, 'text/css')
-            return
-        if o.path.endswith(".js"):
-            self.sendAs(o.path, 'application/javascript')
-            return
-        if o.path.endswith(".png"): 
-            self.sendAs(o.path, 'image/png')
-            return
-        if o.path.endswith(".jpg") or o.path.endswith(".jpeg"): 
-            self.sendAs(o.path, 'image/jpeg')
-            return
+        for key in CONTENT_TYPES.iterkeys():
+            if o.path.endswith(key):
+                self.sendAs(o.path, CONTENT_TYPES[key])
+                return
         self.sendAs(o.path, 'application/octet-stream')
         return
 
