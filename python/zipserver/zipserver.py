@@ -18,6 +18,7 @@ from filecache import FileCache
 }
 '''
 
+f_404 = open('404.txt', 'w')
 cache = FileCache()
 theport = 1234
 debugZips = False
@@ -56,6 +57,39 @@ def ParseConfig():
     # print "root", root
     # print "rootHtml", rootHtml
 
+def SendAsImgHtm(handler, path):
+    html = '''<!DOCTYPE html>
+<html>
+<head>
+<title>***title***</title>
+</head>
+<body>
+<img src="***imgSrc***"/>
+</body>
+</html>'''
+    found = False
+    if path.endswith('.png.htm') or path.endswith('.jpg.htm'):
+        path = path[:-4]
+        found = True
+    if path.endswith('.png.html') or path.endswith('.jpg.html'):
+        path = path[:-5]
+        found = True
+    if not found:
+        return False
+    n = path.rfind('/')
+    if n: path = path[n+1:]
+    n = path.rfind("\\")
+    if n: path = path[n+1:]
+    html = html.replace("***title***", path)
+    html = html.replace("***imgSrc***", path)
+    handler.send_response(200)
+    handler.send_header('Content-type', 'text/html')
+    handler.end_headers()
+    #with open('img_html.txt', 'w') as qf:
+    #    qf.write(html)
+    handler.wfile.write(html)
+    return True
+
 class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def SendAs(self, path, contentType):
         global cache
@@ -92,6 +126,9 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     return
             except KeyError as e:
                 pass
+        if SendAsImgHtm(self, altPath):
+            return
+        f_404.write(altPath + '\n')
         self.send_error(404)
 
     def do_GET(self):
