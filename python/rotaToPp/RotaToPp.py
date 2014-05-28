@@ -6,6 +6,7 @@ import pprint
 from prettytable import PrettyTable
 import prettytable
 import sys
+import argparse
 
 WIDEST_COL = 10
 
@@ -26,7 +27,7 @@ def PrintWorksheet(xlsName, sheetIx):
                      ('_Guitar', '<G>'), ('_Drums', '<D>'), ('_Flute', '<F>'),
                      ('_Bass', '<B>'), (' Guitar', '_<G>'),
                      (' Guitar', '<G>'), (' Drums', '<D>'), (' Flute', '<F>'),
-                     (' Bass', '<B>'), (' Guitar', '_<G>'),
+                     (' Bass', '<B>'), (' Guitar', '_<G>')
                      ]
     with xlrd.open_workbook(xlsName) as wb:
         pt = None
@@ -75,4 +76,10 @@ def PrintWorksheet(xlsName, sheetIx):
             # print pt.get_html_string()
         
 if __name__ == '__main__':
-    PrintWorksheet(sys.argv[1], int(sys.argv[2]))
+    parser = argparse.ArgumentParser(description='Convert the BRBC music rota (xls) to text (to stdout)')
+    parser.add_argument(dest='xls', metavar='xls_file', type=str, \
+      help='path to xls file.')
+    parser.add_argument(dest='sheetIx', metavar='sheet_index', type=int, \
+      help='zero-based sheet index within xls file.')
+    args = parser.parse_args()
+    PrintWorksheet(args.xls, args.sheetIx)
