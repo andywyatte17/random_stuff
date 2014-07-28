@@ -68,10 +68,10 @@ def SendAsImgHtm(handler, path):
 </body>
 </html>'''
     found = False
-    if path.endswith('.png.htm') or path.endswith('.jpg.htm'):
-        path = path[:-4]
+    if path.endswith('.png.htm') or path.endswith('.jpg.htm') or path.endswith('.gif.htm'):
+        path = path[:-4] 
         found = True
-    if path.endswith('.png.html') or path.endswith('.jpg.html'):
+    if path.endswith('.png.html') or path.endswith('.jpg.html') or path.endswith('.gif.html'):
         path = path[:-5]
         found = True
     if not found:
