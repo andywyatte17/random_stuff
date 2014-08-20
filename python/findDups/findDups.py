@@ -28,7 +28,7 @@ def findDup(parentFolder, is_in_filter):
         dirCount += 1
 
     SMALL_HASH = 4096
-    # Find first-level hash quickly using first 'SMALL_HASH' bytes of file
+    # Find first-level hash quickly using up to first 'SMALL_HASH' bytes of file
     pctLast = -1
     dirCount2 = 0
     for dirName, subdirs, fileList in os.walk(parentFolder):
@@ -38,10 +38,9 @@ def findDup(parentFolder, is_in_filter):
             pctLast = pct
             print('Scanning (%d%%)' % ( pctLast, ) )
         for filename in fileList:
-            if not is_in_filter(filename):
-                continue
-            # Get the path to the file
             path = os.path.join(dirName, filename)
+            if not is_in_filter(path):
+                continue
             # Calculate hash
             file_hash = hashfile(path, quickHashSize = SMALL_HASH, hashWithFileSize = True)
             # Add or append the file path
@@ -66,12 +65,24 @@ def cppFilter(filename):
     return filename.endswith('.cpp')
 
 if __name__=='__main__':
+    import pickle
     from pprint import pprint
-    dups = findDup(sys.argv[1], cppFilter)
+    filename = "<pickled>"
+    if len(sys.argv)>2:
+        raise RuntimeError("Too many args! Must have one or zero (zero = <pickled>)")
+    if len(sys.argv)==2:
+        filename = os.path.abspath(sys.argv[1])
+        print "Root folder=", filename
+        
+    if filename=='<pickled>':
+        with open('.findDups.pickled', 'rb') as f:
+            dups = pickle.load( f )
+    else:
+        dups = findDup(filename, cppFilter)
+        with open('.findDups.pickled', 'wb') as f:
+            pickle.dump( dups, f )
   
     print "\nNumber of dups groups =", len(dups), "\n"
-    #for key in dups.keys():
-    #    pprint( (key, dups[key]) )
   
     for key in dups.keys():
         filelist = dups[key]
