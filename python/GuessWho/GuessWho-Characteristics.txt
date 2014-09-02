@@ -1,0 +1,37 @@
+Key: 
+  + hair - k,c,o,y,w = blac'k', brown ('c'hocolate), orange, yellow, white
+  + eyes - B = Blue
+  + hat - h = wearing a hat
+  + facial hair - C,M = Beard ('C'hin-hair), Moustache
+  + nose - H = has a big nose (H = 'h'onker, slang for big nose)
+  + bald-top - F = has bald top (old victorian = 'F'ly Rink)
+  + glasses - g = is wearing glasses
+  + rosy cheeks - r = has rosy cheeks
+  + sex - f = is female
+
+Alex - k,M,
+Anne - f,k,H,
+Tom - g,k,F,B,
+Max - M,c,H,
+Richard - M,C,c,F,
+Robert - c,H,r,B,
+Bernard - c,H,
+Maria - f,c,
+
+Philip - C,k,r,
+Joe - g,y,
+George - w,
+Sam - g,w,F,
+Paul - g,w,
+Susan - f,w,r,
+Claire - f,g,o,
+Frans - o,
+
+Anita - f,y,r,B,
+Peter - w,H,B,
+David - C,y,
+Charles - M,y,
+Alfred - M,o,B,
+Bill - C,o,F,r,
+Herman - o,H,F,
+Eric - y,
