@@ -10,9 +10,9 @@ mapping = { 'k':'Black-Haired', 'c':'Brown-Haired',
             #
             'C':'Bearded', 'M':'Moustached',
             #
-            'H':'Big-Nosed',
+            'H':'Big-Nosed',       # H = 'H'onker = Slang for Big Nose
             #
-            'F':'Balding-On-Top',
+            'F':'Bald-On-Top',     # F = 'F'ly Rink = Victorian Slang for Bald
             #
             'g':'Bespectacled',
             #

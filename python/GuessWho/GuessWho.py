@@ -38,7 +38,7 @@ def main():
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Run the Guess Who game')
-    parser.add_argument('--dump_characters', dest='dump_characters', action='store_const',
+    parser.add_argument('--dump-characters', dest='dump_characters', action='store_const',
                         const=sum, default=False,
                         help='show information about the characters and exit.')
     args = parser.parse_args()
