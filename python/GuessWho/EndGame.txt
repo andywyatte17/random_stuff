@@ -1,0 +1,104 @@
+3 people left - guess every time - isA?... isB?... isC?
+-===========-
+
+      ABC
+  isA? |---------|
+ p=1/3 |         | p=2/3
+      A=1        BC-------
+      ---   isB? |       |
+           p=1/2 |       | p=1/2
+              B=2        C
+              ---        | isC?
+                         | p=1
+                        C=3
+                        ---
+
+Average outcome = (A)     1/3         . 1  ( = 1/3 . 1 )
+                  (B)  +  2/3 . 1/2   . 2  ( = 1/3 . 2 )      ---
+                       +  2/3 . 1/2   . 3  ( = 1/3 . 3 )  = | 2.0 |
+
+This is actually the only thing to do - the only other thing would be to start with:
+  is (A or B)?
+
+However, this is effectively the same question as 'is not C', without the benefit of the potential 'hit' of the question like 'is C'. Therefore, clearly this is the only thing to do.
+
+---
+
+4 people left - guess every time:
+-===========-
+
+ABCD
+  isD?   |---------|
+  p=1/4  |         |
+        D=1       ABC - we calculate this by reusing the 3-people-left
+                        calculation earlier 
+
+Total outcome is:
+                       (D)       1/4 .    1
+                       (ABC)   + 3/4 . (1/3 . 2)
+                               + 3/4 . (1/3 . 3)        --- 
+                               + 3/4 . (1/3 . 4)    = | 2.5 |
+
+---
+
+N people left - guess every time:
+-===========-
+
+  Total outcome is: 1/N + ( (N-1)/N . 1/(N-1) . sum(i=2..N) )
+                  = 1/N * ( 1 + sum(i=2..N) )
+                  = N/2 + 0.5
+                           
+def c2(N): return N/2.0 + 0.5
+
+---
+
+4 people left - subdivide and then guess:
+-===========-
+
+ABCD
+  isA or B?  |-------------------------|
+    p=1/2    |                         |
+            AB----------               CD - symmetrical tree
+        isA? |         |
+       p=1/2 |         | p=1/2
+             A=2       B
+                       | isB?
+                       |  p=1
+                      B=3
+
+Half-outcome (AB exclude CD)  = (A)   1/2 . 1/2  . 2
+                                (B) + 1/2 . 1/2  . 3 = (1/4) * (2+3) = 5/4
+                                  ---
+Total outcome = 2 * 5/4 = 5/2 = | 2.5 |
+
+---
+
+5 people left - subdivide and then guess
+-===========-
+
+ABCDE
+  isA or B?  |-------------------------|
+    p=2/5    |                         | p=3/5
+            AB----------              CDE-------
+        isA? |         |         isC?  |       |
+       p=1/2 |         | p=1/2   p=1/3 |       | p=2/3
+             A=2       B               C=2     DE----
+                       | isB?             isD? |    |
+                       |  p=1            p=1/2 |    | p=1/2
+                      B=3                      D=3  E
+                                                    | isE?
+                                                    | p=1
+                                                    E=4
+                                                                    ---
+Total outcome = (2/5)*(1/2)*(2+3) + 3/5*(1/3*2 + 2/3*(1/2*(3+4)) = | 2.8 |
+
+NB: Total outcome for 5 people left - guess every time             = 3.0.
+
+---
+
+Conclusions:
+-==========-
+  - When there are 3 or fewer people remaining the optimal strategy is to guess.
+  - When there are 4 people then subdivide-then-guess is as good a strategy as guessing.
+  - When there are 5 or more people it is better to subdivide until the number
+    of people that remain is 4 or fewer, and then guess.

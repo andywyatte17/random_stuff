@@ -21,6 +21,12 @@ def parse_characters():
                     if x:
                         rv[name].add(characters.mapping[x])
                 c += 1
+    # Add in inferred characteristics
+    for name in rv.keys():
+        characteristics = rv[name]
+        for ik in characters.inferred.keys():
+             if 0 == len(ik & characteristics):
+                 rv[name].add(characters.inferred[ik])
     return rv
 
 def dump_characters():
@@ -36,7 +42,7 @@ if __name__=='__main__':
                         const=sum, default=False,
                         help='show information about the characters and exit.')
     args = parser.parse_args()
-    if args.dump_characters or True:
+    if args.dump_characters:
         dump_characters()
         exit(0)
     main()
