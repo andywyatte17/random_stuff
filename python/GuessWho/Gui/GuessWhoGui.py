@@ -11,19 +11,19 @@ website: zetcode.com
 last edited: October 2013
 """
 
-import sys, random
+import sys, random, os
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QRect
 
-people_im = ('Alex','Anita','Peter','Eric','Charles','Sam','Joe', \
-             'Maria','Philip','Susan','Max','Alfred','Robert','Frans', \
-             'Claire','Paul','Bill','David','Bernard','George','Tom', \
-             'Herman','Anne' )
+people_im = ('Alex','Anita','Peter','Eric','Charles','Sam',
+             'Joe','Maria','Philip','Susan','Max','Alfred',
+             'Robert','Frans','Claire','Paul','Bill','David',
+             'Bernard','George','Tom','Herman','Anne','Richard' )
 
 def makeImage(path):
     path = QtCore.QString(path)
     qi = QtGui.QImage()
-    qi.load( path )
+    qi.load(path)
     return qi
 
 images = None
@@ -33,10 +33,13 @@ NOT_FADED = False
 def makeImages():
     images = list()
     for i in range(0,24):
-        filename = 'GuessWho_{:03d}.jpg'.format(i)
+        filename = '{}.jpg'.format(people_im[i])
+        path = '.\\tiles\\' + filename
+        path = os.path.abspath(path)
+        print path
         images.append( (filename,
                         people_im,
-                        makeImage('tiles/' + filename) ) )
+                        makeImage(path) ) )
     return images
 
 class GuessWho(QtGui.QMainWindow):
@@ -127,11 +130,10 @@ class Board(QtGui.QFrame):
 
 def main():
     global images
-    images = makeImages()
     app = QtGui.QApplication([])
+    images = makeImages()
     guessWho = GuessWho()    
     sys.exit(app.exec_())
-
 
 if __name__ == '__main__':
     main()
