@@ -6,8 +6,8 @@ Rectangle
   Grid {
     columns: 6
     Image {
-      width: rootRect.width/6; height: rootRect.height/4
-      source: "tiles/Alex.jpg"
+      width: rootRect.width/6 - 2; height: rootRect.height/4
+      source: "tiles/Al2.jpg"
       fillMode: Image.PreserveAspectFit
       MouseArea {
          anchors.fill: parent
@@ -15,8 +15,8 @@ Rectangle
       }
     }
     Image {
-      width: rootRect.width/6; height: rootRect.height/4
-      source: "tiles/Alex.jpg"
+      width: rootRect.width/6 - 2; height: rootRect.height/4
+      source: "tiles/Al2.jpg"
       fillMode: Image.PreserveAspectFit
       MouseArea {
          anchors.fill: parent
