@@ -12,9 +12,9 @@ Rectangle
     width: parent.width
     height: 130
     color: "lightblue"
-    Image {
-      id: img
-      width: 150; height: 150
+    TextInput {
+      width: 100; height: 100;
+      text: "Hey"
     }
   }
   Grid {
@@ -24,15 +24,21 @@ Rectangle
     spacing: 3
     Repeater {
       id: repeater
-      model: 24
+      model: ["Alex","Alfred","Anita","Anne","Bernard","Bill","Charles",
+        "Claire","David","Eric","Frans","George","Herman","Joe","Maria",
+        "Max","Paul","Peter","Philip","Richard","Robert","Sam","Susan","Tom"]
       Image {
+        property bool on: true
         width: rootRect.width/6 - 3; height: (rootRect.height - topRect.height)/4 - 4
-        source: "tiles/Al2.jpg"
-        fillMode: Image.PreserveAspectFit
-        MouseArea {
-          anchors.fill: parent
-          onClicked: { parent.opacity = 0.5 }
-        }
+          source: "tiles/" + modelData + ".jpg"
+          fillMode: Image.PreserveAspectFit
+          MouseArea {
+            anchors.fill: parent
+            onClicked: {
+              parent.on = !parent.on
+              parent.opacity = 1 - (!parent.on) * 0.75
+            }
+          }
       }
     }
   }
