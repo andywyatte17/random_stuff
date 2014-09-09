@@ -7,6 +7,10 @@ people_im = ('Alex','Anita','Peter','Eric','Charles','Sam',
              'Robert','Frans','Claire','Paul','Bill','David',
              'Bernard','George','Tom','Herman','Anne','Richard' )
 
+def pressed(ev):
+    print "pressed", ev
+    ev.opacity = 0.5
+
 def main():
  
     imMap         = dict()  
@@ -30,7 +34,7 @@ def main():
     btn = QPushButton("")
     btn.setIcon( QIcon("tiles/{}.jpg".format("Alex")) )
     btn.setIconSize( QSize(100,100) )
-    gridLayout.addWidget(btn,0,1)
+    gridLayout.addWidget(btn,0,2)
     x = 0
     y = 1
     for i in people_im:
@@ -38,6 +42,7 @@ def main():
         imMap[i] = btn
         imMap[i].setIcon( QIcon("tiles/{}.jpg".format(i)) )
         imMap[i].setIconSize( QSize(100,100) )
+        imMap[i].pressed.connect( lambda: pressed(imMap[i]) )
         gridLayout.addWidget(imMap[i],y,x)
         x += 1
         if x==6:
