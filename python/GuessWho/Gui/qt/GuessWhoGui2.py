@@ -1,16 +1,32 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import sys, os
+import charactersLib
+import random
 
 CB_STYLE = R"""
 QCheckBox::indicator { width: 3px; height: 3px; }
 QCheckBox::checked { background-color: #e0e0a0 }
 """
 
-people_im = ('Alex','Anita','Peter','Eric','Charles','Sam',
-             'Joe','Maria','Philip','Susan','Max','Alfred',
-             'Robert','Frans','Claire','Paul','Bill','David',
-             'Bernard','George','Tom','Herman','Anne','Richard' )
+class GameData():
+    def __init__(self):
+        characters = charactersLib.parse_characters()
+        self.characters = characters
+        
+        people = list()
+        for key in characters.keys():
+            people.append( key )
+        self.people = sorted(people)
+        
+        attributes = set()
+        for key in characters:
+            attributes = attributes | characters[key]
+        self.attributes = attributes
+
+    def random(self):
+        import random
+        return self.people[random.randint(0,  len(self.people)-1)]
 
 class cb_press():
     def __call__(self):
@@ -22,6 +38,48 @@ class MyQMainWindow(QMainWindow):
             # Launch the app again and close this one
             os.system(R'explorer "{}"'.format(sys.argv[0]))
             self.close()
+    def askOR(self,  ev):
+        print "askOR"
+    def askAND(self,  ev):
+        print "askAND"
+
+game_data = GameData()
+
+def makeQuestionsView():
+    lv = QListView()
+    model = QStandardItemModel(lv)
+    for attribute in game_data.attributes:
+        item = QStandardItem(attribute)
+        item.setCheckable(True)
+        model.appendRow(item)
+    for name in game_data.people:
+        item = QStandardItem(name)
+        item.setCheckable(True)
+        model.appendRow(item)
+    lv.setWindowTitle('Example List')
+    lv.setMinimumSize(200,200)
+    lv.setModel(model)
+    return (lv,  model)
+
+def makeAnswersView():
+    questionsView = QTableView(None)
+    questionsView.setMinimumSize(300, 0)
+    questionsView.setColumnWidth(0, 200)
+    model = QStandardItemModel(None)
+    model.appendRow( [QStandardItem("Is your person Red-Haired OR Blue-Eyed?"),  QStandardItem("yes")] )
+    model.appendRow( [QStandardItem("Is your person Bob?"),  QStandardItem("no")]  )
+    questionsView.setModel( model )
+    return (questionsView,  model)
+
+def make_AND_OR_VBoxLayout(window):
+    layout = QVBoxLayout()
+    btn = QPushButton("Ask - OR")
+    layout.addWidget( btn )
+    btn.clicked.connect( window.askOR )
+    btn = QPushButton("Ask - AND")
+    layout.addWidget( btn )
+    btn.clicked.connect( window.askAND )
+    return layout
 
 def main():    
     imMap = dict()
@@ -30,25 +88,27 @@ def main():
     palette = QPalette()
     gridLayout = QGridLayout()
     centralWidget = QWidget()
-    
-    lv = QListView()
-    model = QStandardItemModel(lv)
-    for attribute in ( ('Blue Eyes', 'Red Eyes') ):
-        item = QStandardItem(attribute)
-        item.setCheckable(True)
-        model.appendRow(item)
-    lv.setWindowTitle('Example List')
-    lv.setMinimumSize(200,200)
-    lv.setModel(model)
-    gridLayout.addWidget(lv,0,0)
+    pick = game_data.random()
+    print pick
+
+    questionsView, questionsModel = makeQuestionsView()
+    window.questionsModel = questionsModel
+    gridLayout.addWidget(questionsView,0,0)
+
+    window.AND_OR = make_AND_OR_VBoxLayout(window)
+    gridLayout.addLayout( window.AND_OR,  0,  1 )
+
+    answersView, answersModel = makeAnswersView()
+    window.answersModel = answersModel
+    gridLayout.addWidget(answersView,  0,  2)
 
     btn = QPushButton("")
     btn.setIcon( QIcon("tiles/{}.jpg".format("Alex")) )
     btn.setIconSize( QSize(100,100) )
-    gridLayout.addWidget(btn,0,2)
+    gridLayout.addWidget(btn,0,3)
     x = 0
     y = 1
-    for i in people_im:
+    for i in game_data.people:
         cb = QCheckBox(i)
         cb.setStyleSheet(CB_STYLE)
         imMap[i] = cb
