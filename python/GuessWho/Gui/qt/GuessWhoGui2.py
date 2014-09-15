@@ -32,7 +32,7 @@ class checkbox_style():
     def __call__(self):
         self.checkbox.opacity = 0.5
 
-class MyQMainWindow(QMainWindow):
+class GameState:
     def keyPressEvent(self, keyEvent):
         if keyEvent.key()==Qt.Key_F5:
             # Launch the app again and close this one
@@ -41,32 +41,68 @@ class MyQMainWindow(QMainWindow):
     def clearQuestionsModel(self):
         for i in range(0, self.questionsModel.rowCount()):
             self.questionsModel.item(i).setCheckState( Qt.Unchecked )
-    def askOR(self,  ev):
-        print "askOR:",  self.OR_Attributes
+    def answer(self, attributes, strAndOr):
+        person = self.person
+        attribsOfPerson = self.game_data.characters[person]
+        if strAndOr=='OR':
+            for attrib in attributes:
+                if attrib[1]=='attribute' and str(attrib[0]) in attribsOfPerson:
+                    return "yes"
+                if attrib[1]=='name' and attrib[0]==person:
+                    return "yes"
+        if strAndOr=='AND':
+            for attrib in attributes:
+                if not str(attrib[0]) in attribsOfPerson:
+                    return "no"
+                if not (attrib[1]=='name' and attrib[0]==person):
+                    return "no"
+            return "yes"
+        return "no"
+    def rowFromAttributes(self, attributes, strAndOr):
+        questionStr = ''
+        for x in attributes:
+            if len(questionStr)!=0:
+                questionStr += ' {} {}'.format(strAndOr, x[0])
+            else:
+                questionStr = '{}'.format(x[0])
+        items = [QStandardItem("{}".format(self.answersModel.rowCount() + 1)),
+                 QStandardItem(questionStr + "?"),  QStandardItem(self.answer(attributes, strAndOr))]
+        for item in items:
+            item.setSelectable(False)
+        return items
+    def askOR_AND(self, attributes, strAND_OR):
+        if not attributes:
+           return
+        items = self.rowFromAttributes( attributes, strAND_OR )
+        self.answersModel.appendRow( items )
+        self.answersView.resizeColumnsToContents()
         self.OR_Attributes = None
-        self.clearQuestionsModel()
-    def askAND(self,  ev):
-        print "askAND:",  self.AND_Attributes
         self.AND_Attributes = None
         self.clearQuestionsModel()
+    def askOR(self,  ev):
+        self.askOR_AND(self.OR_Attributes, 'OR')
+    def askAND(self,  ev):
+        self.askOR_AND(self.AND_Attributes, 'AND')
     def questionsListItemChanged(self,  qStandardItem):
-        print qStandardItem
         model = self.questionsModel
         attributes = []
         for x in range(0,  model.rowCount()):
             item = model.item(x, 0)
             if item.checkState()==Qt.Checked:
-                attributes.append( item.text() )
+                attributes.append( (item.text(),  item.data().toString()) )
         if len(attributes)==0:
             self.btnOR.setDescription('')
             self.btnAND.setDescription('')
         else:
-            strOR = attributes[0]
+            strOR = attributes[0][0]
+            strAND = attributes[0][0]
             self.OR_Attributes = attributes[:]
-            for x in attributes[1:]:
-                strOR = strOR + " OR " + x
-            self.btnOR.setDescription(strOR)
             self.AND_Attributes = attributes[:]
+            for x in attributes[1:]:
+                strOR = strOR + " OR " + x[0]
+                strAND = strAND + " AND " + x[0]
+            self.btnOR.setDescription(strOR)
+            self.btnAND.setDescription(strAND)
 
 game_data = GameData()
 
@@ -75,6 +111,7 @@ def makeQuestionsView():
     model = QStandardItemModel(lv)
     for attribute in sorted(game_data.attributes):
         item = QStandardItem(attribute)
+        item.setData( QVariant("attribute") )
         item.setCheckable(True)
         model.appendRow(item)
     
@@ -84,6 +121,7 @@ def makeQuestionsView():
 
     for name in game_data.people:
         item = QStandardItem(name)
+        item.setData( QVariant("name") )
         item.setCheckable(True)
         model.appendRow(item)
     lv.setWindowTitle('Example List')
@@ -91,21 +129,18 @@ def makeQuestionsView():
     lv.setModel(model)
     return (lv,  model)
 
-def makeAnswersView():
+def makeAnswersView(game_state):
     answersView = QTableView(None)
     answersView.setShowGrid(False)
     answersView.horizontalHeader().setVisible(False)
+    answersView.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
     answersView.verticalHeader().setVisible(False)
-    answersView.setMinimumSize(300, 0)
     answersView.setColumnWidth(0, 200)
     model = QStandardItemModel(None)
-    for i in range(1, 20):
-        items = [QStandardItem("{}".format(i)),  QStandardItem("Is your person Red-Haired OR Blue-Eyed?"),  QStandardItem("yes")]
-        for item in items:
-            item.setSelectable(False)
-        model.appendRow( items )
+    game_state.answersModel = model
     answersView.setModel( model )
     answersView.resizeColumnsToContents()
+    game_state.answersView = answersView
     return (answersView,  model)
 
 def make_AND_OR_VBoxLayout(window):
@@ -125,16 +160,16 @@ def make_AND_OR_VBoxLayout(window):
     
     return layout
 
-def makeTopRowLayout(window):
+def makeTopRowLayout(game_state):
     hbox = QHBoxLayout()
     questionsView, questionsModel = makeQuestionsView()
-    questionsModel.itemChanged.connect( window.questionsListItemChanged )
-    window.questionsModel = questionsModel
+    questionsModel.itemChanged.connect( game_state.questionsListItemChanged )
+    game_state.questionsModel = questionsModel
     hbox.addWidget(questionsView)
-    layout_AND_OR = make_AND_OR_VBoxLayout(window)
+    layout_AND_OR = make_AND_OR_VBoxLayout(game_state)
     hbox.addLayout( layout_AND_OR )
-    answersView, answersModel = makeAnswersView()
-    window.answersModel = answersModel
+    answersView, answersModel = makeAnswersView(game_state)
+    game_state.answersModel = answersModel
     hbox.addWidget(answersView)
     return hbox
 
@@ -159,16 +194,20 @@ def makeButtonGridLayout(game_data, window):
     
 def main():
     app = QApplication(sys.argv)
-    window = MyQMainWindow()
+    window = QMainWindow()
+    game_state = GameState()
+    game_state.game_data = game_data
     palette = QPalette()
     centralWidget = QWidget()
     mainLayout = QVBoxLayout()
-    pick = game_data.random()
-    print pick
+    game_state.person = game_data.random()
 
-    mainLayout.addLayout( makeTopRowLayout(window) )
+    print game_data.characters[ game_state.person ]
+    print game_state.person
 
-    buttonGridLayout = makeButtonGridLayout(game_data, window)
+    mainLayout.addLayout( makeTopRowLayout(game_state) )
+
+    buttonGridLayout = makeButtonGridLayout(game_data, game_state)
     mainLayout.addLayout( buttonGridLayout )
     
     window.setCentralWidget(centralWidget)
@@ -181,5 +220,7 @@ def main():
     app.exec_()
 
 if __name__ == '__main__':
-    os.chdir( os.path.dirname(sys.argv[0]) )
+    dirOfMe = os.path.dirname(sys.argv[0])
+    if dirOfMe:
+      os.chdir( dirOfMe )
     main()
