@@ -146,15 +146,15 @@ class MySortFilterProxyModel(QSortFilterProxyModel):
         if not gd: return True
         if qm.item(source_row).data()=="name":
             strName = str(qm.item(source_row).text())
-    	    for cb,label in gs.checkboxLabelTuples:
-                if cb.isEnabled():
+            for cb,label in gs.checkboxLabelTuples:
+                if label.isEnabled():
                     if strName==label.name:
                         return True
             return False
         if qm.item(source_row).data()=="attribute":
             strAttribute = str(qm.item(source_row).text())
-    	    for cb,label in gs.checkboxLabelTuples:
-                if cb.isEnabled():
+            for cb,label in gs.checkboxLabelTuples:
+                if label.isEnabled():
                     if strAttribute in gd.characters[label.name]:
                         return True
             return False
