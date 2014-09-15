@@ -2,11 +2,10 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import sys, os
 import charactersLib
-import random
+import random, weakref
 
 CB_STYLE = R"""
 QCheckBox::indicator { width: 3px; height: 3px; }
-QCheckBox::checked { background-color: #e0e0a0 }
 """
 
 class GameData():
@@ -28,19 +27,43 @@ class GameData():
         import random
         return self.people[random.randint(0,  len(self.people)-1)]
 
-class checkbox_style():
+
+class CheckboxClickProxy:
+    def __init__(self, checkbox0, checkbox, game_state):
+        self.checkbox0 = checkbox0
+        self.checkbox = checkbox
+        self.game_state = game_state
+
     def __call__(self):
-        self.checkbox.opacity = 0.5
+        self.game_state.checkboxClicked(self.checkbox0, self.checkbox)
+
 
 class GameState:
+    def __init__(self):
+        self.checkboxLabelTuples = list()
+
+    def restart(self):
+        person = game_data.random()
+        self.answersModel.clear()
+        self.qmFiltered.invalidate()
+        for cb,label in self.checkboxLabelTuples:
+            cb.setChecked(False)
+            label.setEnabled(True)
+
+    def checkboxClicked(self, checkbox0, checkbox):
+        checkbox.setEnabled( not checkbox0.isChecked() )
+        self.qmFiltered.invalidate()
+
     def keyPressEvent(self, keyEvent):
         if keyEvent.key()==Qt.Key_F5:
             # Launch the app again and close this one
             os.system(R'explorer "{}"'.format(sys.argv[0]))
             self.close()
+
     def clearQuestionsModel(self):
         for i in range(0, self.questionsModel.rowCount()):
             self.questionsModel.item(i).setCheckState( Qt.Unchecked )
+
     def answer(self, attributes, strAndOr):
         person = self.person
         attribsOfPerson = self.game_data.characters[person]
@@ -58,6 +81,7 @@ class GameState:
                     return "no"
             return "yes"
         return "no"
+
     def rowFromAttributes(self, attributes, strAndOr):
         questionStr = ''
         for x in attributes:
@@ -70,19 +94,22 @@ class GameState:
         for item in items:
             item.setSelectable(False)
         return items
+
     def askOR_AND(self, attributes, strAND_OR):
         if not attributes:
            return
         items = self.rowFromAttributes( attributes, strAND_OR )
         self.answersModel.appendRow( items )
         self.answersView.resizeColumnsToContents()
-        self.OR_Attributes = None
         self.AND_Attributes = None
         self.clearQuestionsModel()
+
     def askOR(self,  ev):
-        self.askOR_AND(self.OR_Attributes, 'OR')
+        self.askOR_AND(self.AND_Attributes, 'OR')
+
     def askAND(self,  ev):
         self.askOR_AND(self.AND_Attributes, 'AND')
+
     def questionsListItemChanged(self,  qStandardItem):
         model = self.questionsModel
         attributes = []
@@ -96,7 +123,6 @@ class GameState:
         else:
             strOR = attributes[0][0]
             strAND = attributes[0][0]
-            self.OR_Attributes = attributes[:]
             self.AND_Attributes = attributes[:]
             for x in attributes[1:]:
                 strOR = strOR + " OR " + x[0]
@@ -104,7 +130,38 @@ class GameState:
             self.btnOR.setDescription(strOR)
             self.btnAND.setDescription(strAND)
 
+
+class MySortFilterProxyModel(QSortFilterProxyModel):
+    def __init__(self):
+        super(MySortFilterProxyModel, self).__init__()
+        self.game_state = None
+        self.game_data = None
+    
+    def filterAcceptsRow (self, source_row, source_parent):
+        if not self.game_state or not self.game_data: return True
+        gs = self.game_state()
+        gd = self.game_data()
+        qm = gs.questionsModel
+        if not gs: return True
+        if not gd: return True
+        if qm.item(source_row).data()=="name":
+            strName = str(qm.item(source_row).text())
+    	    for cb,label in gs.checkboxLabelTuples:
+                if cb.isEnabled():
+                    if strName==label.name:
+                        return True
+            return False
+        if qm.item(source_row).data()=="attribute":
+            strAttribute = str(qm.item(source_row).text())
+    	    for cb,label in gs.checkboxLabelTuples:
+                if cb.isEnabled():
+                    if strAttribute in gd.characters[label.name]:
+                        return True
+            return False
+        return True
+
 game_data = GameData()
+
 
 def makeQuestionsView():
     lv = QListView()
@@ -126,8 +183,13 @@ def makeQuestionsView():
         model.appendRow(item)
     lv.setWindowTitle('Example List')
     lv.setMinimumSize(200,200)
-    lv.setModel(model)
-    return (lv,  model)
+
+    modelFiltered = MySortFilterProxyModel()
+    modelFiltered.setSourceModel(model)
+    lv.setModel(modelFiltered)
+
+    return (lv, model, modelFiltered)
+
 
 def makeAnswersView(game_state):
     answersView = QTableView(None)
@@ -143,55 +205,71 @@ def makeAnswersView(game_state):
     game_state.answersView = answersView
     return (answersView,  model)
 
+
 def make_AND_OR_VBoxLayout(window):
     layout = QVBoxLayout()
-    
-    btnAND = QCommandLinkButton("Is The Person... (AND)")
-    btnAND.setMaximumSize( 300,  10000 )
-    layout.addWidget( btnAND )
-    btnAND.clicked.connect( window.askAND )
-    window.btnAND = btnAND
     
     btnOR = QCommandLinkButton("Is The Person... (OR)")
     btnOR.setMaximumSize( 300,  10000 )
     layout.addWidget( btnOR )
     btnOR.clicked.connect( window.askOR )
     window.btnOR = btnOR
+ 
+    btnAND = QCommandLinkButton("Is The Person... (AND)")
+    btnAND.setMaximumSize( 300,  10000 )
+    layout.addWidget( btnAND )
+    btnAND.clicked.connect( window.askAND )
+    window.btnAND = btnAND
+    btnAND.setEnabled(False)
     
     return layout
 
+
 def makeTopRowLayout(game_state):
     hbox = QHBoxLayout()
-    questionsView, questionsModel = makeQuestionsView()
+    questionsView, questionsModel, qmFiltered = makeQuestionsView()
     questionsModel.itemChanged.connect( game_state.questionsListItemChanged )
     game_state.questionsModel = questionsModel
+    game_state.qmFiltered = qmFiltered
+    qmFiltered.game_state = weakref.ref(game_state)
+    qmFiltered.game_data = weakref.ref(game_data)
     hbox.addWidget(questionsView)
     layout_AND_OR = make_AND_OR_VBoxLayout(game_state)
     hbox.addLayout( layout_AND_OR )
     answersView, answersModel = makeAnswersView(game_state)
     game_state.answersModel = answersModel
     hbox.addWidget(answersView)
+
+    btnRestart = QCommandLinkButton("Restart")
+    btnRestart.clicked.connect( game_state.restart )
+    hbox.addWidget( btnRestart )
+
+
     return hbox
 
-def makeButtonGridLayout(game_data, window):
+
+def makeButtonGridLayout(game_data, game_state):
     buttonGridLayout = QGridLayout()
     x = 0
     y = 0
     for i in game_data.people:
         checkbox = QCheckBox(i)
-        checkbox.setStyleSheet(CB_STYLE)
-        im = checkbox
-        #im.setIcon( QIcon("../tiles/{}.jpg".format(i)) )
-        im.setIconSize( QSize(100,100) )
-        tmp = checkbox_style()
-        tmp.checkbox = checkbox
-        checkbox.pressed.connect( tmp )
-        buttonGridLayout.addWidget(checkbox,y,x)
+        label = QLabel("")
+        label.name = i
+        label.setStyleSheet(CB_STYLE)
+        game_state.checkboxLabelTuples.append( (checkbox, label) )
+        im = QPixmap("../tiles/{}.jpg".format(i))
+        im = im.scaledToHeight(100)
+        label.setPixmap( im )
+        checkbox.released.connect( CheckboxClickProxy(checkbox, label, game_state) )
+        buttonGridLayout.addWidget(checkbox,y+1,x)
+        buttonGridLayout.addWidget(label,y,x)
         x += 1
         if x==6:
-            x = 0; y += 1
+            x = 0; y += 2
     return buttonGridLayout
-    
+
+
 def main():
     app = QApplication(sys.argv)
     window = QMainWindow()
@@ -202,8 +280,9 @@ def main():
     mainLayout = QVBoxLayout()
     game_state.person = game_data.random()
 
-    print game_data.characters[ game_state.person ]
-    print game_state.person
+    
+    #print game_data.characters[ game_state.person ]
+    #print game_state.person
 
     mainLayout.addLayout( makeTopRowLayout(game_state) )
 
@@ -218,6 +297,7 @@ def main():
     window.show()
 
     app.exec_()
+
 
 if __name__ == '__main__':
     dirOfMe = os.path.dirname(sys.argv[0])
