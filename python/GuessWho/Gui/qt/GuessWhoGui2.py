@@ -170,7 +170,6 @@ game_data = GameData()
 def makeQuestionsView():
     qi = list()
     lv = QTreeView()
-    lv.headerView
     model = QStandardItemModel(lv)
 
     dCategories = defaultdict(list)
@@ -198,6 +197,7 @@ def makeQuestionsView():
     lv.setMinimumSize(200,200)
 
     lv.setModel(model)
+    lv.expandAll()
 
     return (lv, model, qi)
 
