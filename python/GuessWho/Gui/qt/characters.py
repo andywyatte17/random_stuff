@@ -1,30 +1,33 @@
 #!/bin/python
 
-mapping = { 'k':'Black-Haired', 'c':'Brown-Haired',
-            'o':'Orange-Haired', 'y':'Yellow-Haired',
-            'w':'White-Haired',
+mapping = { 'k':('Hair','Black-Haired'),
+            'c':('Hair', 'Brown-Haired'), 
+            'o':('Hair', 'Orange-Haired'),
+            'y':('Hair', 'Yellow-Haired'), 
+            'w':('Hair', 'White-Haired'), 
             #
-            'B':'Blue-Eyed',
+            'B':('Eyes', 'Blue-Eyed'), 
             #
-            'h':'Hatted',
+            'h':('Other', 'Hatted'),
             #
-            'C':'Bearded', 'M':'Moustached',
+            'C':('Facial Hair', 'Bearded'),
+            'M':('Facial Hair', 'Moustached'),
             #
-            'H':'Big-Nosed',       # H = 'H'onker = Slang for Big Nose
+            'H':('Other', 'Big-Nosed'),       # H = 'H'onker = Slang for Big Nose
             #
-            'F':'Bald-On-Top',     # F = 'F'ly Rink = Victorian Slang for Bald
+            'F':('Other', 'Bald-On-Top'),     # F = 'F'ly Rink = Victorian Slang for Bald
             #
-            'g':'Bespectacled',
+            'g':('Other', 'Bespectacled'),
             #
-            'r':'Rosy-Cheeked',
+            'r':('Other', 'Rosy-Cheeked'),
             #
-            'f':'Female'
+            'f':('Other', 'Female')
           }
 
-inferred = { frozenset(('Female',)):'Male',
-             frozenset(('Blue-Eyed',)):'Brown-Eyed',
-             frozenset(('Hatted',)):'Un-hatted',
-             frozenset(('Bearded','Moustached')):'Clean-Shaven'
+inferred = { frozenset(('Female',)):('Other', 'Male'), 
+             frozenset(('Blue-Eyed',)):('Eyes', 'Brown-Eyed'),  
+             frozenset(('Hatted',)):('Other', 'Hatless'), 
+             frozenset(('Bearded','Moustached')):('Facial Hair', 'Clean-Shaven')
            }
 
 people = \

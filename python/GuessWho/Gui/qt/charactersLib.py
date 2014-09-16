@@ -1,4 +1,4 @@
-import characters,  StringIO,  re
+import characters, StringIO, re
 
 def parse_characters():
     import characters
@@ -23,4 +23,9 @@ def parse_characters():
         for ik in characters.inferred.keys():
              if 0 == len(ik & characteristics):
                  rv[name].add(characters.inferred[ik])
-    return rv
+    rv2 = dict() 
+    for k, v in rv.iteritems():
+        rv2[k] = set()
+        for a, b in v:
+            rv2[k].add(b)
+    return (rv2,  rv)
