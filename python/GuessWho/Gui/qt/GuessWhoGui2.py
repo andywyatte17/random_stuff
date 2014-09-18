@@ -89,12 +89,6 @@ class GameState:
                 else:
                     item.setForeground( QBrush(QColor(0xff000000)))
 
-    def keyPressEvent(self, keyEvent):
-        if keyEvent.key()==Qt.Key_F5:
-            # Launch the app again and close this one
-            os.system(R'explorer "{}"'.format(sys.argv[0]))
-            self.close()
-
     def clearQuestionsModel(self):
         for item in self.questionItems:
             item.setCheckState( Qt.Unchecked )

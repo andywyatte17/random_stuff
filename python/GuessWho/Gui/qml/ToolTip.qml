@@ -19,4 +19,4 @@ Rectangle {
     onEntered: { parent.opacity = 0.8; /*console.log("entered")*/ }
     onExited: { parent.opacity = 0.01; /*console.log("exited")*/ }
   }
- }
+}

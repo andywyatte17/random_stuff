@@ -12,6 +12,9 @@ view.setSource(QUrl('GuessWho.qml'))
 view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
 
 rootObject = view.rootObject()
+for x in rootObject.findChildren(QDeclarativeItem, ""):
+    print x.data(0).str()
+# button.onClicked.connect( lambda: print("Hey!") )
 
 # Display the user interface and allow the user to interact with it.
 view.setGeometry(100, 100, 400, 240)
