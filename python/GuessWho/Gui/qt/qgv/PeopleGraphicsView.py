@@ -11,6 +11,7 @@ class MyImage(QGraphicsItem):
         self.pos = 0
         self.x = x
         self.y = y
+        self.isSelected = True
 
     def getWH(self):
         return (75, 90)
@@ -52,18 +53,22 @@ class MyGraphicsView(QGraphicsView):
         scene.addItem( pixMapItem )
         pixMapItem2 = MyImage( "Robert", self.imagePathForName("Robert"), x=0, y=1)
         scene.addItem( pixMapItem2 )
+        pixMapItem2 = MyImage( "Robert", self.imagePathForName("Robert"), x=1, y=1)
+        scene.addItem( pixMapItem2 )
         self.shouldScaleDown = True
         self.item = None
         self.timer = None
-        self.setSceneRect(0, 0, 300, 400)    
+        #self.setSceneRect(0, 0, 300, 400)    
         self.setScene(scene)
 
     def fadeOut(self, n):
         self.item.pos = n
+        self.item.isSelected = False
         self.scene().invalidate( self.item.boundingRect() )
 
     def fadeIn(self, n):
         self.item.pos = 200 - n
+        self.item.isSelected = True
         self.scene().invalidate( self.item.boundingRect() )
 
     def timerFinish(self):
@@ -79,7 +84,7 @@ class MyGraphicsView(QGraphicsView):
         timer.finished.connect( self.timerFinish )
         self.timer = timer
         timer.setFrameRange(0, 200)
-        if self.shouldScaleDown:
+        if self.item.isSelected:
             timer.frameChanged.connect( self.fadeOut )
         else:
             timer.frameChanged.connect( self.fadeIn )
