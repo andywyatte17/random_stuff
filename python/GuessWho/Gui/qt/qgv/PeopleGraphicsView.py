@@ -2,19 +2,51 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 
-class MyImage(QGraphicsItem):
-    def __init__(self, name, imagePath, x=0, y=0):
-        super(MyImage, self).__init__()
+class Animator:
+    def __init__(self, graphicsView, item):
+        self.graphicsView = graphicsView
+        self.item = item
+        
+    def setTimer(self):
+        self.timer = QTimeLine(500)
+        self.timer.finished.connect( self.timerFinish )
+        self.timer.setFrameRange(0, 200)
+        if self.item.isSelected:
+            self.timer.frameChanged.connect( self.fadeOut )
+        else:
+            self.timer.frameChanged.connect( self.fadeIn )
+        self.item.isSelected = not self.item.isSelected
+        self.timer.start();
+
+    def fadeOut(self, n):
+        self.item.pos = n
+        self.item.isSelected = False
+        self.graphicsView.scene().invalidate( self.item.boundingRect() )
+
+    def fadeIn(self, n):
+        self.item.pos = 200 - n
+        self.item.isSelected = True
+        self.graphicsView.scene().invalidate( self.item.boundingRect() )
+
+    def timerFinish(self):
+        self.graphicsView.removeAnimator(self)
+
+
+class ImageItem(QGraphicsItem):
+    def __init__(self, name, imagePath, x=0, y=0, w=75, h=90):
+        super(ImageItem, self).__init__()
         self.imagePath = imagePath
         self.image = None
         self.name = name
         self.pos = 0
         self.x = x
         self.y = y
+        self.w = w
+        self.h = h
         self.isSelected = True
 
     def getWH(self):
-        return (75, 90)
+        return (self.w, self.h)
 
     def boundingRect(self):
         W,H = self.getWH()
@@ -38,55 +70,67 @@ class MyImage(QGraphicsItem):
         painter.setOpacity( 1 - (f2/1.5) )
         painter.drawImage( QRectF(0, 0, W, H-TEXTH), self.image )
         painter.setWorldTransform(oldTransform)
-        painter.drawText( QRectF(x0, y0, W, H), Qt.AlignBottom | Qt.AlignHCenter, "Alex" )
+        painter.drawText( QRectF(x0, y0, W, H), Qt.AlignBottom | Qt.AlignHCenter, self.name )
 
 
-class MyGraphicsView(QGraphicsView):
+class GraphicsView(QGraphicsView):
+    def setSelectionDidChange(self, fn):
+        '''Call this to set a method that is called when a person is clicked, 
+           and so the selected person list is changed.'''
+        self.selectionDidChange = fn
+        
     def __init__(self, imagePathForName, parent):
-        super(MyGraphicsView, self).__init__(parent)
+        super(GraphicsView, self).__init__(parent)
         self.imagePathForName = imagePathForName
+        self.timerIsActive = set()
         self.initUI()
+        self.animators = dict()
+        self.sceneItems = list()
+        self.selectionDidChange = None
         
     def initUI(self):
         scene=QGraphicsScene()
-        pixMapItem = MyImage( "Alex", self.imagePathForName("Alex") )
-        scene.addItem( pixMapItem )
-        pixMapItem2 = MyImage( "Robert", self.imagePathForName("Robert"), x=0, y=1)
-        scene.addItem( pixMapItem2 )
-        pixMapItem2 = MyImage( "Robert", self.imagePathForName("Robert"), x=1, y=1)
-        scene.addItem( pixMapItem2 )
         self.shouldScaleDown = True
         self.item = None
         self.timer = None
-        #self.setSceneRect(0, 0, 300, 400)    
+        #self.setSceneRect(0, 0, 300, 400)
         self.setScene(scene)
-
-    def fadeOut(self, n):
-        self.item.pos = n
-        self.item.isSelected = False
-        self.scene().invalidate( self.item.boundingRect() )
-
-    def fadeIn(self, n):
-        self.item.pos = 200 - n
-        self.item.isSelected = True
-        self.scene().invalidate( self.item.boundingRect() )
-
-    def timerFinish(self):
-        self.timer = None
+        
+    def setPeople(self, maxAcross, w, h, people):
+        scene = self.scene()
+        x = 0
+        y = 0
+        for person in people:
+            pixMapItem = ImageItem( person, self.imagePathForName(person), \
+                                    x=x, y=y, w=w, h=h ) 
+            scene.addItem( pixMapItem )
+            self.sceneItems.append( pixMapItem )
+            x += 1
+            if x==maxAcross:
+                x = 0
+                y += 1
+    
+    def getSelectedPeople(self):
+        rv = set()
+        for item in self.sceneItems:
+            if item.isSelected:
+                rv.add( item.name )
+        return rv
 
     def mousePressEvent(self, event):
-        if self.timer:
+        item = self.itemAt(event.pos())
+        if not item:
             return
-        self.item = self.itemAt(event.pos())
-        if not self.item:
+        if item in self.timerIsActive:
             return
-        timer = QTimeLine(500)
-        timer.finished.connect( self.timerFinish )
-        self.timer = timer
-        timer.setFrameRange(0, 200)
-        if self.item.isSelected:
-            timer.frameChanged.connect( self.fadeOut )
-        else:
-            timer.frameChanged.connect( self.fadeIn )
-        timer.start();
-        self.shouldScaleDown = not self.shouldScaleDown
+        self.timerIsActive.add( item )
+        animator = Animator(self, item)
+        self.animators[item] = animator
+        animator.setTimer()
+        if self.selectionDidChange:
+            self.selectionDidChange(self)
+    
+    def removeAnimator(self, animator):
+        item = animator.item
+        if item in self.animators: del self.animators[item]
+        if item in self.timerIsActive : self.timerIsActive.remove(item)
