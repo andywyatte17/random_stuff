@@ -6,7 +6,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import PeopleGraphicsView
 
-
 class Example(QWidget):
     def __init__(self):
         super(Example, self).__init__()
@@ -40,7 +39,9 @@ def main():
     sys.exit(app.exec_())
  
 if __name__ == '__main__':
-    os.chdir( os.path.dirname(sys.argv[0]) )
+    thisDir = os.path.dirname(sys.argv[0])
+    if thisDir != '':
+        os.chdir( thisDir )
     try:
         main()
     except:

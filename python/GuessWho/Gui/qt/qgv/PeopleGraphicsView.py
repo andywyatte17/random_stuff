@@ -65,7 +65,7 @@ class ImageItem(QGraphicsItem):
         w1 = (W-4.0) / W
         h1 = (H-4.0) / H
         oldTransform = painter.worldTransform()
-        painter.setWorldTransform( QTransform(w1, 0, 0, h1 - f*h1, 2 + x0, 2 + y0 + f2 * (H-4.0) - (f2*TEXTH) ) )
+        painter.setWorldTransform( QTransform(w1, 0, 0, h1 - f*h1, 2 + x0, 2 + y0 + f2 * (H-4.0) - (f2*TEXTH) ), True )
         painter.setRenderHint( QPainter.SmoothPixmapTransform, True )
         painter.setOpacity( 1 - (f2/1.5) )
         painter.drawImage( QRectF(0, 0, W, H-TEXTH), self.image )
