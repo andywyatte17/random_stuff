@@ -34,21 +34,6 @@ class GameData():
         return self.people[random.randint(0,  len(self.people)-1)]
 
 
-class CheckboxClickProxy:
-    def __init__(self, checkbox, pushButton, game_state, isPushButton):
-        self.checkbox = checkbox
-        self.pushButton = pushButton
-        self.game_state = game_state
-        self.isPushButton = isPushButton
-
-    def __call__(self):
-        isChecked = not self.checkbox.isChecked()
-        if self.isPushButton:
-            isChecked = False
-            self.checkbox.setChecked( True )
-        self.pushButton.setEnabled( isChecked )
-        self.game_state.checkboxClicked(self.checkbox, self.pushButton)
-
 class GameState:
     def __init__(self):
         self.checkboxLabelTuples = list()
@@ -57,38 +42,11 @@ class GameState:
     def restart(self):
         person = game_data.random()
         self.answersModel.clear()
-        for cb,label in self.checkboxLabelTuples:
-            cb.setChecked(False)
-            label.setEnabled(True)
-        self.checkboxClicked(None,  None)
+        self.peopleView.selectAll()
 
-    def checkboxClicked(self, checkbox0, checkbox):
-        for item in self.questionItems:
-            if item.type == "name":
-                hide = True
-                strName = str(item.text())
-                for cb,label in self.checkboxLabelTuples:
-                    if label.isEnabled():
-                        if strName==label.name:
-                            hide = False
-                            break
-                if hide:
-                    item.setForeground( QBrush(QColor(0xffa0a0a0)))
-                else:
-                    item.setForeground( QBrush(QColor(0xff000000)))
-        
-            if item.type == "attribute":
-                hide = True
-                strAttribute = str(item.text())
-                for cb,label in self.checkboxLabelTuples:
-                    if label.isEnabled():
-                        if strAttribute in self.game_data.characters[label.name]:
-                            hide = False
-                            break
-                if hide:
-                    item.setForeground( QBrush(QColor(0xffa0a0a0)))
-                else:
-                    item.setForeground( QBrush(QColor(0xff000000)))
+    def personClicked(self, item):
+        print "personClicked", item
+        print game_state.peopleView
 
     def clearQuestionsModel(self):
         for item in self.questionItems:
@@ -248,18 +206,19 @@ def makeTopRowLayout(game_state):
     btnRestart.clicked.connect( game_state.restart )
     hbox.addWidget( btnRestart )
 
-
     return hbox
 
 
 def makeButtonGridLayout(game_data, game_state):
     buttonGridLayout = QGridLayout()
     x = PeopleGraphicsView.GraphicsView(lambda x: "../tiles/{}.jpg".format(x), None)
-    x.setPeople( 6, 100, 80, ("Alex", "Max") )
+    x.setSelectionDidChange( game_state.personClicked )
+    x.setPeople( 6, 70, 80, game_data.people )
     buttonGridLayout.addWidget(x)
+    game_state.peopleView = x
     return buttonGridLayout
 
-
+    
 def main():
     app = QApplication(sys.argv)
     window = QMainWindow()

@@ -110,6 +110,17 @@ class GraphicsView(QGraphicsView):
                 x = 0
                 y += 1
     
+    def selectAll(self):
+        for item in self.sceneItems:
+            if item.isSelected:
+                continue
+            self.timerIsActive.add( item )
+            animator = Animator(self, item)
+            self.animators[item] = animator
+            animator.setTimer()
+        if self.selectionDidChange:
+            self.selectionDidChange(self)
+
     def getSelectedPeople(self):
         rv = set()
         for item in self.sceneItems:
