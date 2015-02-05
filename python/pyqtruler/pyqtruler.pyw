@@ -21,7 +21,7 @@ class Example(QtGui.QWidget):
     def __init__(self):
         super(Example, self).__init__()
         self.lastX = self.lastY = None
-        self.isMouseMove = True
+        self.nMouseMove = 0 # 0,1,2,3,4 = move,top,right,bottom,left
         self.setWindowFlags( PySide.QtCore.Qt.FramelessWindowHint )
         self.initUI()
         
@@ -51,12 +51,12 @@ class Example(QtGui.QWidget):
         ox = 4
         for x in range(0, w-8, 5):
             if 0 == (x % 50) :
-                qp.drawLine(ox+x, 20, ox+x, h-5)
+                qp.drawLine(ox+x, 20, ox+x, h-1)
             else:
                 if 0 == (x % 10) :
-                    qp.drawLine(ox+x, 30, ox+x, h-5)
+                    qp.drawLine(ox+x, 30, ox+x, h-1)
                 else:
-                    qp.drawLine(ox+x, 35, ox+x, h-5)
+                    qp.drawLine(ox+x, 35, ox+x, h-1)
 
         for x in range(0, w-8, 50):
             qp.drawText(ox+x, 15, "{}".format(x))
@@ -68,15 +68,18 @@ class Example(QtGui.QWidget):
         r = self.rect()
         x = ev.pos().x()
         y = ev.pos().y()
-        self.isMouseMove = not (x+10 > r.right() and y+10 > r.bottom())
+        self.nMouseMove = 0
+        if y-10 < r.top(): self.nMouseMove = 1
+        elif x+10 > r.right(): self.nMouseMove = 2
+        elif y+10 > r.bottom(): self.nMouseMove = 3
+        elif x-10 < r.left(): self.nMouseMove = 4
 
     def mouseReleaseEvent(self, ev):
         self.lastX = self.lastY = None
 
     def mouseMoveEvent(self, ev):
-        print "mouseMoveEvent", ev
         if self.lastX and self.lastY:
-            if self.isMouseMove:
+            if self.nMouseMove==0:
                 dx = ev.globalX() - self.lastX
                 dy = ev.globalY() - self.lastY
                 self.move( self.pos().x() + dx, self.pos().y() + dy )
@@ -84,7 +87,21 @@ class Example(QtGui.QWidget):
                 size = self.size()
                 dx = ev.globalX() - self.lastX
                 dy = ev.globalY() - self.lastY
-                self.resize( dx + size.width(), size.height() )
+                px = 0
+                py = 0
+                if self.nMouseMove==1 or self.nMouseMove==3:
+                    nh = max(50, size.height() + dy)
+                    if self.nMouseMove==1:
+                        nh = max(50, size.height() - dy)
+                        py = size.height() - nh
+                    self.resize( size.width(), nh )
+                else:
+                    nw = max(50, size.width() + dx)
+                    if self.nMouseMove==4:
+                        nw = max(50, size.width() - dx)
+                        px = size.width() - nw
+                    self.resize( nw, size.height() )
+                if px or py: self.move( self.pos().x() + px, self.pos().y() + py )
         self.lastX = ev.globalX()
         self.lastY = ev.globalY()
 
