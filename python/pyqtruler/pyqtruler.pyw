@@ -61,6 +61,9 @@ class Example(QtGui.QWidget):
         for x in range(0, w-8, 50):
             qp.drawText(ox+x, 15, "{}".format(x))
    
+    def mouseDoubleClickEvent(self, ev):
+        self.close()
+
     def mousePressEvent(self, ev):
         r = self.rect()
         x = ev.pos().x()
