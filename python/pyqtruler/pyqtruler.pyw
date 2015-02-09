@@ -14,6 +14,7 @@ last edited: August 2011
 
 import sys
 from PySide import QtGui
+from PySide.QtCore import Qt, QRect
 import PySide
 
 class Example(QtGui.QWidget):
@@ -21,8 +22,10 @@ class Example(QtGui.QWidget):
     def __init__(self):
         super(Example, self).__init__()
         self.lastX = self.lastY = None
+        self.tooltipPos = None
         self.nMouseMove = 0 # 0,1,2,3,4 = move,top,right,bottom,left
-        self.setWindowFlags( PySide.QtCore.Qt.FramelessWindowHint )
+        self.setWindowFlags( Qt.FramelessWindowHint )
+        self.setMouseTracking(True)
         self.initUI()
         
     def initUI(self):
@@ -60,11 +63,22 @@ class Example(QtGui.QWidget):
 
         for x in range(0, w-8, 50):
             qp.drawText(ox+x, 15, "{}".format(x))
+
+        if self.tooltipPos:
+            qp.setPen( QtGui.QColor(255,0,0,160) )
+            qp.drawLine(self.tooltipPos[0], 30, self.tooltipPos[0], h-1)
+            if self.tooltipPos[0] > self.size().width()/2:
+                r = QRect(0, 0, self.tooltipPos[0], 30)
+                qp.drawText(r, Qt.AlignBottom | Qt.AlignRight, "{}".format(self.tooltipPos[0]-ox))
+            else:
+                r = QRect(self.tooltipPos[0], 0, self.size().width(), 30)
+                qp.drawText(r, Qt.AlignBottom | Qt.AlignLeft, "{}".format(self.tooltipPos[0]-ox))
    
     def mouseDoubleClickEvent(self, ev):
         self.close()
 
     def mousePressEvent(self, ev):
+        self.tooltipPos = None
         r = self.rect()
         x = ev.pos().x()
         y = ev.pos().y()
@@ -78,6 +92,12 @@ class Example(QtGui.QWidget):
         self.lastX = self.lastY = None
 
     def mouseMoveEvent(self, ev):
+        if ev.buttons()==Qt.NoButton:
+            self.tooltipPos = (ev.pos().x(), ev.pos().y())
+            self.update(0, 0, self.size().width(), self.size().height())
+            return
+        self.tooltipPos = None
+
         if self.lastX and self.lastY:
             if self.nMouseMove==0:
                 dx = ev.globalX() - self.lastX
