@@ -24,7 +24,7 @@ class Example(QtGui.QWidget):
         self.lastX = self.lastY = None
         self.tooltipPos = None
         self.nMouseMove = 0 # 0,1,2,3,4 = move,top,right,bottom,left
-        self.setWindowFlags( Qt.FramelessWindowHint )
+        self.setWindowFlags( Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint )
         self.setMouseTracking(True)
         self.initUI()
         
