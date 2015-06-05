@@ -55,6 +55,7 @@ def dist_fn(a,b): return math.hypot(a[0]-b[0], a[1]-b[1])
 
 
 def PtNearestLine2(pt, pixelLine):
+  ''' Brute force test - O(n) '''
   best_dist = 2**20
   rv_pt = None
   for ptI in pixelLine:
@@ -66,6 +67,7 @@ def PtNearestLine2(pt, pixelLine):
 
 
 def PtNearestLine(pt, pixelLine):
+  ''' Optimised test - close to O(log n) '''
 
   compares = 0
   def find_lt(a,x):
@@ -108,6 +110,42 @@ def PtNearestLine(pt, pixelLine):
   return (best_dist, rv_pt, compares)
 
 
+class PtNearestLine3:
+  ''' Optimised test - bitmap method '''
+  def __init__(self, pixelLine):
+    d = list()
+    self.d = d
+    for p in pixelLine:
+      x8 = p[0]/8
+      y8 = p[1]/8
+      ax = p[0] % 8
+      ay = p[1] % 8
+      if len(d)==0 or not (d[-1][0]==x8*8 and d[-1][1]==y8*8):
+        d.append( (x8*8,y8*8,[(ax,ay)]) )
+      else:
+        d[-1][2].append( (ax,ay) )
+    #pprint(d)
+  def test(self, pt):
+    count = 0
+    x = bisect.bisect_left(self.d, (pt[0], pt[1], []))
+    x = max(0, min(x, len(self.d)-1))
+    # pprint(self.d[x])
+    best_dist = 2**20
+    rv_pt = None
+    if True:   # O(n)
+      for kx,ky,d_xy in self.d:
+        for ox,oy in d_xy:
+          x = kx+ox
+          y = ky+oy
+          dist = dist_fn((x,y), pt)
+          if dist < best_dist:
+            best_dist = dist
+            rv_pt = (x,y)
+    else:
+      pass
+    return (best_dist, rv_pt)
+   
+
 def Randomize( xy_pt, r ):
   return (xy_pt[0] + random.randint(-r,r), xy_pt[1] + random.randint(-r,r))
 
@@ -115,12 +153,15 @@ def Randomize( xy_pt, r ):
 pprint(len(pixelLine))
 r1_count = 0
 r2_count = 0
-for x,y in [ Randomize(pixelLine[random.randint(0, len(pixelLine)-1)], 100) for x in xrange(0,100) ]:
+T3 = PtNearestLine3(pixelLine)
+for x,y in [ Randomize(pixelLine[random.randint(0, len(pixelLine)-1)], 20) for x in xrange(0,100) ]:
   pt = (x,y)
   pprint(pt)
-  r1, r2 = ( PtNearestLine( pt, pixelLine ), PtNearestLine2( pt, pixelLine ) )
+  r1, r2, r3 = ( PtNearestLine( pt, pixelLine ), PtNearestLine2( pt, pixelLine ),
+                 T3.test( pt ) )
   print( "\t", r1 )
   print( "\t", r2 )
+  print( "\t", r3 )
   r2_count += len(pixelLine)
   r1_count += r1[2]
 
