@@ -1,6 +1,6 @@
 from __future__ import print_function
 from pprint import pprint
-import sys, bisect, math
+import sys, bisect, math, random
 
 
 def round(x): return int(x-0.5) if x<0 else int(x+0.5)
@@ -93,10 +93,10 @@ def PtNearestLine(pt, pixelLine):
   #print(best_dist, rv_pt)
 
   # Leftwards
-  for i in xrange(start, -1, -1):
+  for i in xrange( min(start, len(pixelLine)-1), -1, -1):
     compares += 1
     ptI = pixelLine[i]
-    if -(ptI[0] - pt[0]) < -best_dist:
+    if -(ptI[0] - pt[0]) > best_dist:
       break
     dist = dist_fn(pt, ptI)
     if dist < best_dist:
@@ -108,10 +108,20 @@ def PtNearestLine(pt, pixelLine):
   return (best_dist, rv_pt, compares)
 
 
-import random
+def Randomize( xy_pt, r ):
+  return (xy_pt[0] + random.randint(-r,r), xy_pt[1] + random.randint(-r,r))
+
+
 pprint(len(pixelLine))
-for x,y in [ (random.randint(-1000,1000), random.randint(-1000,1000)) for x in xrange(0,100) ]:
+r1_count = 0
+r2_count = 0
+for x,y in [ Randomize(pixelLine[random.randint(0, len(pixelLine)-1)], 100) for x in xrange(0,100) ]:
   pt = (x,y)
   pprint(pt)
-  print( "\t", PtNearestLine2( pt, pixelLine ) )
-  print( "\t", PtNearestLine( pt, pixelLine ) )
+  r1, r2 = ( PtNearestLine( pt, pixelLine ), PtNearestLine2( pt, pixelLine ) )
+  print( "\t", r1 )
+  print( "\t", r2 )
+  r2_count += len(pixelLine)
+  r1_count += r1[2]
+
+print(100 * (r1_count / float(r2_count)))
