@@ -20,7 +20,7 @@
 	<cmath>
 	<list>
 
-1434011655 source:d:\projects\allusers\projects\fun\github\html5\other\basickl\main.cpp
+1434012619 source:d:\projects\allusers\projects\fun\github\html5\other\basickl\main.cpp
 	<iostream>
 	<random>
 	<iomanip>
@@ -29,9 +29,12 @@
 	<memory>
 	<limits.h>
 	<algorithm>
+	"ptsChain1.h"
 
 1434011664 d:\projects\allusers\projects\fun\github\html5\other\basickl\photostitchcreator.h
 	<stdint.h>
 	<cmath>
 	<list>
+
+1434012932 d:\projects\allusers\projects\fun\github\html5\other\basickl\ptschain1.h
 

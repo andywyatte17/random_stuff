@@ -76,9 +76,13 @@ template<typename T> using UniInt_t = std::uniform_int_distribution<T>;
 template<typename T>
 std::pair<T,int> Pts1();
 
+template<typename T>
+std::pair<T,int> PtsChain1();
+
 int main()
 {
-  auto pts_thresh = Pts1<std::vector<PointI>>();
+  //auto pts_thresh = Pts1<std::vector<PointI>>();
+  auto pts_thresh = PtsChain1<std::vector<PointI>>();
   auto& pts = pts_thresh.first;
   const auto& THRESH = pts_thresh.second;
 
@@ -149,3 +153,6 @@ std::pair<T,int> Pts1()
   }
   return std::make_pair(std::move(pts),10);
 }
+
+
+#include "ptsChain1.h"
