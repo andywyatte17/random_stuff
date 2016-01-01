@@ -27,7 +27,12 @@ def PrintWorksheet(xlsName, sheetIx):
                      ('_Guitar', '<G>'), ('_Drums', '<D>'), ('_Flute', '<F>'),
                      ('_Bass', '<B>'), (' Guitar', '_<G>'),
                      (' Guitar', '<G>'), (' Drums', '<D>'), (' Flute', '<F>'),
-                     (' Bass', '<B>'), (' Guitar', '_<G>')
+                     (' Bass', '<B>'), (' Guitar', '_<G>'),
+                     ('PA engineer', 'PA'), ('Multi Media', 'MM'),
+                     ('SPEAKER', 'SPKR'), ('LEADER', 'LDR'), ('Family Service', 'FamSvc'),
+                     ('Communion', "Com'n"),
+                     ('Jackie', 'Jkie'), ('Eileen', 'Eiln'), ('Norman', 'Norm'),
+                     ('Gloria', 'Glo')
                      ]
     with xlrd.open_workbook(xlsName) as wb:
         pt = None
@@ -68,10 +73,10 @@ def PrintWorksheet(xlsName, sheetIx):
                         rvCopy[i] = 'r{}'.format(i+1)
                 pt = PrettyTable(rvCopy)
                 pt.padding_width = 1
-                pt.hrules = prettytable.ALL
             else:
                 pt.add_row(rv)
         if pt:
+            pt.max_width = 10
             print pt
             # print pt.get_html_string()
         

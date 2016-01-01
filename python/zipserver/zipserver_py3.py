@@ -1,0 +1,184 @@
+import http.server
+import socketserver
+import zipfile
+import pprint
+from urllib.parse import urlparse
+import json
+import sys
+from random import shuffle
+import argparse
+import os, time, stat
+from filecache import FileCache
+
+'''
+{
+  "zipFiles":["cppreference-doc-20120620.zip"],
+  "root":"cppreference-doc-20120620",
+  "rootHtml":"/cppreference-doc-20120620/reference/en.cppreference.com/w/index.html"
+}
+'''
+
+f_404 = open('404.txt', 'w')
+cache = FileCache()
+theport = 1234
+debugZips = False
+zipFiles = []
+root = ''
+rootHtml = ''
+CONTENT_TYPES = { ".htm":'text/html', ".html":'text/html', \
+  ".svg":"image/svg+xml", ".png":"image/png", ".css":'text/css',
+  ".js":'application/javascript', 
+  ".jpg":'image/jpeg', ".jpeg":'image/jpeg'
+}
+
+def ParseConfig():
+    global debugZips
+    global root
+    global zipFiles
+    global rootHtml
+    global theport
+    parser = argparse.ArgumentParser(description='Run a web server, serving files from a zip file')
+    parser.add_argument('port', metavar='port', type=int, help='a port number on which files will be served.')
+    parser.add_argument('json_config_file', metavar='json_config_file', type=str,\
+      help='a json-format configuration file giving details about location of zip files and other settings.')
+    parser.add_argument('--debugZips', dest='debugZips', action='store_true', default=False, \
+      help='Show some debugging information about the zips passed in json_config_file and exit.')
+    args = parser.parse_args()
+    theport = args.port
+    jsonPath = args.json_config_file
+    debugZips = args.debugZips
+    with open(jsonPath, 'r') as f:
+        js = json.load(f)
+        for zf in js['zipFiles']:
+            zipFiles.append( (zf, zipfile.ZipFile(zf, 'r'), os.stat(zf)[stat.ST_MTIME] ) )
+        root = js['root']
+        rootHtml = js['rootHtml']
+    # pprint.pprint(zipFiles)
+    # print "root", root
+    # print "rootHtml", rootHtml
+
+def SendAsImgHtm(handler, path):
+    html = '''<!DOCTYPE html>
+<html>
+<head>
+<title>***title***</title>
+</head>
+<body>
+<img src="***imgSrc***"/>
+</body>
+</html>'''
+    found = False
+    if path.endswith(b'.png.htm') or path.endswith(b'.jpg.htm') or path.endswith(b'.gif.htm'):
+        path = path[:-4] 
+        found = True
+    if path.endswith(b'.png.html') or path.endswith(b'.jpg.html') or path.endswith(b'.gif.html'):
+        path = path[:-5]
+        found = True
+    if not found:
+        return False
+    n = path.rfind('/')
+    if n: path = path[n+1:]
+    n = path.rfind("\\")
+    if n: path = path[n+1:]
+    html = html.replace("***title***", path)
+    html = html.replace("***imgSrc***", path)
+    handler.send_response(200)
+    handler.send_header('Content-type', 'text/html')
+    handler.end_headers()
+    #with open('img_html.txt', 'w') as qf:
+    #    qf.write(html)
+    handler.wfile.write(html)
+    return True
+
+class MyHandler(http.server.SimpleHTTPRequestHandler):
+    def SendAs(self, path, contentType):
+        global cache
+        global zipFiles
+        global root
+        if not path.startswith('/') :
+            path = '/' + path
+        altPath = root + path
+        altPath = altPath.encode('utf8')
+        #print "\naltPath",altPath,"\n"
+        someBytes, mtime = cache.IsInCache(altPath)
+        if someBytes:
+            dbxAltPath = altPath
+            if len(dbxAltPath)>30:
+                print(type(dbxAltPath),dbxAltPath)
+                dbxAltPath = u"..." + dbxAltPath[-26:].decode('utf-8')
+            print("\nServing cached content - {0}\n".format(dbxAltPath))
+            self.send_response(200)
+            self.send_header('Content-type', contentType)
+            self.send_header('Last-Modified', self.date_time_string(mtime))
+            self.end_headers()
+            self.wfile.write(someBytes)
+            return
+        for zfp,zf,zfMTime in zipFiles :
+            try:
+                with zf.open(altPath.decode('utf-8'), 'r') as f:
+                    self.send_response(200)
+                    self.send_header('Content-type', contentType)
+                    self.send_header('Last-Modified', self.date_time_string(zfMTime))
+                    print(self.date_time_string(zfMTime))
+                    self.end_headers()
+                    someBytes = f.read()
+                    self.wfile.write(someBytes)
+                    cache.CacheIfRelevant(altPath, someBytes, zfMTime)
+                    return
+            except KeyError as e:
+                pass
+        if SendAsImgHtm(self, altPath):
+            return
+        f_404.write( (altPath + b'\n').decode('utf-8') )
+        self.send_error(404)
+
+    def do_GET(self):
+        # print "\ndo_GET:" + self.path + "\n"
+        o = urlparse(self.path)
+        # print "path=", o.path
+
+        if o.path == '/':
+            self.send_response(301)
+            self.send_header('Location', rootHtml)
+            self.end_headers()
+            return
+        for key in CONTENT_TYPES.keys():
+            if o.path.endswith(key):
+                self.SendAs(o.path, CONTENT_TYPES[key])
+                return
+        self.SendAs(o.path, 'application/octet-stream')
+        return
+
+def DebugZips():
+    s = "DebugZips"
+    print("\n" + s + "\n" + "-" * len(s))
+    for zfp,zf,zfMTime in zipFiles:
+        print("Zipfile:", zfp, len(zf.namelist()), "\n")
+        print("index.htm(l):")
+        for x in zf.namelist():
+            if x.find('/index.')>=0:
+                print("\t{0}".format(x))
+        print("\nfolders:")
+        folderSet = set()
+        for x in zf.namelist():
+            head, tail = os.path.split(x)
+            folderSet.add(head)
+        for x in folderSet:
+            print("\t" + x)
+    print("\n")
+
+def main():
+    ParseConfig()
+    if debugZips:
+        DebugZips()
+        exit(0)
+        return
+
+    Handler = MyHandler
+    pywebserver = socketserver.TCPServer(("", theport), Handler)
+    
+    print("Python based web server. Serving at port", theport)
+    pywebserver.serve_forever()
+
+if __name__ == "__main__":
+    main()

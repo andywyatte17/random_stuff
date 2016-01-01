@@ -1,0 +1,40 @@
+# depslib dependency file v1.0
+1433973928 source:/home/andy/github/my_git/html5/other/basickr/main.cpp
+	<iostream>
+	<random>
+	<iomanip>
+	"PhotoStitchCreator.h"
+	<chrono>
+	<memory>
+	<limits.h>
+	<algorithm>
+
+1433969890 source:/home/andy/github/my_git/html5/other/basickr/PhotoStitchCreator.cpp
+	<list>
+	<stdint.h>
+	<cmath>
+	"PhotoStitchCreator.h"
+
+1433971084 /home/andy/github/my_git/html5/other/basickr/PhotoStitchCreator.h
+	<stdint.h>
+	<cmath>
+	<list>
+
+1434012619 source:d:\projects\allusers\projects\fun\github\html5\other\basickl\main.cpp
+	<iostream>
+	<random>
+	<iomanip>
+	"PhotoStitchCreator.h"
+	<chrono>
+	<memory>
+	<limits.h>
+	<algorithm>
+	"ptsChain1.h"
+
+1434011664 d:\projects\allusers\projects\fun\github\html5\other\basickl\photostitchcreator.h
+	<stdint.h>
+	<cmath>
+	<list>
+
+1434012932 d:\projects\allusers\projects\fun\github\html5\other\basickl\ptschain1.h
+
