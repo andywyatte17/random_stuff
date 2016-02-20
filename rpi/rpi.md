@@ -41,3 +41,16 @@ network={
     sudo /etc/init.d/ssh start
     sudo update-rc.d ssh defaults
     sudo reboot now
+
+### Packages
+
+    sudo apt-get install lynx
+    
+    cd /tmp
+    wget https://bootstrap.pypa.io/get-pip.py
+    sudo -H python /tmp/get-pip.py
+    
+    sudo -H python -m pip install BeautifulSoup
+
+    sudo apt-get install festival festvox-rablpc16k
+
