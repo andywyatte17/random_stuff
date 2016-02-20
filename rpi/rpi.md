@@ -1,0 +1,43 @@
+* Downloaded Raspian Jessie Lite (circa Feb 2016)
+
+### Burn
+
+* ```lsblk```
+* ```sudo apt-get install pv```
+* ```sudo dd bs=4M if=/dev/zero | pv -r | dd bs=4M of=/dev/mmcblk0```
+* ```sudo dd bs=4M if=/path/to/image | pv -r | dd bs=4M of=/dev/mmcblk0```
+
+### First Boot
+
+* Default user pi, password raspberry
+* login
+
+### Setup wifi
+
+Edit - sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+
+network={
+  ssid="..."
+  proto=RSN
+  key_mgmt=WPA_PKA
+  pairwise=CCMP TKIP
+  group=CCMP TKIP
+  psk="..."
+}
+
+### Restart network
+
+    sudo ifup wlan0
+    ping www.google.co.uk
+    ifconfig wlan0 | grep inet
+
+### Update packages
+
+    sudo apt-get update
+
+### SSH
+
+    sudo apt-get install ssh
+    sudo /etc/init.d/ssh start
+    sudo update-rc.d ssh defaults
+    sudo reboot now
