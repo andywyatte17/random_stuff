@@ -54,3 +54,27 @@ network={
 
     sudo apt-get install festival festvox-rablpc16k
 
+### Read keycodes
+
+```
+#!/bin/python
+import struct
+import sys
+
+EV_KEY=1
+EV_SYN=0
+FORMAT = 'llHHI'
+EVENT_SIZE = struct.calcsize(FORMAT)
+
+f = open("/dev/input/event0", "rb")
+
+while True:
+  key = f.read(EVENT_SIZE)
+  sec, usec, type, code, value = struct.unpack(FORMAT, key)
+  if type==EV_KEY and value==1:
+    print("DN: type,code,value = %u %u %u" % (type, code, value))
+  if type==EV_KEY and value==0:
+    print("UP: type,code,value = %u %u %u" % (type, code, value))
+
+f.close()
+```
