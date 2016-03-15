@@ -12,7 +12,7 @@ EV_SYN=0
 FORMAT = 'llHHI'
 EVENT_SIZE = struct.calcsize(FORMAT)
 
-f = open("/dev/input/by-path/" + KBD_DEV, "rb")
+f = open("/dev/input/" + KBD_DEV, "rb")
 q = Queue()
 
 def worker():
