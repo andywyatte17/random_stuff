@@ -1,6 +1,5 @@
 #!/bin/sh
 
+mpc stop
 mpc clear
-mpc add file:///tmp/bus_reader.wav
-mpc play
 python bus_reader.py $1 100 | festival --tts
