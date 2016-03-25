@@ -1,11 +1,11 @@
 #!/bin/python
 import os, sys
 from pprint import pprint
-os.chdir(os.path.dirname(sys.argv[0]))
+#os.chdir(os.path.dirname(sys.argv[0]))
 
 tmp_darts = "/tmp/darts.txt"
-cmd = "bash darts_pml2016.sh {} > {}".format(sys.argv[1], tmp_darts)
-#os.system( cmd )
+cmd = "bash _darts_pml2016.sh {} > {}".format(sys.argv[1], tmp_darts)
+os.system( cmd )
 
 # filters lines from tmp_darts
 lines = [line.lstrip().rstrip() for line in open(tmp_darts, "r").readlines()]
