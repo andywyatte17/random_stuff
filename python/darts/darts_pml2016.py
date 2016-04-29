@@ -18,25 +18,6 @@ References
    4. http://www.youtube.com/results?q=hey&um=1&ie=UTF-8&gl=GB&sa=N&tab=w1
 """
 
-def update_progress(progress):
-    barLength = 10 # Modify this to change the length of the progress bar
-    status = ""
-    if isinstance(progress, int):
-        progress = float(progress)
-    if not isinstance(progress, float):
-        progress = 0
-        status = "error: progress var must be float\r\n"
-    if progress < 0:
-        progress = 0
-        status = "Halt...\r\n"
-    if progress >= 1:
-        progress = 1
-        status = "Done...\r\n"
-    block = int(round(barLength*progress))
-    text = "\rPercent: [{0}] {1}% {2}".format( "#"*block + "-"*(barLength-block), progress*100, status)
-    sys.stdout.write(text)
-    sys.stdout.flush()
-
 def subprocess_grab(args):
   return subprocess.Popen(args, stdout=subprocess.PIPE).communicate()[0]
 
@@ -69,19 +50,16 @@ if not output or output=="":
 output = [ x for x in output.split("\n") ]
 output = [ extract_youtube_http(x) for x in output if extract_youtube_http(x) ]
 output = list(set(output))
-pprint(output)
+# pprint(output)
 lines = output
 
 def yt_title(yt_link):
-  return subprocess_grab(["python", "-m", "youtube_dl", "--get-title", yt_link])
+  return (yt_link, subprocess_grab(["python", "-m", "youtube_dl", "--get-title", yt_link]))
 
-lines_tmp = lines
-lines = []
-for n in range(0, len(lines_tmp)):
-  x = lines_tmp[n]
-  update_progress( int(n*100 / (len(lines_tmp)-0.999))/100.0 )
-  lines.append( (x, yt_title(x)) )
-lines = [ x for x in lines if ("2016" in x[1] and str(sys.argv[1]) in x[1]) ] 
+from joblib import Parallel, delayed
+lines = Parallel(n_jobs=8, verbose=10)(delayed(yt_title)(i) for i in lines)
+lines = [ x for x in lines if ("2016" in x[1] and str(sys.argv[1]) in x[1]) ]
+# pprint(lines)
 
 # Show numbered list of links
 for n in range(0,len(lines)):
