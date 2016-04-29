@@ -1,11 +1,19 @@
 #!/bin/python
 import os, sys
+from os import path
 from pprint import pprint
 #os.chdir(os.path.dirname(sys.argv[0]))
 
+path_of_this_script = path.dirname(path.abspath(sys.argv[0]))
 tmp_darts = "/tmp/darts.txt"
-cmd = "bash _darts_pml2016.sh {} > {}".format(sys.argv[1], tmp_darts)
-os.system( cmd )
+for x in ("{} > {}", "{} Barneveld >> {}", "{} Wade >> {}",
+          "{} Taylor >> {}", "{} Anderson >> {}",
+          "{} Thornton >> {}", "{} van Gerwen >> {}",
+          "{} Lewis >> {}", "{} Wright >> {}"):
+  cmd0 = "bash '{}' ".format(path.join(path_of_this_script, '_darts_pml2016.sh')) + x
+  cmd = cmd0.format(sys.argv[1], tmp_darts)
+  print(cmd)
+  os.system( cmd )
 
 # filters lines from tmp_darts
 lines = [line.lstrip().rstrip() for line in open(tmp_darts, "r").readlines()]
