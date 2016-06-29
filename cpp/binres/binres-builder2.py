@@ -35,7 +35,6 @@ for nFile in range(0,10000000):
 
   # Try octal
   for n in range(0, len(part)-1):
-    n = part[n][0]    
     c2 = part[n+1][1]
     if n<8 and not (0<=ord(c2[0:1]) and ord(c2[0:1])<=9):
       part[n] = (n,"\\{}".format(n))
