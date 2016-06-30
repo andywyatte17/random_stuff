@@ -11,22 +11,21 @@ import random as R
 from random import random
 from sys import stdout
 from sys import stderr
+from sys import argv
+from binres_core import *
 
-R.seed(0)
-def ur8(): return R.randint(0,255)
-to_encode = [ ur8() for x in range(0,2000000) ]
-
-for nFile in range(0,10000000):
-  size = min(R.randint(1000,5000), len(to_encode))
-  if size==0: break
-  part = to_encode[0:size]
-  to_encode = to_encode[size:]
-  print("const unsigned char x_{}[]={{".format(nFile))
+def DataWriter(to_encode, nFile):
+  print("constexpr unsigned char x_{}[]={{".format(nFile))
+  size = len(to_encode)
   last = size-1
   for b in range(0,size):
-    term = ", " if b!=last else ""
-    stdout.write("0x{:02x}{}".format(part[b], term))
+    term = "," if b!=last else ""
+    stdout.write("0x{:02x}{}".format(to_encode[b], term))
     if ((b%10)==9) : stdout.write("\n")
-  print("};\n")
-print("\nint main() { return 0; }")
+  print(\
+'''}};
 
+constexpr unsigned n_{}={};
+'''.format(nFile, len(to_encode)))
+
+DumpLoop(DataWriter, hash_code)
