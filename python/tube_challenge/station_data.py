@@ -1,5 +1,12 @@
-from data_js import _Exports, _exports
+import data_js
+import data_routes
+from pprint import pprint
 import Levenshtein
+
+class Printable:
+  def __repr__(self):
+    from pprint import pformat
+    return "<" + type(self).__name__ + "> " + pformat(vars(self), indent=2, width=1)
 
 
 def FuzzyTextMatch(needle, haystack):
@@ -12,14 +19,14 @@ def FuzzyTextMatch(needle, haystack):
   return best[1]
 
 
-class StationData(_Exports):
+class StationData(Printable):
 
   def __init__(self):
-    self.lines = _exports.lines
-    self.routes = _exports.routes
-    self.stations = _exports.stations
-    self.stationsOnLines = _exports.stationsOnLines
-    self.CorrectStations()
+    self.lines = data_js.lines
+    self.routes = data_routes.routes
+    self.stations = data_js.stations
+    self.stationsOnLines = data_js.stationsOnLines
+    self.CorrectRoutesEntries()
 
   def GoRoutes(self, fromStation, toStation):
     results = []
@@ -30,6 +37,8 @@ class StationData(_Exports):
     return None if results==[] else results
 
   def ExtractJourney(self, fromStation, toStation, route):
+    if not route in self.routes.keys():
+      return [fromStation, toStation]
     stations = self.routes[route]["stations"]
     fromIx = -1
     toIx = -1
@@ -42,16 +51,17 @@ class StationData(_Exports):
         toIx = i
         break
     if fromIx>=0 and toIx>=0:
-      if fromIx<toIx: return stations[fromIx:toIx]
-      else: return list(reversed(stations[toIx:fromIx]))
+      if fromIx<toIx:
+        return stations[fromIx:toIx+1]
+      else:
+        return list(reversed(stations[toIx:fromIx+1]))
     return []
 
   def AllStations(self):
     stations = []
-    for route in self.routes.keys():
-      for station in self.routes[route]["stations"]:
-        stations.append(station)
-    return list(set(stations)) # unique
+    for identifier in self.stations.keys():
+      stations.append(self.stations[identifier])
+    return stations
 
   def LookupStation(self, station, allow_fuzzy):
     if allow_fuzzy:
@@ -63,7 +73,7 @@ class StationData(_Exports):
     print("!!! " + station + " !!!")
     return None
 
-  def CorrectStations(self):
+  def CorrectRoutesEntries(self):
     for route in self.routes.keys():
       stations = self.routes[route]["stations"]
       stations = stations.replace("\n",";")
@@ -89,7 +99,18 @@ class StationData(_Exports):
     for (toStation, time, route) in stationList[1:]:
       routeStations = self.ExtractJourney(thisStation, toStation, route)
       results += routeStations
+      thisStation = toStation
     return list(set(results)) # unique
+
+  def CalculateRemainsByLine(self, stationList):
+    stationsOnLines = self.stationsOnLines
+    completed = set(self.CalculateCompleted(stationList))
+    for lines in stationsOnLines.keys():
+      stationListTmp = stationsOnLines[lines]
+      stationListTmp = [ data_js.stations[x] for x in stationListTmp ]
+      stationListTmp = [ x for x in stationListTmp if x not in completed ]
+      stationsOnLines[lines] = stationListTmp
+    return stationsOnLines
 
   def PrintStatus(self, stationList):
     print("\nStatus:")
@@ -98,9 +119,22 @@ class StationData(_Exports):
     completed = self.CalculateCompleted(stationList)
     print("Completed = {}; Remains = {}".format(len(completed), len(remains)))
 
+  def PrettyPrint3Col(self, items):
+    items = items[:]
+    while len(items) % 3 != 0:
+      items.append(" ")
+    split = len(items) / 3
+    l1,l2,l3 = items[0:split], items[split:split*2], items[split*2:split*3]
+    for _1,_2,_3 in zip(l1,l2,l3):
+      print("{0:<24s} {1:<24s} {2:<24s}".format(_1, _2, _3))
+
   def PrintRemains(self, stationList):
     print("\nRemains:")
-    print(self.CalculateRemains(stationList))
+    remainsByLine = self.CalculateRemainsByLine(stationList)
+    for line in remainsByLine.keys():
+      items = [line, "==="] + remainsByLine[line]
+      print("")
+      self.PrettyPrint3Col(items)
 
   def PrintCompleted(self, stationList):
     print("\nCompleted:")
@@ -108,6 +142,14 @@ class StationData(_Exports):
 
   def PrintRoute(self, stationList):
     print("\nRoute:")
-    for station, t, by in stationList:
-      print("\t{}{}".format("" if not by else (by + " => "), station))
+    for station, time, routeName in stationList:
+      time_str = "{}:{} => ".format(time[0],time[1]) if time else ""
+      print("\t{}{}".format("" if not routeName else (routeName + " => {}".format(time_str)), station))
 
+  def PrintRouteEx(self, stationList):
+    last = None
+    for station, time, routeName in stationList:
+      if last:
+        print("{} => {} => {}".format(last, routeName, station))
+        print(self.ExtractJourney(last, station, routeName))
+      last = station

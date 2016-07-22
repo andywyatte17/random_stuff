@@ -38,7 +38,7 @@ def GetHHMM(prompt = "Enter Time (hh:mm - mm *can* be >=60): "):
 
 def WhatNextAutocomplete():
   def autocomplete_fn(x):
-    return ["go", "status", "completed", "remaining", "route"]
+    return ["go", "status", "completed", "remaining", "route", "undo", "routeEx"]
   return get_autocomplete_string( autocomplete_fn )
 
 
@@ -47,6 +47,7 @@ def EnterGoLoop(stationList, stationData):
   while True:
     station = getStation.get()
     go_routes = stationData.GoRoutes(stationList[-1][0], station)
+    go_routes = ["other"] if not go_routes else go_routes + ["other"]
     if go_routes==None:
       print("\nCan't go there... go where?")
     else:
@@ -56,8 +57,11 @@ def EnterGoLoop(stationList, stationData):
   else:
      print("\nGo how?")
      go_routes = get_autocomplete_string( lambda x : go_routes )
+  hh_mm = 0
+  if go_routes == "other":
+    hh_mm = GetHHMM("\tEnter time for 'other' route:")
   stationList = stationList[:]
-  stationList.append((station, 0, go_routes))
+  stationList.append((station, hh_mm, go_routes))
   return stationList
 
 stationData = StationData()
@@ -66,8 +70,11 @@ getStation = GetStation(stationData)
 #print(stationData.routes)
 # print(stationData.AllStations())
 
+stationList = None
+
 def InteractiveLoop():
   print("Start Station:")
+  global stationList
   stationList = [getStation.get()]
 
   print("")
@@ -78,8 +85,13 @@ def InteractiveLoop():
     command = WhatNextAutocomplete()
     if command == "go":
       stationList = EnterGoLoop(stationList, stationData)
+    elif command == "undo":
+      if len(stationList)>1:
+        stationList = stationList[0:-1]
     elif command == "route":
       stationData.PrintRoute(stationList)
+    elif command == "routeEx":
+      stationData.PrintRouteEx(stationList)
     elif command == "status":
       stationData.PrintStatus(stationList)
     elif command == "remaining":
@@ -91,15 +103,53 @@ def InteractiveLoop():
 
 
 def Debug():
-  stationList = [ ("High Barnet", (0,0), None), ("Finchley Central", 0, "northern_bank") ]
-  stationData.PrintRoute(stationList)
+  stationList = [ ("High Barnet", (0,0), None), ("Morden", 0, "northern_bank") ]
+  #stationData.PrintRoute(stationList)
+  #stationData.PrintStatus(stationList)
+  #stationData.PrintCompleted(stationList)
+  stationData.PrintRemains(stationList)
+
+
+def MyAttempt():
+  import my_routes
+  route = my_routes.route1
+  route = route.replace(" => ", ";")
+  route = route.replace("\t", ";")
+  route = route.replace("\n", ";")
+  route = route.replace(";;", ";")
+  route = route.replace(";;", ";")
+  route = route.replace(";;", ";")
+  route = route.split(";")
+  print(route)
+  i = 0
+  stationList = []
+  while i < len(route):
+    if i==0 :
+      stationList.append( (route[i], 0, None) )
+      i += 1
+    else:
+      if route[i]=="other":
+        stationList.append( (route[i+2], route[i+1], route[i]) )
+        i += 3
+      else:
+        stationList.append( (route[i + 1], 0, route[i]) )
+        i += 2
+  #stationData.PrintRoute(stationList)
+  #stationData.PrintCompleted(stationList)
+  # stationData.PrintRouteEx(stationList)
+  stationData.PrintRemains(stationList)
   stationData.PrintStatus(stationList)
-  stationData.PrintCompleted(stationList)
-  # stationData.PrintRemains(stationList)
+
 
 if __name__=='__main__':
   import sys
   if not sys.stdout.isatty() or (len(sys.argv)>=2 and sys.argv[1]=="--debug"):
-    Debug()
+    # Debug()
+    MyAttempt()
   else:
-    InteractiveLoop()
+    try:
+      InteractiveLoop()
+    except:
+      print(stationList)
+      stationData.PrintRoute(stationList)
+      raise
