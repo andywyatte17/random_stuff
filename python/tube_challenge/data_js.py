@@ -1,3 +1,5 @@
+import Levenshtein # python -m pip install --user python-Levenshtein
+
 # Originally from https://gist.githubusercontent.com/i-like-robots/a4608cbdf21d979d9452/raw/2e5ef08a303f774d5e870138bdcb0fe5528c8606/data.js
 
 class Printable:
@@ -5,12 +7,12 @@ class Printable:
     from pprint import pformat
     return "<" + type(self).__name__ + "> " + pformat(vars(self), indent=2, width=1)
 
-class Exports(Printable):
+class _Exports(Printable):
   pass
 
-exports = Exports()
+_exports = _Exports()
 
-exports.lines = {
+_exports.lines = {
   "bakerloo": "Bakerloo",
   "central": "Central",
   "circle": "Circle",
@@ -22,9 +24,9 @@ exports.lines = {
   "piccadilly": "Piccadilly",
   "victoria": "Victoria",
   "waterloo-city": "Waterloo & City"
-};
+}
 
-exports.stations = {
+_exports.stations = {
   "940GZZLUBST": "Baker Street",
   "940GZZLUCHX": "Charing Cross",
   "940GZZLUEAC": "Elephant & Castle",
@@ -276,7 +278,7 @@ exports.stations = {
   "940GZZLUHPC": "Hyde Park Corner",
   "940GZZLUHR4": "Heathrow Terminal 4",
   "940GZZLUHR5": "Heathrow Terminal 5",
-  "940GZZLUHRC": "Heathrow Terminals 1-2-3 ",
+  "940GZZLUHRC": "Heathrow Terminals 1-2-3",
   "940GZZLUHWC": "Hounslow Central",
   "940GZZLUHWE": "Hounslow East",
   "940GZZLUHWT": "Hounslow West",
@@ -296,9 +298,9 @@ exports.stations = {
   "940GZZLUSUT": "Sudbury Town",
   "940GZZLUTPN": "Turnpike Lane",
   "940GZZLUWOG": "Wood Green"
-};
+}
 
-exports.stationsOnLines = {
+_exports.stationsOnLines = {
   "bakerloo": [
     "940GZZLUBST",
     "940GZZLUCHX",
@@ -714,9 +716,9 @@ exports.stationsOnLines = {
     "940GZZLUBNK",
     "940GZZLUWLO"
   ]
-};
+}
 
-exports.sharedPlatforms = {
+_exports.sharedPlatforms = {
    "940GZZLUEMB": [
       [
          "circle",
@@ -964,5 +966,369 @@ exports.sharedPlatforms = {
          "piccadilly"
       ]
    ]
-};
+}
 
+_exports.routes = {
+  "bakerloo":{
+    "stations":"""Elephant & Castle
+Lambeth North
+Waterloo
+Embankment
+Charing Cross
+Piccadilly Circus
+Oxford Circus
+Regent's Park
+Baker Street
+Marylebone
+Edgware Road (Bakerloo)
+Paddington
+Warwick Avenue
+Maida Vale
+Kilburn Park
+Queen's Park
+Kensal Green
+Willesden Junction
+Harlesden
+Stonebridge Park
+Wembley Central
+North Wembley
+South Kenton
+Kenton
+Harrow & Wealdstone"""
+  },
+  # ...
+  "piccadilly_1":{
+    "stations":"Cockfosters;Oakwood;Southgate;Arnos Grove;Bounds Green;Wood Green;Turnpike Lane;Manor House;Finsbury Park;Arsenal;Holloway Road;Caledonian Road;King's Cross St. Pancras;Russell Square;Holborn;Covent Garden;Leicester Square;Piccadilly Circus;Green Park;Hyde Park Corner;Knightsbridge;South Kensington;Gloucester Road;Earl's Court;Barons Court;Hammersmith (Dist&Picc Line);Turnham Green;Acton Town;Ealing Common;North Ealing;Park Royal;Alperton;Sudbury Town;Sudbury Hill;South Harrow;Rayners Lane;Eastcote;Ruislip Manor;Ruislip;Ickenham;Hillingdon;Uxbridge"
+  },
+  "piccadilly_2":{
+    "stations":"Cockfosters;Oakwood;Southgate;Arnos Grove;Bounds Green;Wood Green;Turnpike Lane;Manor House;Finsbury Park;Arsenal;Holloway Road;Caledonian Road;King's Cross St. Pancras;Russell Square;Holborn;Covent Garden;Leicester Square;Piccadilly Circus;Green Park;Hyde Park Corner;Knightsbridge;South Kensington;Gloucester Road;Earl's Court;Barons Court;Hammersmith (Dist&Picc Line);Turnham Green;Acton Town;South Ealing;Northfields;Boston Manor;Osterley;Hounslow East;Hounslow Central;Hounslow West;Hatton Cross;Heathrow Terminals 1-2-3;Heathrow Terminal 4"
+  },
+  # ...
+  "metropolitan_1":{
+    "stations":"Aldgate;Liverpool Street;Moorgate;Barbican;Farringdon;King's Cross St. Pancras;Euston Square;Great Portland Street;Baker Street;Finchley Road;Wembley Park;Preston Road;Northwick Park;Harrow-on-the-Hill;North Harrow;Pinner;Northwood Hills;Northwood;Moor Park;Croxley;Watford"
+  },
+  "metropolitan_2":{
+    "stations":"Aldgate;Liverpool Street;Moorgate;Barbican;Farringdon;King's Cross St. Pancras;Euston Square;Great Portland Street;Baker Street;Finchley Road;Wembley Park;Preston Road;Northwick Park;Harrow-on-the-Hill;North Harrow;Pinner;Northwood Hills;Northwood;Moor Park;Rickmansworth;Chorleywood;Chalfont & Latimer;Amersham"
+  },
+  "metropolitan_3":{
+    "stations":"Aldgate;Liverpool Street;Moorgate;Barbican;Farringdon;King's Cross St. Pancras;Euston Square;Great Portland Street;Baker Street;Finchley Road;Wembley Park;Preston Road;Northwick Park;Harrow-on-the-Hill;North Harrow;Pinner;Northwood Hills;Northwood;Moor Park;Rickmansworth;Chorleywood;Chalfont & Latimer;Chesham"
+  },
+  "metropolitan_4":{
+    "stations":"Aldgate;Liverpool Street;Moorgate;Barbican;Farringdon;King's Cross St. Pancras;Euston Square;Great Portland Street;Baker Street;Finchley Road;Wembley Park;Preston Road;Northwick Park;Harrow-on-the-Hill;West Harrow;Rayners Lane;Eastcote;Ruislip Manor;Ruislip;Ickenham;Hillingdon;Uxbridge"
+  },
+  # ...
+  "hammersmith":{
+    "stations":"Barking;East Ham;Upton Park;West Ham;Bromley-by-Bow;Bow Road;Mile End;Stepney Green;Whitechapel;Aldgate East;Liverpool Street;Moorgate;Barbican;Farringdon;King's Cross St. Pancras;Euston Square;Great Portland Street;Baker Street;Edgware Road (Circle Line);Paddington;Royal Oak;Westbourne Park;Ladbroke Grove;Latimer Road;Wood Lane;Shepherd's Bush Market;Goldhawk Road;Hammersmith (H&C Line)"
+  },
+  # ...
+  "circle":{
+    "stations":"Aldgate;Tower Hill;Monument;Cannon Street;Mansion House;Blackfriars;Temple;Embankment;Westminster;St. James's Park;Victoria;Sloane Square;South Kensington;Gloucester Road;High Street Kensington;Notting Hill Gate;Bayswater;Paddington;Edgware Road (Circle Line);Baker Street;Great Portland Street;Euston Square;King's Cross St. Pancras;Farringdon;Barbican;Moorgate;Liverpool Street"
+  },
+  # ...
+  "district_1":{
+    "stations":"""Upminster
+Upminster Bridge
+Hornchurch
+Elm Park
+Dagenham East
+Dagenham Heathway
+Becontree
+Upney
+Barking
+East Ham
+Upton Park
+Plaistow
+West Ham
+Bromley-by-Bow
+Bow Road
+Mile End
+Stepney Green
+Whitechapel
+Aldgate East
+Tower Hill
+Monument
+Cannon Street
+Mansion House
+Blackfriars
+Temple
+Embankment
+Westminster
+St. James's Park
+Victoria
+Sloane Square
+South Kensington
+Gloucester Road
+Earl's Court
+West Kensington
+Barons Court
+Hammersmith (Dist&Picc Line)
+Ravenscourt Park
+Stamford Brook
+Turnham Green
+Gunnersbury
+Kew Gardens
+Richmond"""
+  },
+  "district_2":{
+    "stations":"""Upminster
+Upminster Bridge
+Hornchurch
+Elm Park
+Dagenham East
+Dagenham Heathway
+Becontree
+Upney
+Barking
+East Ham
+Upton Park
+Plaistow
+West Ham
+Bromley-by-Bow
+Bow Road
+Mile End
+Stepney Green
+Whitechapel
+Aldgate East
+Tower Hill
+Monument
+Cannon Street
+Mansion House
+Blackfriars
+Temple
+Embankment
+Westminster
+St. James's Park
+Victoria
+Sloane Square
+South Kensington
+Gloucester Road
+Earl's Court
+West Kensington
+Barons Court
+Hammersmith (Dist&Picc Line)
+Ravenscourt Park
+Stamford Brook
+Turnham Green
+Chiswick Park
+Acton Town
+Ealing Common
+Ealing Broadway"""
+  },
+  "district_3":{
+    "stations":"""Upminster
+Upminster Bridge
+Hornchurch
+Elm Park
+Dagenham East
+Dagenham Heathway
+Becontree
+Upney
+Barking
+East Ham
+Upton Park
+Plaistow
+West Ham
+Bromley-by-Bow
+Bow Road
+Mile End
+Stepney Green
+Whitechapel
+Aldgate East
+Tower Hill
+Monument
+Cannon Street
+Mansion House
+Blackfriars
+Temple
+Embankment
+Westminster
+St. James's Park
+Victoria
+Sloane Square
+South Kensington
+Gloucester Road
+Earl's Court
+West Brompton
+Fulham Broadway
+Parsons Green
+Putney Bridge
+East Putney
+Southfields
+Wimbledon Park
+Wimbledon"""
+  },
+  "district_4":{
+    "stations":"""Edgware Road (Circle Line)
+Paddington
+Bayswater
+Notting Hill Gate
+High Street Kensington
+Earl's Court
+Kensington (Olympia)"""
+  },
+  # ...
+  "northern_charing_cross":{
+    "stations":"""Morden
+South Wimbledon
+Colliers Wood
+Tooting Broadway
+Tooting Bec
+Balham
+Clapham South
+Clapham Common
+Clapham North
+Stockwell
+Oval
+Kennington
+Waterloo
+Embankment
+Charing Cross
+Leicester Square
+Tottenham Court Road
+Goodge Street
+Warren Street
+Euston
+Mornington Crescent
+Camden Town
+Chalk Farm
+Belsize Park
+Hampstead
+Golders Green
+Brent Cross
+Hendon Central
+Colindale
+Burnt Oak
+Edgware"""
+  },
+  "northern_mill_hill":{
+    "stations":"Mill Hill East;Finchley Central"
+  },
+  "northern_bank":{
+    "stations":"""Morden
+South Wimbledon
+Colliers Wood
+Tooting Broadway
+Tooting Bec
+Balham
+Clapham South
+Clapham Common
+Clapham North
+Stockwell
+Oval
+Kennington
+Elephant & Castle
+Borough
+London Bridge
+Bank
+Moorgate
+Old Street
+Angel
+King's Cross St. Pancras
+Euston
+Camden Town
+Kentish Town
+Tufnell Park
+Archway
+Highgate
+East Finchley
+Finchley Central
+West Finchley
+Woodside Park
+Totteridge & Whetstone
+High Barnet"""
+  },
+  # ...
+  "jubilee":{
+    "stations":"""Stanmore
+Canons Park
+Queensbury
+Kingsbury
+Wembley Park
+Neasden
+Dollis Hill
+Willesden Green
+Kilburn
+West Hampstead
+Finchley Road
+Swiss Cottage
+St. John's Wood
+Baker Street
+Bond Street
+Green Park
+Westminster
+Waterloo
+Southwark
+London Bridge
+Bermondsey
+Canada Water
+Canary Wharf
+North Greenwich
+Canning Town
+West Ham
+Stratford"""
+  },
+  # ...
+  "victoria":{
+    "stations":"""Walthamstow Central
+Blackhorse Road
+Tottenham Hale
+Seven Sisters
+Finsbury Park
+Highbury & Islington
+King's Cross St. Pancras
+Euston
+Warren Street
+Oxford Circus
+Green Park
+Victoria
+Pimlico
+Vauxhall
+Stockwell
+Brixton"""
+  }
+}
+
+def FuzzyTextMatch(needle, haystack):
+  best = (None, None)
+  for test in haystack:
+    d = Levenshtein.distance(test, needle)
+    print( (test,needle,d) )
+    if not best[1] or d<best[0]:
+      best = (d, test)
+  return best[1]
+
+class StationData(_Exports):
+  def __init__(self):
+    self.lines = _exports.lines
+    self.routes = _exports.routes
+    self.stations = _exports.stations
+    self.stationsOnLines = _exports.stationsOnLines
+    self.CorrectStations()
+
+  def AllStations(self):
+    stations = []
+    for route in self.routes.keys():
+      for station in self.routes[route]["stations"]:
+        stations.append(station)
+    return stations
+
+  def LookupStation(self, station, allow_fuzzy):
+    if allow_fuzzy:
+      stations = self.AllStations()
+      return FuzzyTextMatch(station, stations)
+    for station_key in self.stations.keys():
+      if self.stations[station_key] == station:
+        return station
+    print("!!! " + station + " !!!")
+    return None
+
+  def CorrectStations(self):
+    for route in self.routes.keys():
+      stations = self.routes[route]["stations"]
+      stations = stations.replace("\n",";")
+      stations = stations.split(";")
+      stations_old = stations
+      stations = []
+      for x in stations_old:
+        stations.append( self.LookupStation(x, False) )
+      self.routes[route]["stations"] = stations
