@@ -36,6 +36,12 @@ class StationData(Printable):
         results.append(route)
     return None if results==[] else results
 
+  def GetStationIDFromName(self, stationName):
+    for sid in self.stations.keys():
+      if self.stations[sid]==stationName:
+        return sid
+    return None
+
   def ExtractJourney(self, fromStation, toStation, route):
     if not route in self.routes.keys():
       return [fromStation, toStation]
