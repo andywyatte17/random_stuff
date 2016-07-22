@@ -3,6 +3,7 @@ from pprint import pprint
 from sys import stdin
 from autocomplete import get_autocomplete_string
 
+
 class GetStation:
   def __init__(self, stationData):
     self.stationData = stationData
@@ -34,15 +35,18 @@ def GetHHMM(prompt = "Enter Time (hh:mm - mm *can* be >=60): "):
       mm = int(match.group(2))
       if hh>=0 and mm>=0 : return (hh,mm)
 
+
 def WhatNextAutocomplete():
   def autocomplete_fn(x):
     return ["go", "status", "completed", "remaining"]
   return get_autocomplete_string( autocomplete_fn )
 
+
 def EnterGoLoop(stationList, stationData):
   print("\nGo where?")
   station = getStation.get()
   if stationData
+
 
 stationData = StationData()
 getStation = GetStation(stationData)
