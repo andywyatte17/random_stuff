@@ -1292,7 +1292,7 @@ def FuzzyTextMatch(needle, haystack):
   best = (None, None)
   for test in haystack:
     d = Levenshtein.distance(test, needle)
-    print( (test,needle,d) )
+    #print( (test,needle,d) )
     if not best[1] or d<best[0]:
       best = (d, test)
   return best[1]
