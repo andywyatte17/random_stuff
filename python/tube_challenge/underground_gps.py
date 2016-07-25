@@ -216,7 +216,7 @@ gps = (
   ('Rayners Lane', '51.57534', '-0.37240'),
   ('Redbridge', '51.57618', '0.04542'),
   ("Regent's Park", '51.52344', '-0.14713'),
-  ('Richmond', '51.46343247', '-0.302033247'),
+  # ('Richmond', '51.46343247', '-0.302033247'),
   ('Richmond', '51.4632474', '-0.300618047'),
   ('Rickmansworth', '51.64027898', '-0.473521454'),
   ('Roding Valley', '51.61691', '+0.04264'),
@@ -340,6 +340,17 @@ def distance(lati_long1, lati_long2):
   a = sin(dt/2)**2 + ( cos(t1) * cos(t2) * sin(dl/2)**2 )
   c = 2 * atan2(a**0.5, (1-a)**0.5);
   return R * c
+
+
+def distance_lu(fromStation, toStation):
+  def find(station):
+    for x,longi,lati in gps:
+      if x==station : return longi, lati
+    return (None, None)
+  lo1,la1 = find(fromStation)
+  lo2,la2 = find(toStation)
+  if not lo1 or not lo2 : return None
+  return distance( (float(la1),float(lo1)), (float(la2),float(lo2)) )
 
 
 if __name__=='__main__':
