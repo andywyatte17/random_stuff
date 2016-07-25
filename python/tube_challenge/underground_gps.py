@@ -100,7 +100,7 @@ gps = (
   ('Finsbury Park', '51.56498', '-0.10543'),
   ('Fulham Broadway', '51.48033', '-0.19488'),
   ('Gants Hill', '51.57649', '0.06637'),
-  ('Gloucester Road', '51.49408266', '-0.17295341'),
+  ('Gloucester Road', '51.49432', '-0.18280'),
   ('Golders Green', '51.57249', '-0.19410'),
   ('Goldhawk Road', '51.501248', '-0.226776'),
   ('Goodge Street', '51.52060', '-0.13441'),
@@ -314,7 +314,7 @@ gps = (
 
 from math import acos, asin, cos, sin, atan2
 import data_routes
-import sys
+import sys, os
 
 
 class AxB:
@@ -326,6 +326,20 @@ class AxB:
 
 
 def svgize(x): return x.replace("&", "&amp;")
+
+
+def latlon2tileXY(lat, lon, zoom):
+  import math
+  tileX = (int)(math.floor((lat + 180.0) / 360.0 * math.pow(2.0, zoom)));
+  tileY = (int)(math.floor((1.0 - math.log( math.tan(lon * math.pi/180.0) + 1.0 / math.cos(lon * math.pi/180.0)) / math.pi) / 2.0 * math.pow(2.0, zoom)));
+  return (tileX, tileY)
+
+
+def latlon2OpenStreetmapTileUrl(lat, lon, zoom):
+  if isinstance(lat, str): lat = float(lat)
+  if isinstance(lon, str): lon = float(lon)
+  tx, ty = latlon2tileXY(lat, lon, zoom)
+  return "http://a.tile.openstreetmap.org/{}/{}/{}.png".format(zoom, tx, ty)
 
 
 def distance(lati_long1, lati_long2):
@@ -366,6 +380,8 @@ if __name__=='__main__':
                  b = 50 + (3500.0 * -min_lati) / (max_lati-min_lati) )
   long_fn = AxB( a = 2000.0 / (min_long-max_long),
                  b = 50 + (2000.0 * -max_long) / (min_long-max_long) )
+
+  os.system( 'open "{}"'.format(latlon2OpenStreetmapTileUrl(-0.18280,51.49432,18)) )
 
   def adjust(cx,cy):
     '''
