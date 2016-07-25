@@ -381,8 +381,6 @@ if __name__=='__main__':
   long_fn = AxB( a = 2000.0 / (min_long-max_long),
                  b = 50 + (2000.0 * -max_long) / (min_long-max_long) )
 
-  os.system( 'open "{}"'.format(latlon2OpenStreetmapTileUrl(-0.18280,51.49432,18)) )
-
   def adjust(cx,cy):
     '''
     import math
