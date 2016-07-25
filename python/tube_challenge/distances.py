@@ -1,4 +1,5 @@
 import underground_gps
+import sys
 from data_routes import routes
 from pprint import pprint
 
@@ -31,5 +32,6 @@ for x in range(0, len(stations)):
       stations_dist.append( ( from_, to_, underground_gps.distance_lu(from_, to_) ) )
 
 stations_dist = sorted( stations_dist, key = lambda x : x[2] )
+stations_dist = [ x for x in stations_dist if x[2]<=2000 ]
 pprint( stations_dist )
 

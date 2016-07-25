@@ -358,11 +358,11 @@ def distance(lati_long1, lati_long2):
 
 def distance_lu(fromStation, toStation):
   def find(station):
-    for x,longi,lati in gps:
-      if x==station : return longi, lati
+    for x,lati,longi in gps:
+      if x==station : return lati, longi
     return (None, None)
-  lo1,la1 = find(fromStation)
-  lo2,la2 = find(toStation)
+  la1,lo1 = find(fromStation)
+  la2,lo2 = find(toStation)
   if not lo1 or not lo2 : return None
   return distance( (float(la1),float(lo1)), (float(la2),float(lo2)) )
 
