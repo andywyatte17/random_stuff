@@ -32,3 +32,4 @@ for x in range(0, len(stations)):
 
 stations_dist = sorted( stations_dist, key = lambda x : x[2] )
 pprint( stations_dist )
+

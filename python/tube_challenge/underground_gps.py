@@ -1,6 +1,6 @@
 '''
 underground_gps.gps
-  This is a tuple of tuples - ( station_name, gps-longitude, gps-latitude ).
+  This is a tuple of tuples - ( station_name, gps-latitude, gps-longitude ).
 '''
 
 gps = (
@@ -330,8 +330,8 @@ def svgize(x): return x.replace("&", "&amp;")
 
 def latlon2tileXY(lat, lon, zoom):
   import math
-  tileX = (int)(math.floor((lat + 180.0) / 360.0 * math.pow(2.0, zoom)));
-  tileY = (int)(math.floor((1.0 - math.log( math.tan(lon * math.pi/180.0) + 1.0 / math.cos(lon * math.pi/180.0)) / math.pi) / 2.0 * math.pow(2.0, zoom)));
+  tileX = (int)(math.floor((lon + 180.0) / 360.0 * math.pow(2.0, zoom)));
+  tileY = (int)(math.floor((1.0 - math.log( math.tan(lat * math.pi/180.0) + 1.0 / math.cos(lat * math.pi/180.0)) / math.pi) / 2.0 * math.pow(2.0, zoom)));
   return (tileX, tileY)
 
 
@@ -371,15 +371,15 @@ if __name__=='__main__':
   '''
   Make svg data for the gps data (ie stations and positions).
   '''
-  min_long = float( min(gps, key = lambda x : float(x[1]))[1] )
-  max_long = float( max(gps, key = lambda x : float(x[1]))[1] )
-  min_lati = float( min(gps, key = lambda x : float(x[2]))[2] )
-  max_lati = float( max(gps, key = lambda x : float(x[2]))[2] )
+  min_lati = float( min(gps, key = lambda x : float(x[1]))[1] )
+  max_lati = float( max(gps, key = lambda x : float(x[1]))[1] )
+  min_long = float( min(gps, key = lambda x : float(x[2]))[2] )
+  max_long = float( max(gps, key = lambda x : float(x[2]))[2] )
 
-  lati_fn = AxB( a = 3500.0 / (max_lati-min_lati),
-                 b = 50 + (3500.0 * -min_lati) / (max_lati-min_lati) )
-  long_fn = AxB( a = 2000.0 / (min_long-max_long),
-                 b = 50 + (2000.0 * -max_long) / (min_long-max_long) )
+  long_fn = AxB( a = 3500.0 / (max_long-min_long),
+                 b = 50 + (3500.0 * -min_long) / (max_long-min_long) )
+  lati_fn = AxB( a = 2000.0 / (min_lati-max_lati),
+                 b = 50 + (2000.0 * -max_lati) / (min_lati-max_lati) )
 
   def adjust(cx,cy):
     '''
@@ -399,10 +399,10 @@ if __name__=='__main__':
   s = '<svg width="3600" height="2100">\n<g>\n';
   s += '<rect x="0" y="0" width="3600" height="2100" style="fill:#ddd"/>\n'
 
-  for stn, longi, lati in gps:
+  for stn, lati, longi in gps:
     stn = svgize(stn)
-    cx = lati_fn(float(lati))
-    cy = long_fn(float(longi))
+    cx = long_fn(float(longi))
+    cy = lati_fn(float(lati))
     cx, cy = adjust(cx, cy)
     s += '<ellipse cx="{}" cy="{}" rx="{}" ry="{}" style="fill:#ffa"/>'''.format( \
       cx,cy,4,4 )
@@ -414,16 +414,18 @@ if __name__=='__main__':
     stations = data_routes.routes[route]["stations"]
     stations = stations.replace("\n", ";")
     stations = stations.split(";")
+
     def GetStationGps(station):
-      for stn, longi, lati in gps:
+      for stn, lati, longi in gps:
         if stn==station:
-          return longi, lati
+          return lati, longi
       return None, None
+
     points = ""
     for station in stations:
       sys.stderr.write(station + "\n")
-      longi, lati = GetStationGps(station)
-      cx, cy = lati_fn(float(lati)), long_fn(float(longi))
+      lati, longi = GetStationGps(station)
+      cx, cy = long_fn(float(longi)), lati_fn(float(lati))
       cx, cy = adjust(cx, cy)
       points += "{},{} ".format(cx, cy)
     s += '<polyline points="{}" style="fill:none; stroke:#004; stroke-opacity:0.2; stroke-width:3px"/>\n'.format(points)
