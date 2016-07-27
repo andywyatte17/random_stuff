@@ -412,8 +412,6 @@ if __name__=='__main__':
   for route in data_routes.routes.keys():
     line = []
     stations = data_routes.routes[route]["stations"]
-    stations = stations.replace("\n", ";")
-    stations = stations.split(";")
 
     def GetStationGps(station):
       for stn, lati, longi in gps:
