@@ -15,7 +15,6 @@ def RoutesForStations(station):
       result.append(route)
   return result
 
-
 stations = []
 for station, _, _ in underground_gps.gps:
   stations.append( (station, set(RoutesForStations(station))) )
