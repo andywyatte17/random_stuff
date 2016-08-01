@@ -28,7 +28,7 @@ class MyWidget2(QtSvg.QSvgWidget):
         
     def initUI(self):
         self.show()
-        self.load('lu2.svg')
+        self.load('svg/lu2a.svg')
 
     def paintEvent(self, event):
         super(MyWidget2, self).paintEvent(event)
