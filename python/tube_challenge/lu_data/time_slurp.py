@@ -55,7 +55,7 @@ def ToMins(hhmm):
 def ExtractDepartArrive(html_data):
   soup = BeautifulSoup(html_data, "lxml")
   depart = None
-  arrive = None
+  arrive = Nonepy
   for span in soup.find_all("span"):
     cl = span.get("class")
     if cl == ["label"]:

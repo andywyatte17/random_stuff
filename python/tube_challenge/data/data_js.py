@@ -1,5 +1,3 @@
-import Levenshtein # python -m pip install --user python-Levenshtein
-
 # Originally from https://gist.githubusercontent.com/i-like-robots/a4608cbdf21d979d9452/raw/2e5ef08a303f774d5e870138bdcb0fe5528c8606/data.js
 
 lines = {
@@ -959,5 +957,3 @@ sharedPlatforms = {
    ]
 }
 
-import data_routes
-_exports = data_routes.routes

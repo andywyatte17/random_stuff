@@ -1,5 +1,5 @@
-import data_js
-import data_routes
+import data.data_js as data_js
+import data.data_routes as data_routes
 from pprint import pprint
 import Levenshtein
 
@@ -26,7 +26,6 @@ class StationData(Printable):
     self.routes = data_routes.routes
     self.stations = data_js.stations
     self.stationsOnLines = data_js.stationsOnLines
-    self.CorrectRoutesEntries()
 
   def GoRoutes(self, fromStation, toStation):
     results = []
@@ -78,17 +77,6 @@ class StationData(Printable):
         return station
     print("!!! " + station + " !!!")
     return None
-
-  def CorrectRoutesEntries(self):
-    for route in self.routes.keys():
-      stations = self.routes[route]["stations"]
-      stations = stations.replace("\n",";")
-      stations = stations.split(";")
-      stations_old = stations
-      stations = []
-      for x in stations_old:
-        stations.append( self.LookupStation(x, False) )
-      self.routes[route]["stations"] = stations
 
   def CalculateJourneyTime(self, stationList):
     return "TO:DO"
