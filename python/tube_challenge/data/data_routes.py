@@ -28,7 +28,7 @@ routes = {
     "timings":Zeroized( ('0557','0559','0601','0604','0608') )
   },
   # ...
-  "central_ealing_broadway":{
+  "central_west_ruislip":{
     "stations":('Epping', 'Theydon Bois', 'Debden', 'Loughton', 'Buckhurst Hill', 'Woodford', 'South Woodford', 'Snaresbrook', 'Leytonstone', 'Leyton', 'Stratford', 'Mile End', 'Bethnal Green', 'Liverpool Street', 'Bank', "St. Paul's", 'Chancery Lane', 'Holborn', 'Tottenham Court Road', 'Oxford Circus', 'Bond Street', 'Marble Arch', 'Lancaster Gate', 'Queensway', 'Notting Hill Gate', 'Holland Park', "Shepherd's Bush (Central)", 'White City', 'East Acton', 'North Acton', 'Hanger Lane', 'Perivale', 'Greenford', 'Northolt', 'South Ruislip', 'Ruislip Gardens', 'West Ruislip'),
     "timings":Zeroized( ('0510','0513','0516','0519','0522','0524','0527','0529','0532','0534','0537','0540','0543','0546','0548','0550','0552','0553','0555','0556','0558','0559','0601','0603','0605','0606','0608','0612','0614','0616','0620','0622','0624','0627','0629','0631','0634') )
   },
@@ -63,8 +63,8 @@ routes = {
   },
   # ...
   "district_earls_court_wimbledon":{
-    "stations":("Earl's Court", 'West Brompton', 'Fulham Broadway', 'Parsons Green', 'Putney Bridge', 'East Putney', 'Southfields', 'Wimbledon Park', 'Wimbledon'),
-    "timings":Zeroized( ('0607', '0608', '0610', '0612', '0615', '0617', '0619', '0621', '0625' ) )
+    "stations":('High Street Kensington', "Earl's Court", 'West Brompton', 'Fulham Broadway', 'Parsons Green', 'Putney Bridge', 'East Putney', 'Southfields', 'Wimbledon Park', 'Wimbledon'),
+    "timings":Zeroized( ('0603', '0607', '0608', '0610', '0612', '0615', '0617', '0619', '0621', '0625' ) )
   },
   # ...
   "district_high_st_kensington_olympia":{
