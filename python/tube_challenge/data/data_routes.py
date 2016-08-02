@@ -67,56 +67,73 @@ routes = {
     "timings":Zeroized( ('0607', '0608', '0610', '0612', '0615', '0617', '0619', '0621', '0625' ) )
   },
   # ...
-  "district_edgware_road_kensington_olympia":{
-    "stations":('Edgware Road (Circle Line)', 'Paddington', 'Bayswater', 'Notting Hill Gate', 'High Street Kensington', "Earl's Court", 'Kensington (Olympia)')
+  "district_high_st_kensington_olympia":{
+    "stations":('High Street Kensington', "Earl's Court", 'Kensington (Olympia)'),
+    "timings": Zeroized(('0656', '0700', '0703'))
   },
   # ...
-  "hammersmith":{ "stations":('Barking', 'East Ham', 'Upton Park', 'West Ham', 'Bromley-by-Bow', 'Bow Road', 'Mile End', 'Stepney Green', 'Whitechapel', 'Aldgate East', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Edgware Road (Circle Line)', 'Paddington (H&C Line)-Underground', 'Royal Oak', 'Westbourne Park', 'Ladbroke Grove', 'Latimer Road', 'Wood Lane', "Shepherd's Bush Market", 'Goldhawk Road', 'Hammersmith (H&C Line)')
+  "hammersmith":{
+    "stations":('Barking', 'East Ham', 'Upton Park', 'Plaistow', 'West Ham', 'Bromley-by-Bow', 'Bow Road', 'Mile End', 'Stepney Green', 'Whitechapel', 'Aldgate East', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Edgware Road (Circle Line)', 'Paddington (H&C Line)-Underground', 'Royal Oak', 'Westbourne Park', 'Ladbroke Grove', 'Latimer Road', 'Wood Lane', "Shepherd's Bush Market", 'Goldhawk Road', 'Hammersmith (H&C Line)'),
+    "timings": Zeroized(('0501', '0504', '0506', '0509', '0510', '0512', '0515', '0516', '0518', '0521', '0523', '0526', '0528', '0529', '0531', '0534', '0536', '0538', '0540', '0543', '0545', '0546', '0548', '0550', '0551', '0553', '0554', '0556', '0559'))
   },
   # ...
-  "jubilee":{ "stations":('Stanmore', 'Canons Park', 'Queensbury', 'Kingsbury', 'Wembley Park', 'Neasden', 'Dollis Hill', 'Willesden Green', 'Kilburn', 'West Hampstead', 'Finchley Road', 'Swiss Cottage', "St. John's Wood", 'Baker Street', 'Bond Street', 'Green Park', 'Westminster', 'Waterloo', 'Southwark', 'London Bridge', 'Bermondsey', 'Canada Water', 'Canary Wharf', 'North Greenwich', 'Canning Town', 'West Ham', 'Stratford')
+  "jubilee":{
+    "stations":('Stanmore', 'Canons Park', 'Queensbury', 'Kingsbury', 'Wembley Park', 'Neasden', 'Dollis Hill', 'Willesden Green', 'Kilburn', 'West Hampstead', 'Finchley Road', 'Swiss Cottage', "St. John's Wood", 'Baker Street', 'Bond Street', 'Green Park', 'Westminster', 'Waterloo', 'Southwark', 'London Bridge', 'Bermondsey', 'Canada Water', 'Canary Wharf', 'North Greenwich', 'Canning Town', 'West Ham', 'Stratford'),
+    "timings": Zeroized(('0709', '0712', '0714', '0716', '0718', '0721', '0723', '0725', '0727', '0728', '0730', '0732', '0734', '0736', '0739', '0740', '0742', '0743', '0745', '0747', '0749', '0752', '0755', '0759', '0801', '0803', '0806'))
   },
   # ...
-  "metropolitan_1":{ "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Croxley', 'Watford')
+  "metropolitan_watford":{
+    "stations":('Moor Park', 'Croxley', 'Watford'),
+    "timings": Zeroized(('0730', '0734', '0738'))
   },
   # ...
-  "metropolitan_2":{ "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Rickmansworth', 'Chorleywood', 'Chalfont & Latimer', 'Amersham')
+  "metropolitan_amersham":{
+    "stations":('Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Rickmansworth', 'Chorleywood', 'Chalfont & Latimer', 'Amersham'),
+    "timings": Zeroized(('1925', '1931', '1938', '1940', '1942', '1943', '1946', '1948', '1950', '1953', '1956', '2001', '2004', '2008', '2013'))
   },
   # ...
-  "metropolitan_3":{
-    "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Rickmansworth', 'Chorleywood', 'Chalfont & Latimer', 'Chesham')
+  "metropolitan_chesham":{
+    "stations":('Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Rickmansworth', 'Chorleywood', 'Chalfont & Latimer', 'Chesham'),
+    "timings": Zeroized(('2310', '2313', '2315', '2317', '2320', '2323', '2328', '2331', '2336', '2345'))
   },
   # ...
-  "metropolitan_4":{
-    "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'West Harrow', 'Rayners Lane', 'Eastcote', 'Ruislip Manor', 'Ruislip', 'Ickenham', 'Hillingdon', 'Uxbridge')
+  "metropolitan_uxbridge":{
+    "stations":('Harrow-on-the-Hill', 'West Harrow', 'Rayners Lane', 'Eastcote', 'Ruislip Manor', 'Ruislip', 'Ickenham', 'Hillingdon', 'Uxbridge'),
+    "timings": Zeroized(('0543', '0545', '0547', '0549', '0551', '0553', '0555', '0557', '0601'))
   },
   # ...
   "northern_bank":{
-    "stations":('Morden', 'South Wimbledon', 'Colliers Wood', 'Tooting Broadway', 'Tooting Bec', 'Balham', 'Clapham South', 'Clapham Common', 'Clapham North', 'Stockwell', 'Oval', 'Kennington', 'Elephant & Castle', 'Borough', 'London Bridge', 'Bank', 'Moorgate', 'Old Street', 'Angel', "King's Cross St. Pancras", 'Euston', 'Camden Town', 'Kentish Town', 'Tufnell Park', 'Archway', 'Highgate', 'East Finchley', 'Finchley Central', 'West Finchley', 'Woodside Park', 'Totteridge & Whetstone', 'High Barnet')
+    "stations":('Morden', 'South Wimbledon', 'Colliers Wood', 'Tooting Broadway', 'Tooting Bec', 'Balham', 'Clapham South', 'Clapham Common', 'Clapham North', 'Stockwell', 'Oval', 'Kennington', 'Elephant & Castle', 'Borough', 'London Bridge', 'Bank', 'Moorgate', 'Old Street', 'Angel', "King's Cross St. Pancras", 'Euston', 'Camden Town', 'Kentish Town', 'Tufnell Park', 'Archway', 'Highgate', 'East Finchley', 'Finchley Central', 'West Finchley', 'Woodside Park', 'Totteridge & Whetstone', 'High Barnet'),
+    "timings": Zeroized(('0005', '0007', '0009', '0011', '0013', '0015', '0017', '0019', '0020', '0022', '0024', '0027', '0029', '0031', '0032', '0034', '0036', '0037', '0040', '0043', '0044', '0051', '0053', '0054', '0056', '0059', '0101', '0105', '0107', '0109', '0111', '0115'))
   },
   # ...
   "northern_charing_cross":{
-    "stations":('Morden', 'South Wimbledon', 'Colliers Wood', 'Tooting Broadway', 'Tooting Bec', 'Balham', 'Clapham South', 'Clapham Common', 'Clapham North', 'Stockwell', 'Oval', 'Kennington', 'Waterloo', 'Embankment', 'Charing Cross', 'Leicester Square', 'Tottenham Court Road', 'Goodge Street', 'Warren Street', 'Euston', 'Mornington Crescent', 'Camden Town', 'Chalk Farm', 'Belsize Park', 'Hampstead', 'Golders Green', 'Brent Cross', 'Hendon Central', 'Colindale', 'Burnt Oak', 'Edgware')
+    "stations":('Kennington', 'Waterloo', 'Embankment', 'Charing Cross', 'Leicester Square', 'Tottenham Court Road', 'Goodge Street', 'Warren Street', 'Euston', 'Mornington Crescent', 'Camden Town', 'Chalk Farm', 'Belsize Park', 'Hampstead', 'Golders Green', 'Brent Cross', 'Hendon Central', 'Colindale', 'Burnt Oak', 'Edgware'),
+    "timings": Zeroized(('0033', '0035', '0037', '0038', '0039', '0041', '0042', '0043', '0045', '0047', '0051', '0052', '0054', '0056', '0101', '0103', '0105', '0108', '0110', '0113'))
   },
   # ...
   "northern_mill_hill":{
-    "stations":('Mill Hill East', 'Finchley Central')
+    "stations":('Mill Hill East', 'Finchley Central'),
+    "timings": Zeroized(('0106', '0109'))
   },
   # ...
-  "piccadilly_1":{
-    "stations":('Cockfosters', 'Oakwood', 'Southgate', 'Arnos Grove', 'Bounds Green', 'Wood Green', 'Turnpike Lane', 'Manor House', 'Finsbury Park', 'Arsenal', 'Holloway Road', 'Caledonian Road', "King's Cross St. Pancras", 'Russell Square', 'Holborn', 'Covent Garden', 'Leicester Square', 'Piccadilly Circus', 'Green Park', 'Hyde Park Corner', 'Knightsbridge', 'South Kensington', 'Gloucester Road', "Earl's Court", 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Turnham Green', 'Acton Town', 'Ealing Common', 'North Ealing', 'Park Royal', 'Alperton', 'Sudbury Town', 'Sudbury Hill', 'South Harrow', 'Rayners Lane', 'Eastcote', 'Ruislip Manor', 'Ruislip', 'Ickenham', 'Hillingdon', 'Uxbridge')
+  "piccadilly_rayners_lane":{
+    "stations":('Acton Town', 'Ealing Common', 'North Ealing', 'Park Royal', 'Alperton', 'Sudbury Town', 'Sudbury Hill', 'South Harrow', 'Rayners Lane'),
+    "timings": Zeroized(('0656', '0658', '0700', '0702', '0705', '0707', '0710', '0712', '0716'))
   },
   # ...
-  "piccadilly_2":{
-    "stations":('Cockfosters', 'Oakwood', 'Southgate', 'Arnos Grove', 'Bounds Green', 'Wood Green', 'Turnpike Lane', 'Manor House', 'Finsbury Park', 'Arsenal', 'Holloway Road', 'Caledonian Road', "King's Cross St. Pancras", 'Russell Square', 'Holborn', 'Covent Garden', 'Leicester Square', 'Piccadilly Circus', 'Green Park', 'Hyde Park Corner', 'Knightsbridge', 'South Kensington', 'Gloucester Road', "Earl's Court", 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Turnham Green', 'Acton Town', 'South Ealing', 'Northfields', 'Boston Manor', 'Osterley', 'Hounslow East', 'Hounslow Central', 'Hounslow West', 'Hatton Cross', 'Heathrow Terminal 4', 'Heathrow Terminals 1-2-3')
+  "piccadilly_heathrow_5":{
+    "stations":('Cockfosters', 'Oakwood', 'Southgate', 'Arnos Grove', 'Bounds Green', 'Wood Green', 'Turnpike Lane', 'Manor House', 'Finsbury Park', 'Arsenal', 'Holloway Road', 'Caledonian Road', "King's Cross St. Pancras", 'Russell Square', 'Holborn', 'Covent Garden', 'Leicester Square', 'Piccadilly Circus', 'Green Park', 'Hyde Park Corner', 'Knightsbridge', 'South Kensington', 'Gloucester Road', "Earl's Court", 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Turnham Green', 'Acton Town', 'South Ealing', 'Northfields', 'Boston Manor', 'Osterley', 'Hounslow East', 'Hounslow Central', 'Hounslow West', 'Hatton Cross', 'Heathrow Terminals 1-2-3', 'Heathrow Terminal 5'),
+    "timings": Zeroized(('2202', '2204', '2207', '2212', '2214', '2216', '2218', '2221', '2224', '2225', '2227', '2228', '2232', '2234', '2235', '2237', '2238', '2240', '2241', '2243', '2245', '2247', '2249', '2251', '2254', '2256', '2300', '2305', '2308', '2311', '2313', '2316', '2318', '2319', '2322', '2328', '2332', '2336'))
   },
-  # ...
-  "piccadilly_3":{
-    "stations":('Acton Town', 'South Ealing', 'Northfields', 'Boston Manor', 'Osterley', 'Hounslow East', 'Hounslow Central', 'Hounslow West', 'Hatton Cross', 'Heathrow Terminals 1-2-3', 'Heathrow Terminal 5')
+  "piccadilly_heathrow_4":{
+    "stations":('Hatton Cross', 'Heathrow Terminal 4'),
+    "timings": Zeroized(('0749', '0752'))
   },
   # ...
   "victoria":{
-    "stations":('Walthamstow Central', 'Blackhorse Road', 'Tottenham Hale', 'Seven Sisters', 'Finsbury Park', 'Highbury & Islington', "King's Cross St. Pancras", 'Euston', 'Warren Street', 'Oxford Circus', 'Green Park', 'Victoria', 'Pimlico', 'Vauxhall', 'Stockwell', 'Brixton')
+    "stations":('Walthamstow Central', 'Blackhorse Road', 'Tottenham Hale', 'Seven Sisters', 'Finsbury Park', 'Highbury & Islington', "King's Cross St. Pancras", 'Euston', 'Warren Street', 'Oxford Circus', 'Green Park', 'Victoria', 'Pimlico', 'Vauxhall', 'Stockwell', 'Brixton'),
+    "timings": Zeroized(('0525', '0527', '0529', '0531', '0535', '0537', '0540', '0541', '0543', '0545', '0546', '0549', '0550', '0552', '0554', '0557'))
   },
   # ...
 }
