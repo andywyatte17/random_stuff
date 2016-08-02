@@ -42,40 +42,102 @@ routes = {
     "timings":Zeroized( ( '0604', '0606', '0608', '0611', '0614' ) )
   },
   # ...
-  "circle":{ "stations":('Aldgate', 'Tower Hill', 'Monument', 'Cannon Street', 'Mansion House', 'Blackfriars', 'Temple', 'Embankment', 'Westminster', "St. James's Park", 'Victoria', 'Sloane Square', 'South Kensington', 'Gloucester Road', 'High Street Kensington', 'Notting Hill Gate', 'Bayswater', 'Paddington', 'Edgware Road (Circle Line)', 'Baker Street', 'Great Portland Street', 'Euston Square', "King's Cross St. Pancras", 'Farringdon', 'Barbican', 'Moorgate', 'Liverpool Street')  },
+  "circle_hammersmith_north_circle":{
+    "stations":( 'Hammersmith (H&C Line)', 'Goldhawk Road', "Shepherd's Bush Market", "Wood Lane", 'Latimer Road', 'Ladbroke Grove', 'Westbourne Park', 'Royal Oak', 'Paddington (H&C Line)-Underground', 'Edgware Road (Circle Line)', 'Baker Street', 'Great Portland Street', 'Euston Square', "King's Cross St. Pancras", 'Farringdon', 'Barbican', 'Moorgate', 'Liverpool Street', 'Aldgate'),
+    "timings":Zeroized( ('0438','0439','0441','0442','0444','0445','0447','0448','0450','0453','0456','0458','0500','0502','0505','0507','0509','0510','0513') )
+  },
   # ...
-  "district_upminster_richmond":{ "stations":('Upminster', 'Upminster Bridge', 'Hornchurch', 'Elm Park', 'Dagenham East', 'Dagenham Heathway', 'Becontree', 'Upney', 'Barking', 'East Ham', 'Upton Park', 'Plaistow', 'West Ham', 'Bromley-by-Bow', 'Bow Road', 'Mile End', 'Stepney Green', 'Whitechapel', 'Aldgate East', 'Tower Hill', 'Monument', 'Cannon Street', 'Mansion House', 'Blackfriars', 'Temple', 'Embankment', 'Westminster', "St. James's Park", 'Victoria', 'Sloane Square', 'South Kensington', 'Gloucester Road', "Earl's Court", 'West Kensington', 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Ravenscourt Park', 'Stamford Brook', 'Turnham Green', 'Gunnersbury', 'Kew Gardens', 'Richmond')  },
+  "circle_liverpool_street_south_circle":{
+    "stations":( 'Liverpool Street', 'Aldgate', 'Tower Hill', 'Monument', 'Cannon Street', 'Mansion House', 'Blackfriars', 'Temple', 'Embankment', 'Westminster', "St. James's Park", 'Victoria', 'Sloane Square', 'South Kensington', 'Gloucester Road', 'High Street Kensington', 'Notting Hill Gate', 'Bayswater', 'Paddington', 'Edgware Road (Circle Line)'),
+    "timings":Zeroized( ('0524', '0527','0529','0531','0532','0533','0535','0537','0539','0540','0542','0544','0546','0548','0552','0554','0556','0558','0600','0603') )
+  },
   # ...
-  "district_earls_court_ealing_broadway":{ "stations":("Earl's Court", 'West Kensington', 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Ravenscourt Park', 'Stamford Brook', 'Turnham Green', 'Chiswick Park', 'Acton Town', 'Ealing Common', 'Ealing Broadway')  },
+  "district_upminster_richmond":{
+    "stations":('Upminster', 'Upminster Bridge', 'Hornchurch', 'Elm Park', 'Dagenham East', 'Dagenham Heathway', 'Becontree', 'Upney', 'Barking', 'East Ham', 'Upton Park', 'Plaistow', 'West Ham', 'Bromley-by-Bow', 'Bow Road', 'Mile End', 'Stepney Green', 'Whitechapel', 'Aldgate East', 'Tower Hill', 'Monument', 'Cannon Street', 'Mansion House', 'Blackfriars', 'Temple', 'Embankment', 'Westminster', "St. James's Park", 'Victoria', 'Sloane Square', 'South Kensington', 'Gloucester Road', "Earl's Court", 'West Kensington', 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Ravenscourt Park', 'Stamford Brook', 'Turnham Green', 'Gunnersbury', 'Kew Gardens', 'Richmond'),
+    "timings":Zeroized( ('0453', '0455', '0457', '0459', '0502', '0504', '0507', '0509', '0512', '0516', '0518', '0520', '0522', '0524', '0526', '0528', '0530', '0533', '0535', '0537', '0539', '0540', '0541', '0543', '0545', '0547', '0548', '0550', '0552', '0554', '0556', '0558', '0602', '0604', '0606', '0608', '0610', '0611', '0613', '0616', '0618', '0622') )
+  },
   # ...
-  "district_earls_court_wimbledon":{ "stations":("Earl's Court", 'West Brompton', 'Fulham Broadway', 'Parsons Green', 'Putney Bridge', 'East Putney', 'Southfields', 'Wimbledon Park', 'Wimbledon')  },
+  "district_earls_court_ealing_broadway":{
+    "stations":("Earl's Court", 'West Kensington', 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Ravenscourt Park', 'Stamford Brook', 'Turnham Green', 'Chiswick Park', 'Acton Town', 'Ealing Common', 'Ealing Broadway'),
+    "timings":Zeroized(('0609', '0611', '0613', '0615', '0617', '0618', '0620', '0622', '0625', '0627', '0633'))
+  },
   # ...
-  "district_edgware_road_kensington_olympia":{ "stations":('Edgware Road (Circle Line)', 'Paddington', 'Bayswater', 'Notting Hill Gate', 'High Street Kensington', "Earl's Court", 'Kensington (Olympia)')  },
+  "district_earls_court_wimbledon":{
+    "stations":("Earl's Court", 'West Brompton', 'Fulham Broadway', 'Parsons Green', 'Putney Bridge', 'East Putney', 'Southfields', 'Wimbledon Park', 'Wimbledon'),
+    "timings":Zeroized( ('0607', '0608', '0610', '0612', '0615', '0617', '0619', '0621', '0625' ) )
+  },
   # ...
-  "hammersmith":{ "stations":('Barking', 'East Ham', 'Upton Park', 'West Ham', 'Bromley-by-Bow', 'Bow Road', 'Mile End', 'Stepney Green', 'Whitechapel', 'Aldgate East', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Edgware Road (Circle Line)', 'Paddington (H&C Line)-Underground', 'Royal Oak', 'Westbourne Park', 'Ladbroke Grove', 'Latimer Road', 'Wood Lane', "Shepherd's Bush Market", 'Goldhawk Road', 'Hammersmith (H&C Line)')  },
+  "district_edgware_road_kensington_olympia":{
+    "stations":('Edgware Road (Circle Line)', 'Paddington', 'Bayswater', 'Notting Hill Gate', 'High Street Kensington', "Earl's Court", 'Kensington (Olympia)')
+  },
   # ...
-  "jubilee":{ "stations":('Stanmore', 'Canons Park', 'Queensbury', 'Kingsbury', 'Wembley Park', 'Neasden', 'Dollis Hill', 'Willesden Green', 'Kilburn', 'West Hampstead', 'Finchley Road', 'Swiss Cottage', "St. John's Wood", 'Baker Street', 'Bond Street', 'Green Park', 'Westminster', 'Waterloo', 'Southwark', 'London Bridge', 'Bermondsey', 'Canada Water', 'Canary Wharf', 'North Greenwich', 'Canning Town', 'West Ham', 'Stratford')  },
+  "hammersmith":{ "stations":('Barking', 'East Ham', 'Upton Park', 'West Ham', 'Bromley-by-Bow', 'Bow Road', 'Mile End', 'Stepney Green', 'Whitechapel', 'Aldgate East', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Edgware Road (Circle Line)', 'Paddington (H&C Line)-Underground', 'Royal Oak', 'Westbourne Park', 'Ladbroke Grove', 'Latimer Road', 'Wood Lane', "Shepherd's Bush Market", 'Goldhawk Road', 'Hammersmith (H&C Line)')
+  },
   # ...
-  "metropolitan_1":{ "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Croxley', 'Watford')  },
+  "jubilee":{ "stations":('Stanmore', 'Canons Park', 'Queensbury', 'Kingsbury', 'Wembley Park', 'Neasden', 'Dollis Hill', 'Willesden Green', 'Kilburn', 'West Hampstead', 'Finchley Road', 'Swiss Cottage', "St. John's Wood", 'Baker Street', 'Bond Street', 'Green Park', 'Westminster', 'Waterloo', 'Southwark', 'London Bridge', 'Bermondsey', 'Canada Water', 'Canary Wharf', 'North Greenwich', 'Canning Town', 'West Ham', 'Stratford')
+  },
   # ...
-  "metropolitan_2":{ "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Rickmansworth', 'Chorleywood', 'Chalfont & Latimer', 'Amersham')  },
+  "metropolitan_1":{ "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Croxley', 'Watford')
+  },
   # ...
-  "metropolitan_3":{ "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Rickmansworth', 'Chorleywood', 'Chalfont & Latimer', 'Chesham')  },
+  "metropolitan_2":{ "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Rickmansworth', 'Chorleywood', 'Chalfont & Latimer', 'Amersham')
+  },
   # ...
-  "metropolitan_4":{ "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'West Harrow', 'Rayners Lane', 'Eastcote', 'Ruislip Manor', 'Ruislip', 'Ickenham', 'Hillingdon', 'Uxbridge')  },
+  "metropolitan_3":{
+    "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'North Harrow', 'Pinner', 'Northwood Hills', 'Northwood', 'Moor Park', 'Rickmansworth', 'Chorleywood', 'Chalfont & Latimer', 'Chesham')
+  },
   # ...
-  "northern_bank":{ "stations":('Morden', 'South Wimbledon', 'Colliers Wood', 'Tooting Broadway', 'Tooting Bec', 'Balham', 'Clapham South', 'Clapham Common', 'Clapham North', 'Stockwell', 'Oval', 'Kennington', 'Elephant & Castle', 'Borough', 'London Bridge', 'Bank', 'Moorgate', 'Old Street', 'Angel', "King's Cross St. Pancras", 'Euston', 'Camden Town', 'Kentish Town', 'Tufnell Park', 'Archway', 'Highgate', 'East Finchley', 'Finchley Central', 'West Finchley', 'Woodside Park', 'Totteridge & Whetstone', 'High Barnet')  },
+  "metropolitan_4":{
+    "stations":('Aldgate', 'Liverpool Street', 'Moorgate', 'Barbican', 'Farringdon', "King's Cross St. Pancras", 'Euston Square', 'Great Portland Street', 'Baker Street', 'Finchley Road', 'Wembley Park', 'Preston Road', 'Northwick Park', 'Harrow-on-the-Hill', 'West Harrow', 'Rayners Lane', 'Eastcote', 'Ruislip Manor', 'Ruislip', 'Ickenham', 'Hillingdon', 'Uxbridge')
+  },
   # ...
-  "northern_charing_cross":{ "stations":('Morden', 'South Wimbledon', 'Colliers Wood', 'Tooting Broadway', 'Tooting Bec', 'Balham', 'Clapham South', 'Clapham Common', 'Clapham North', 'Stockwell', 'Oval', 'Kennington', 'Waterloo', 'Embankment', 'Charing Cross', 'Leicester Square', 'Tottenham Court Road', 'Goodge Street', 'Warren Street', 'Euston', 'Mornington Crescent', 'Camden Town', 'Chalk Farm', 'Belsize Park', 'Hampstead', 'Golders Green', 'Brent Cross', 'Hendon Central', 'Colindale', 'Burnt Oak', 'Edgware')  },
+  "northern_bank":{
+    "stations":('Morden', 'South Wimbledon', 'Colliers Wood', 'Tooting Broadway', 'Tooting Bec', 'Balham', 'Clapham South', 'Clapham Common', 'Clapham North', 'Stockwell', 'Oval', 'Kennington', 'Elephant & Castle', 'Borough', 'London Bridge', 'Bank', 'Moorgate', 'Old Street', 'Angel', "King's Cross St. Pancras", 'Euston', 'Camden Town', 'Kentish Town', 'Tufnell Park', 'Archway', 'Highgate', 'East Finchley', 'Finchley Central', 'West Finchley', 'Woodside Park', 'Totteridge & Whetstone', 'High Barnet')
+  },
   # ...
-  "northern_mill_hill":{ "stations":('Mill Hill East', 'Finchley Central')  },
+  "northern_charing_cross":{
+    "stations":('Morden', 'South Wimbledon', 'Colliers Wood', 'Tooting Broadway', 'Tooting Bec', 'Balham', 'Clapham South', 'Clapham Common', 'Clapham North', 'Stockwell', 'Oval', 'Kennington', 'Waterloo', 'Embankment', 'Charing Cross', 'Leicester Square', 'Tottenham Court Road', 'Goodge Street', 'Warren Street', 'Euston', 'Mornington Crescent', 'Camden Town', 'Chalk Farm', 'Belsize Park', 'Hampstead', 'Golders Green', 'Brent Cross', 'Hendon Central', 'Colindale', 'Burnt Oak', 'Edgware')
+  },
   # ...
-  "piccadilly_1":{ "stations":('Cockfosters', 'Oakwood', 'Southgate', 'Arnos Grove', 'Bounds Green', 'Wood Green', 'Turnpike Lane', 'Manor House', 'Finsbury Park', 'Arsenal', 'Holloway Road', 'Caledonian Road', "King's Cross St. Pancras", 'Russell Square', 'Holborn', 'Covent Garden', 'Leicester Square', 'Piccadilly Circus', 'Green Park', 'Hyde Park Corner', 'Knightsbridge', 'South Kensington', 'Gloucester Road', "Earl's Court", 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Turnham Green', 'Acton Town', 'Ealing Common', 'North Ealing', 'Park Royal', 'Alperton', 'Sudbury Town', 'Sudbury Hill', 'South Harrow', 'Rayners Lane', 'Eastcote', 'Ruislip Manor', 'Ruislip', 'Ickenham', 'Hillingdon', 'Uxbridge')  },
+  "northern_mill_hill":{
+    "stations":('Mill Hill East', 'Finchley Central')
+  },
   # ...
-  "piccadilly_2":{ "stations":('Cockfosters', 'Oakwood', 'Southgate', 'Arnos Grove', 'Bounds Green', 'Wood Green', 'Turnpike Lane', 'Manor House', 'Finsbury Park', 'Arsenal', 'Holloway Road', 'Caledonian Road', "King's Cross St. Pancras", 'Russell Square', 'Holborn', 'Covent Garden', 'Leicester Square', 'Piccadilly Circus', 'Green Park', 'Hyde Park Corner', 'Knightsbridge', 'South Kensington', 'Gloucester Road', "Earl's Court", 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Turnham Green', 'Acton Town', 'South Ealing', 'Northfields', 'Boston Manor', 'Osterley', 'Hounslow East', 'Hounslow Central', 'Hounslow West', 'Hatton Cross', 'Heathrow Terminal 4', 'Heathrow Terminals 1-2-3')  },
+  "piccadilly_1":{
+    "stations":('Cockfosters', 'Oakwood', 'Southgate', 'Arnos Grove', 'Bounds Green', 'Wood Green', 'Turnpike Lane', 'Manor House', 'Finsbury Park', 'Arsenal', 'Holloway Road', 'Caledonian Road', "King's Cross St. Pancras", 'Russell Square', 'Holborn', 'Covent Garden', 'Leicester Square', 'Piccadilly Circus', 'Green Park', 'Hyde Park Corner', 'Knightsbridge', 'South Kensington', 'Gloucester Road', "Earl's Court", 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Turnham Green', 'Acton Town', 'Ealing Common', 'North Ealing', 'Park Royal', 'Alperton', 'Sudbury Town', 'Sudbury Hill', 'South Harrow', 'Rayners Lane', 'Eastcote', 'Ruislip Manor', 'Ruislip', 'Ickenham', 'Hillingdon', 'Uxbridge')
+  },
   # ...
-  "piccadilly_3":{ "stations":('Acton Town', 'South Ealing', 'Northfields', 'Boston Manor', 'Osterley', 'Hounslow East', 'Hounslow Central', 'Hounslow West', 'Hatton Cross', 'Heathrow Terminals 1-2-3', 'Heathrow Terminal 5')  },
+  "piccadilly_2":{
+    "stations":('Cockfosters', 'Oakwood', 'Southgate', 'Arnos Grove', 'Bounds Green', 'Wood Green', 'Turnpike Lane', 'Manor House', 'Finsbury Park', 'Arsenal', 'Holloway Road', 'Caledonian Road', "King's Cross St. Pancras", 'Russell Square', 'Holborn', 'Covent Garden', 'Leicester Square', 'Piccadilly Circus', 'Green Park', 'Hyde Park Corner', 'Knightsbridge', 'South Kensington', 'Gloucester Road', "Earl's Court", 'Barons Court', 'Hammersmith (Dist&Picc Line)', 'Turnham Green', 'Acton Town', 'South Ealing', 'Northfields', 'Boston Manor', 'Osterley', 'Hounslow East', 'Hounslow Central', 'Hounslow West', 'Hatton Cross', 'Heathrow Terminal 4', 'Heathrow Terminals 1-2-3')
+  },
   # ...
-  "victoria":{ "stations":('Walthamstow Central', 'Blackhorse Road', 'Tottenham Hale', 'Seven Sisters', 'Finsbury Park', 'Highbury & Islington', "King's Cross St. Pancras", 'Euston', 'Warren Street', 'Oxford Circus', 'Green Park', 'Victoria', 'Pimlico', 'Vauxhall', 'Stockwell', 'Brixton')  },
+  "piccadilly_3":{
+    "stations":('Acton Town', 'South Ealing', 'Northfields', 'Boston Manor', 'Osterley', 'Hounslow East', 'Hounslow Central', 'Hounslow West', 'Hatton Cross', 'Heathrow Terminals 1-2-3', 'Heathrow Terminal 5')
+  },
+  # ...
+  "victoria":{
+    "stations":('Walthamstow Central', 'Blackhorse Road', 'Tottenham Hale', 'Seven Sisters', 'Finsbury Park', 'Highbury & Islington', "King's Cross St. Pancras", 'Euston', 'Warren Street', 'Oxford Circus', 'Green Park', 'Victoria', 'Pimlico', 'Vauxhall', 'Stockwell', 'Brixton')
+  },
   # ...
 }
+
+if __name__=='__main__':
+  import sys, os
+  if len(sys.argv)==2 and sys.argv[1]=='-test':
+    sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".."))
+    from data.data_js import stations
+
+    def HasStation(test):
+      for x in stations.keys():
+        if stations[x]==test: return True
+      return False
+
+    for route in routes.keys():
+      for station in routes[route]["stations"]:
+        if not HasStation(station):
+          print("Error : route {}, station {}".format(route, station))
+
+    for route in routes.keys():
+      if "stations" in routes[route] and "timings" in routes[route]:
+        if len(routes[route]["stations"]) != len(routes[route]["timings"]):
+          print("Stations / timings mismatch in {}".format(route))
