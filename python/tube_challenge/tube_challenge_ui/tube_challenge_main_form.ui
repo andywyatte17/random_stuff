@@ -32,37 +32,47 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
-       <layout class="QVBoxLayout" name="verticalLayout">
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QVBoxLayout" name="vbox1">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinAndMaxSize</enum>
+        </property>
         <item>
          <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Tube Station List</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QTextEdit" name="textEdit">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="StationLineEdit" name="lineEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit2"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableView" name="tableView">
           <property name="minimumSize">
            <size>
-            <width>200</width>
-            <height>200</height>
+            <width>100</width>
+            <height>0</height>
            </size>
-          </property>
-          <property name="lineWrapMode">
-           <enum>QTextEdit::NoWrap</enum>
           </property>
          </widget>
         </item>
        </layout>
       </widget>
-      <widget class="MyWidget2" name="svgWidget" native="true"/>
+      <widget class="MyWidget2" name="myWidget2" native="true"/>
      </widget>
     </item>
    </layout>
@@ -103,7 +113,7 @@
     <string>Add Next Station</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+T</string>
+    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>
@@ -120,6 +130,11 @@
     <slot>openAction()</slot>
     <slot>nextStationAction()</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>StationLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>stationlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -147,8 +162,8 @@
    <slot>nextStationAction()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>399</x>
-     <y>302</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
