@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mpc stop
+mpc clear
+python bus_reader.py $1 100 | festival --tts

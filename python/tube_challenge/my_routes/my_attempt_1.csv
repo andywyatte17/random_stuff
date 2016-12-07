@@ -1,0 +1,65 @@
+High Barnet,,05:25:00,05:25:00,05:25:00
+northern_bank => Finchley Central,00:09,05:37:00,05:38:00,05:39:00
+northern_mill_hill => Mill Hill East,00:03,05:43:00,05:45:00,05:47:00
+northern_mill_hill => Finchley Central,00:03,05:49:00,05:52:00,05:55:00
+northern_bank => Kennington,00:35,06:27:00,06:31:00,06:35:00
+northern_bank => Oval,00:01,06:31:00,06:36:00,06:41:00
+northern_charing_cross => Edgware,00:46,07:20:00,07:26:00,07:32:00
+other => Canons Park,00:20,07:43:00,07:50:00,07:57:00
+jubilee => Stanmore,00:02,07:48:00,07:56:00,08:04:00
+jubilee => Baker Street,00:29,08:20:00,08:29:00,08:38:00
+hammersmith => King's Cross St. Pancras,00:05,08:28:00,08:38:00,08:48:00
+piccadilly_2 => Covent Garden           ,00:05,08:36:00,08:47:00,08:58:00
+piccadilly_2 => Cockfosters             ,00:37,09:16:00,09:28:00,09:40:00
+piccadilly_2 => Finsbury Park,00:22,09:41:00,09:54:00,10:07:00
+victoria => Walthamstow Central,00:09,09:53:00,10:07:00,10:21:00
+victoria => King's Cross St. Pancras,00:15,10:11:00,10:26:00,10:41:00
+metropolitan_4 => Aldgate,00:11,10:25:00,10:41:00,10:57:00
+circle => South Kensington,00:21,10:49:00,11:06:00,11:23:00
+piccadilly_1 => Piccadilly Circus,00:08,11:00:00,11:18:00,11:36:00
+bakerloo => Harrow & Wealdstone,00:39,11:42:00,12:01:00,12:20:00
+bakerloo => Kenton,00:02,11:47:00,12:07:00,12:27:00
+other => 0:15 => Preston Road,00:15,12:05:00,12:26:00,12:47:00
+metropolitan_1 => Watford,00:26,12:34:00,12:56:00,13:18:00
+metropolitan_1 => Moor Park,00:07,12:44:00,13:07:00,13:30:00
+metropolitan_3 => Chesham,00:21,13:08:00,13:32:00,13:56:00
+metropolitan_3 => Chalfont & Latimer,00:08,13:19:00,13:44:00,14:09:00
+metropolitan_2 => Amersham,00:03,13:25:00,13:51:00,14:17:00
+metropolitan_2 => Harrow-on-the-Hill,00:29,13:57:00,14:24:00,14:51:00
+metropolitan_4 => Uxbridge,00:19,14:19:00,14:47:00,15:15:00
+piccadilly_1 => North Ealing,00:28,14:50:00,15:19:00,15:48:00
+piccadilly_1 => Park Royal,00:02,14:55:00,15:25:00,15:55:00
+other => 0:10 => Hanger Lane,00:10,15:08:00,15:39:00,16:10:00
+central_roding_ => West Ruislip,00:14,15:25:00,15:57:00,16:29:00
+central_roding_ => North Acton,00:17,15:45:00,16:18:00,16:51:00
+central_ealing_broadway => Ealing Broadway,00:05,15:53:00,16:27:00,17:01:00
+central_ealing_broadway => Epping,01:11,17:07:00,17:42:00,18:17:00
+central_ealing_broadway => Woodford,00:15,17:25:00,18:01:00,18:37:00
+other => 0:10 => Roding Valley,00:02,17:30:00,18:07:00,18:44:00
+central_roding_ => Stratford,00:16,17:49:00,18:27:00,19:05:00
+jubilee => West Ham,00:03,17:55:00,18:34:00,19:13:00
+other => 0:20 => Upminster,00:20,18:18:00,18:58:00,19:38:00
+district_1 => Aldgate East,00:42,19:03:00,19:44:00,20:25:00
+district_1 => West Ham,00:13,19:19:00,20:01:00,20:43:00
+jubilee => Waterloo,00:16,19:38:00,20:21:00,21:04:00
+bakerloo => Elephant & Castle,00:04,19:45:00,20:29:00,21:13:00
+northern_bank => Stockwell,00:06,19:54:00,20:39:00,21:24:00
+victoria => Pimlico,00:03,20:00:00,20:46:00,21:32:00
+victoria => Brixton,00:05,20:08:00,20:55:00,21:42:00
+victoria => Stockwell,00:02,20:13:00,21:01:00,21:49:00
+northern_bank => Morden,00:17,20:33:00,21:22:00,22:11:00
+northern_bank => South Wimbledon,00:02,20:38:00,21:28:00,22:18:00
+other => 0:15 => Wimbledon,00:15,20:56:00,21:47:00,22:38:00
+district_3 => Gloucester Road,00:22,21:21:00,22:13:00,23:05:00
+circle => Edgware Road (Circle Line),00:12,21:36:00,22:29:00,23:22:00
+hammersmith => Hammersmith (H&C Line),00:16,21:55:00,22:49:00,23:43:00
+other => 0:10 => Hammersmith (Dist&Picc Line),00:10,22:08:00,23:03:00,23:58:00
+district_1 => West Kensington,00:03,22:14:00,23:10:00,00:06:00
+district_1 => Richmond,00:18,22:35:00,23:32:00,00:29:00
+district_1 => Turnham Green,00:09,22:47:00,23:45:00,00:43:00
+district_2 => Ealing Common,00:07,22:57:00,23:56:00,00:55:00
+district_2 => Acton Town,00:03,23:03:00,00:03:00,01:03:00
+piccadilly_2 => Heathrow Terminals 1-2-3,00:30,23:36:00,00:37:00,01:38:00
+piccadilly_3 => Heathrow Terminal 5,00:05,23:44:00,00:46:00,01:48:00
+,,,,
+,,18:07:00,19:08:00,20:09:00

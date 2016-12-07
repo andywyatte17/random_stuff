@@ -1,0 +1,9 @@
+#!/bin/sh
+
+python bus_reader.py $1 100 > /tmp/bus_reader.txt
+cat /tmp/bus_reader.txt | text2wave > /tmp/bus_reader.wav
+mpc clear
+mpc add file:///tmp/bus_reader.wav
+mpc play
+
+

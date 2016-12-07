@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Set alsa volume to 0db - rpi audio is too quiet!
+amixer cset numid=1 -- 0
