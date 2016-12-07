@@ -1,13 +1,17 @@
 #!/bin/python
 
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
+
 def TextForCountdown(busStopID, useCache):
     cache_file_name = "." + str(busStopID) + ".html"
     cache_file = None
     if useCache: cache_file = open(cache_file_name,'r')
     if not (useCache and cache_file):
-        import urllib2
         from io import BytesIO
-        f = urllib2.urlopen(R'http://m.countdown.tfl.gov.uk/arrivals/{}'.format(busStopID))
+        f = urlopen(R'http://m.countdown.tfl.gov.uk/arrivals/{}'.format(busStopID))
         data = f.read()
         with open(cache_file_name, 'wb') as fo:
             fo.write(data)
