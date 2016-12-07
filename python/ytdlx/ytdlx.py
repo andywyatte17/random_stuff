@@ -32,7 +32,7 @@ for f in out:
 formats = [x.strip() for x in formats]
 
 x = input('what? ')
-cmd = "cd /sdcard/Music && python -m youtube_dl -o '%(title)s.%(ext)s' --restrict-filenames -f {} '{}'".format(
+cmd = "python -m youtube_dl -o '%(title)s.%(ext)s' --restrict-filenames -f {} '{}'".format(
         formats[int(x)], TEST)
 
 print(cmd)
