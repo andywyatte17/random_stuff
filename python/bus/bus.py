@@ -24,6 +24,8 @@ def TextForCountdown(busStopID, useCache):
     # Looking for this...
     # <li class="live-board-feed-item clearfix" data-destination-id="" data-line-name="123">
     results = ""
+    for x in soup.find_all("title"):
+        results = results + x.text + "\n"
     for x in soup.find_all("li", class_="live-board-feed-item clearfix"):
         soup2 = BeautifulSoup(str(x), 'html.parser')
         s = html2text.html2text(str(x)).replace("\n", "")
