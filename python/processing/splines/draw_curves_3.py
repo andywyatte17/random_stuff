@@ -23,9 +23,27 @@ def draw_curves_impl(pts, which):
 	bezier(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)
 
 def draw_curves(pts):
+    '''
+    Draw curves allowing the next (ie wrap-around) point to be considered in the end
+    vector calculation.
+    '''
     draw_curves_impl(pts, None)
 
 def draw_curves_closed(pts):
-    pts_tmp = [ pts[len(pts)-1] ] + pts + [ pts[0], pts[1] ]
+    '''
+    Draw curves allowing the next (ie wrap-around) point to be considered in the
+    vector calculation, and closing the curve section between first and last point..
+    '''
+    some_points = lambda x : [ pts[ (len(pts) + x) % len(pts)] ]
+    pts_tmp = some_points(-1) + pts + some_points(0) + some_points(1)
+    draw_curves_impl( pts_tmp, range(1, len(pts_tmp)-2) )
+
+def draw_curves_closed_2(pts):
+    '''
+    Draw curves as if the two end-points were equal. This is similar to draw_curves_closed
+    except we use some different points..
+    '''
+    some_points = lambda x : [ pts[ (len(pts) + x) % len(pts)] ]
+    pts_tmp = some_points(-2) + pts + some_points(1)
     draw_curves_impl( pts_tmp, range(1, len(pts_tmp)-2) )
 

@@ -6,7 +6,7 @@ from draw_curves_1 import draw_curves as dc1
 from draw_curves_2 import draw_curves as dc2
 from draw_curves_3 import draw_curves as dc3
 from draw_curves_3 import draw_curves_closed as dc3a
-
+from draw_curves_3 import draw_curves_closed_2 as dc3b
 '''
   If you get a c_int problem then edit pyprocessing > flippolicy.py and
   add the line from ctypes import c_int
@@ -23,7 +23,7 @@ from axw_pointf import PointF
 points = []
 ix = -1
 style = "dc1"
-STYLES = ["dc1", "dc2", "dc3", "dc3a"]
+STYLES = ["dc1", "dc2", "dc3", "dc3a", "dc3b"]
 
 try:
     with open("_splines1", "r") as f:
@@ -65,6 +65,7 @@ def draw():
     if style=="dc2": dc2(points)
     if style=="dc3": dc3(points)
     if style=="dc3a": dc3a(points)
+    if style=="dc3b": dc3b(points)
 
 key_down = 0
 

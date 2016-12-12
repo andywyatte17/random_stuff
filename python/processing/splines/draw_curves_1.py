@@ -3,6 +3,10 @@
 from pyprocessing import *
 
 def draw_curves(pts):
+    '''
+    This code draws the curves in Premier+ style - end vectors are calculated
+    using an interpolated extra curve point..
+    '''
     if len(pts)<4:
         return
 

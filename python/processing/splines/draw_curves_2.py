@@ -3,6 +3,10 @@
 from pyprocessing import *
 
 def draw_curves(pts):
+    '''
+    This code draws curves in the Premier+ style (wrt end calculation) except that
+    the end vectors are set to zero.
+    '''
     if len(pts)<4:
         return
 
