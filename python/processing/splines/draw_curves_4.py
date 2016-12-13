@@ -10,7 +10,7 @@ def Unmask(n):
     while mt:
         rv += "x" if n&mt else "o"
         m *= 2
-	mt /= 2
+        mt /= 2
     return rv
 
 # for i in range(16): print(Unmask(i))
@@ -19,7 +19,7 @@ def CalculateMask(pts_corners):
     rv, m = 0, 1
     for _,corner in pts_corners:
         if corner!=0: rv += m
-	m *= 2
+        m *= 2
     return rv
 
 # MASKS - the type of curve based on the CalculateMask(..) value
@@ -47,12 +47,12 @@ def draw_curves_section(pts):
     curve_type = MASKS[cm]
     i = 1
     if curve_type=="straight":
-	return CurveSection(p0=pts[i][0], p1 = pts[i+1][0], p2 = None, p3 = None, type = curve_type)
+        return CurveSection(p0=pts[i][0], p1 = pts[i+1][0], p2 = None, p3 = None, type = curve_type)
     p0 = pts[i][0]
     p1 = pts[i][0] if curve_type=="curve-xb" \
-		   else Calc(pts[i-1][0], pts[i][0], pts[i+1][0])
+                   else Calc(pts[i-1][0], pts[i][0], pts[i+1][0])
     p2 = pts[i+1][0] if curve_type=="curve-xe" \
-		     else Calc(pts[i+2][0], pts[i+1][0], pts[i][0])
+                     else Calc(pts[i+2][0], pts[i+1][0], pts[i][0])
     p3 = pts[i+1][0]
     return CurveSection(p0=p0, p1=p1, p2=p2, p3=p3, type=curve_type)
 
@@ -79,7 +79,7 @@ def draw_curves_closed(pts):
     '''
     if len(pts)<2: return
     if len(pts)>1 and (pts[0][0]-pts[-1][0]).magnitude()<8.0:
-	return draw_curves_closed_2(pts)
+        return draw_curves_closed_2(pts)
 
     some_points = lambda x : [ pts[ (len(pts) + x) % len(pts)] ]
     pts_tmp = some_points(-2) + some_points(-1) + pts + some_points(0) + some_points(1)
@@ -111,5 +111,5 @@ def draw_curves_open(pts):
     pts_tmp = pts_tmp[0:1] + pts_tmp + pts_tmp[last:last+1]
     last = len(pts_tmp) - 4 
     for i in range(0, last + 1):
-	draw_common(pts_tmp, i, 0, last, -1)
+        draw_common(pts_tmp, i, 0, last, -1)
 
