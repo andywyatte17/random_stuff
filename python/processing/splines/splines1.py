@@ -8,6 +8,7 @@ from draw_curves_3 import draw_curves as dc3
 from draw_curves_3 import draw_curves_closed as dc3a
 from draw_curves_3 import draw_curves_closed_2 as dc3b
 from draw_curves_4 import draw_curves_closed as dc4
+from draw_curves_4 import draw_curves_open as dc4a
 
 '''
   If you get a c_int problem then edit pyprocessing > flippolicy.py and
@@ -25,7 +26,7 @@ from axw_pointf import PointF
 points = []
 ix = -1
 style = "dc1"
-STYLES = ["dc1", "dc2", "dc3", "dc3a", "dc3b", "dc4"]
+STYLES = ["dc1", "dc2", "dc3", "dc3a", "dc3b", "dc4", "dc4a"]
 #image = loadImage(
 		
 try:
@@ -71,6 +72,7 @@ def draw():
     if style=="dc3a": dc3a(points)
     if style=="dc3b": dc3b(points)
     if style=="dc4": dc4(points)
+    if style=="dc4a": dc4a(points)
 
 key_down = 0
 
