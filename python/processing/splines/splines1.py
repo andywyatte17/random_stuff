@@ -7,6 +7,8 @@ from draw_curves_2 import draw_curves as dc2
 from draw_curves_3 import draw_curves as dc3
 from draw_curves_3 import draw_curves_closed as dc3a
 from draw_curves_3 import draw_curves_closed_2 as dc3b
+from draw_curves_4 import draw_curves_closed as dc4
+
 '''
   If you get a c_int problem then edit pyprocessing > flippolicy.py and
   add the line from ctypes import c_int
@@ -17,14 +19,15 @@ from draw_curves_3 import draw_curves_closed_2 as dc3b
 from axw_pointf import PointF
 
 '''
-  PointF / Bool pair where Bool is True/False = Corner/Non-corner
+  PointF / Bool pair where Bool is True/False = Corner/Curve
 '''
 
 points = []
 ix = -1
 style = "dc1"
-STYLES = ["dc1", "dc2", "dc3", "dc3a", "dc3b"]
-
+STYLES = ["dc1", "dc2", "dc3", "dc3a", "dc3b", "dc4"]
+#image = loadImage(
+		
 try:
     with open("_splines1", "r") as f:
         points, style = pickle.load(f)
@@ -40,7 +43,7 @@ def draw_points(points):
     stroke(0, 0, 0)
     for ptf,corner in points:
         if corner:
-            rect(ptf.x, ptf.y, 6, 6)
+            rect(ptf.x-3.5, ptf.y-3.5, 7, 7)
 	else:
             ellipse(ptf.x, ptf.y, 6, 6)
     global ix
@@ -55,7 +58,8 @@ def draw():
     d=0
     if len(points)>0: d = (points[-1][0] - PointF(mouse.x, mouse.y)).magnitude()
     if 1<=ix and ix<len(points): d = (points[ix][0] - points[ix-1][0]).magnitude()  
-    text("style (s)={}; q=end; c=clear; p=pop; <SHIFT>+Click = corner; ix (z/x) = {}; d={}".format(style, ix, int(d)), 25, 25)
+    text("r=rot-ix; style (s)={}; q=end; c=clear; p=pop".format(style), 10, 20)
+    text("<SHIFT>+Click = cornerix (z/x) = {}; d={}".format(ix, int(d)), 10, 40)
     fill(250)
     noFill()
     stroke(200, 200, 200)
@@ -66,6 +70,7 @@ def draw():
     if style=="dc3": dc3(points)
     if style=="dc3a": dc3a(points)
     if style=="dc3b": dc3b(points)
+    if style=="dc4": dc4(points)
 
 key_down = 0
 
@@ -89,8 +94,11 @@ def keyPressed():
         except: pass
         quit()
     if key.char=='s':
-	index = STYLES.index(style)
-	if index>=0 : style = STYLES[(index+1)%len(STYLES)]
+	if not style in STYLES:
+            style = STYLES[0]
+        else:
+	    index = STYLES.index(style)
+	    if index>=0 : style = STYLES[(index+1)%len(STYLES)]
     if key.char=='z':
 	ix-=1
 	if ix<-1:
@@ -103,6 +111,8 @@ def keyPressed():
 	points = []
     if key.char=='p':
 	if len(points)>0: points = points[:-1]
+    if key.char=='r':
+	if len(points)>0: points = points[1:] + points[:1]
     key_down = key.code
 
 def keyReleased():

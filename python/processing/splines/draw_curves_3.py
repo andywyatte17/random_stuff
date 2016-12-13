@@ -35,8 +35,9 @@ def draw_curves_closed(pts):
     vector calculation, and closing the curve section between first and last point..
     '''
     some_points = lambda x : [ pts[ (len(pts) + x) % len(pts)] ]
-    pts_tmp = some_points(-1) + pts + some_points(0) + some_points(1)
-    draw_curves_impl( pts_tmp, range(1, len(pts_tmp)-2) )
+    #pts_tmp = some_points(-1) + pts + some_points(0) + some_points(1)
+    pts_tmp = some_points(-2) + some_points(-1) + pts + some_points(0) + some_points(1)
+    draw_curves_impl( pts_tmp, range(2, len(pts_tmp)-2) )
 
 def draw_curves_closed_2(pts):
     '''
