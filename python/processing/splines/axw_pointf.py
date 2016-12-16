@@ -13,6 +13,10 @@ class PointF(_PointF):
         return PointF(m * self.x, m*self.y)
     def __add__(self, rhs):
         return PointF(self.x + rhs.x, self.y + rhs.y)
+    def __sub__(self, rhs):
+        return PointF(self.x - rhs.x, self.y - rhs.y)
+    def magnitude(self):
+	return (self.x**2 + self.y**2)**0.5
 
 class TestPointF(unittest.TestCase):
     def test_simple(self):
@@ -28,8 +32,14 @@ class TestPointF(unittest.TestCase):
         pt = PointF(2,3) + PointF(-4.5, 6.3)
         self.assertAlmostEqual(pt.x, -2.5)
         self.assertAlmostEqual(pt.y, 9.3)
+    def test_sub(self):
+        pt = PointF(2,3) - PointF(4.5, -6.3)
+        self.assertAlmostEqual(pt.x, -2.5)
+        self.assertAlmostEqual(pt.y, 9.3)
     def test_print(self):
         self.assertEqual(str(PointF(2,3)), "PointF(x=2, y=3)")
+    def test_magnitude(self):
+	self.assertAlmostEqual(PointF(0,1).magnitude(), 1)
 
 if __name__ == '__main__':
     unittest.main()
