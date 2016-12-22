@@ -16,8 +16,20 @@ def url(channel, day_off):
 def find(channel, xml, find_type):
   from xml.dom import minidom
   doc = minidom.parseString(xml)
-  for type_tag in doc.getElementsByTagName('type'):
-    if find_type in type_tag.firstChild.nodeValue:
-      import xmltodict
-      d = xmltodict.parse(type_tag.parentNode.toxml())
-      yield "\t{} - {} - {}".format(channel, d["programme"]["start"], d["programme"]["title"])
+  
+  def fmt(channel, d):
+    start, title = d["programme"]["start"], d["programme"]["title"]
+    return "\t{} - {} - {}".format(channel, start, title)
+  
+  def tags(doc, find_type):
+    import xmltodict
+    if find_type:
+      for x in doc.getElementsByTagName('type'):
+        if find_type in x.firstChild.nodeValue:
+          yield xmltodict.parse(x.parentNode.toxml())          
+    else:
+      for x in doc.getElementsByTagName('programme'):
+        yield xmltodict.parse(x.toxml())
+
+  for d in tags(doc, find_type):
+    yield fmt(channel, d)

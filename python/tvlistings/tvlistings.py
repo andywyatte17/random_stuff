@@ -1,7 +1,10 @@
 #!/bin/python
 from datetime import date
 import datetime
-import urllib2
+try: import urllib2 as url
+except: pass
+try: import urllib.request as url
+except: pass
 import pickle
 import sys
 from bleb import CHANNELS
@@ -12,13 +15,14 @@ TODAY = date.today()
 
 cache = {}
 try:
-  with open('_tvlistings', 'rb') as f:
+  import gzip
+  with gzip.open('_tvlistings.gz', 'rb') as f:
     cache = pickle.load(f)
 except: pass
 
 def store():
   try:
-    with open('_tvlistings', 'wb') as f:
+    with gzip.open('_tvlistings.gz', 'wb') as f:
       pickle.dump(cache, f)
   except: pass
 
@@ -42,13 +46,14 @@ for day_off in range(0, MAX_DAYS):
       if cache_ch in cache:
         xml = cache[cache_ch]
       else:
-        response = urllib2.urlopen(u)
+        response = url.urlopen(u)
         xml = response.read()
         cache[cache_ch] = xml
         # print(xml)
     except:
       store()
       print("Problem in url: {}".format(u) )
+store()
 
 for day_off in range(0, MAX_DAYS):
   this_day = date.fromordinal( TODAY.toordinal() + day_off )
