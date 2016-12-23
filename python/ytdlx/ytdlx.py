@@ -31,11 +31,43 @@ for f in out:
 
 formats = [x.strip() for x in formats]
 
+DST = r'/mnt/sdcard/Music'
 x = input('what? ')
 cmd = "python -m youtube_dl -o '%(title)s.%(ext)s' \
 --restrict-filenames -f {} '{}' \
---exec 'mv {{}} /mnt/sdcard/Music' ".format(
-        formats[int(x)], TEST)
+--exec 'mv {{}} {}' ".format(
+        formats[int(x)], TEST, DST)
+
+fname = os.popen(cmd + ' --get-filename').read()
+print(fname)
+
+import urllib.request as url
+fname = fname.replace('\n', '')
+htm = url.urlopen(sys.argv[1]).read()
+#import pickle
+#pickle.dump(htm, open('x','wb'))
+
+#import html2text
+htm = htm.decode('utf-8') 
+#htm = html2text.html2text(htm)
+
+from bs4 import BeautifulSoup as bs
+soup = bs(htm, 'html.parser')
+for i in (1,2):
+  while True:
+    script = soup.script if i==1 else soup.img
+    if script: script.decompose()
+    else: break
+#soup.link.đecompose()
+htm = soup.prettify()
+
+with open(DST+'/'+fname+'.htm', 'wb') as f:
+  f.write(htm.encode('utf-8'))
+
+#from html2pdf import HTMLToPDF
+#HTMLToPDF(htm, DST+'/'+fname+'.pdf')
+
+
 
 print(cmd)
-os.system(cmd)
+# os.system(cmd)
