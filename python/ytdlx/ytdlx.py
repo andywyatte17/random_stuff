@@ -44,30 +44,16 @@ print(fname)
 import urllib.request as url
 fname = fname.replace('\n', '')
 htm = url.urlopen(sys.argv[1]).read()
-#import pickle
-#pickle.dump(htm, open('x','wb'))
 
-#import html2text
 htm = htm.decode('utf-8') 
-#htm = html2text.html2text(htm)
 
-from bs4 import BeautifulSoup as bs
-soup = bs(htm, 'html.parser')
-for i in (1,2):
-  while True:
-    script = soup.script if i==1 else soup.img
-    if script: script.decompose()
-    else: break
-#soup.link.đecompose()
-htm = soup.prettify()
+from html_filter import *
+htm2 = filter(htm)
 
 with open(DST+'/'+fname+'.htm', 'wb') as f:
+  f.write(htm2.encode('utf-8'))
+with open(fname+'.htm', 'wb') as f:
   f.write(htm.encode('utf-8'))
 
-#from html2pdf import HTMLToPDF
-#HTMLToPDF(htm, DST+'/'+fname+'.pdf')
-
-
-
 print(cmd)
-# os.system(cmd)
+os.system(cmd)
