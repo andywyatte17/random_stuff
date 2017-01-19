@@ -31,13 +31,13 @@ for f in out:
 
 formats = [x.strip() for x in formats]
 
-DST = r'/mnt/sdcard/Music'
+# DST = r'/mnt/sdcard/Music'
 x = input('what? ')
 cmd = "python -m youtube_dl -o '%(title)s.%(ext)s' \
---restrict-filenames -f {} '{}' \
---exec 'mv {{}} {}' ".format(
-        formats[int(x)], TEST, DST)
+--restrict-filenames -f {} '{}'".format(
+        formats[int(x)], TEST)
 
+print(cmd)
 fname = os.popen(cmd + ' --get-filename').read()
 print(fname)
 
@@ -50,8 +50,6 @@ htm = htm.decode('utf-8')
 from html_filter import *
 htm2 = filter(htm)
 
-with open(DST+'/'+fname+'.htm', 'wb') as f:
-  f.write(htm2.encode('utf-8'))
 with open(fname+'.htm', 'wb') as f:
   f.write(htm.encode('utf-8'))
 
