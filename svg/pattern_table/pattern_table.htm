@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Pattern Table</title>
+</head>
+<style>
+  .zui-table {
+    border: solid 1px #DDEEEE;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+  }
+  
+  .zui-table thead th {
+    background-color: #DDEFEF;
+    border: solid 1px #DDEEEE;
+    color: #336B6B;
+    padding: 10px;
+    text-align: left;
+    text-shadow: 1px 1px 1px #fff;
+  }
+  
+  .zui-table tbody td {
+    border: solid 1px #DDEEEE;
+    color: #333;
+    padding: 10px;
+    text-shadow: 1px 1px 1px #fff;
+  }
+</style>
+
+<body>
+  <p>Use keys 1..9 to change the picture size.</p>
+  <table class="zui-table">
+    <tr>
+      <td>Menu A-1</td>
+      <td>
+<svg viewBox="-2 -2 18 12" class="svgroot">
+<g class="svg_g">
+<path d="M0 0 l5 5 10 0" stroke="black" fill="none" class="svgpath" base_width="5"/>
+</g>
+</svg>
+      </td>
+      <td>blah blah blah</td>
+    </tr>
+    <tr>
+      <td>Menu D-5</td>
+      <td>
+<svg viewBox="-5 -5 55 55" class="svgroot">
+<g class="svg_g">
+<path d="M0 0 l50 50 0 -50" stroke="black" fill="none" class="svgpath" base_width="5"/>
+</g>
+</svg>
+      </td>
+    </tr>
+  </table>
+
+  <script>
+    document.onkeydown = function(key) {
+      reactKey(key);
+    }
+    window.onload = function(key) {
+      applyScale(1);
+    }
+
+    function applyScale(scale) {
+      var b = null;
+      b = document.getElementsByClassName("svgpath");
+      for (var i = 0; i < b.length; i++) {
+        var bw = parseInt(b[i].getAttribute("base_width"));
+        b[i].setAttribute("stroke-width", (bw / scale).toString() + "%");
+      }
+      b = document.getElementsByClassName("svgroot");
+      for (var i = 0; i < b.length; i++) {
+        b[i].setAttribute("width", 20 * scale);
+        b[i].setAttribute("height", 20 * scale);
+      }
+    }
+
+
+    function reactKey(evt) {
+      // 49..57 is '1'..'9'
+      if (49 <= evt.keyCode && evt.keyCode <= 57) {
+        var scale = evt.keyCode - 49 + 1;
+        applyScale(scale);
+      }
+    }
+  </script>
+
+</body>
+
+</html>
