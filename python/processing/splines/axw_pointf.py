@@ -11,6 +11,8 @@ class PointF(_PointF):
         self._replace(y=float(y))
     def __mul__(self, m):
         return PointF(m * self.x, m*self.y)
+    def __div__(self, d):
+        return PointF(self.x / d, self.y / d)
     def __add__(self, rhs):
         return PointF(self.x + rhs.x, self.y + rhs.y)
     def __sub__(self, rhs):
