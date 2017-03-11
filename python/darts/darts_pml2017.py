@@ -4,7 +4,10 @@ import os, sys
 from os import path
 from pprint import pprint
 import subprocess
-import urllib2
+try:
+  import urllib2
+except:
+  import urllib.request as urllib2
 import time
 import argparse
 import datetime as dt
@@ -90,7 +93,8 @@ if not output or output=="":
                 "Lewis", "Wright"):
     search = SEARCH + "youtube premier league darts 2017 {} week {}".format(names, week)
     got = subprocess_grab(["lynx", "-listonly", "-dump", search])
-    output += got
+    try: output += got
+    except: output += got.decode('utf-8')
 output = [ x for x in output.split("\n") ]
 output = [ extract_youtube_http(x) for x in output if extract_youtube_http(x) ]
 output = list(set(output))
@@ -102,7 +106,7 @@ def yt_title(yt_link):
 
 from joblib import Parallel, delayed
 lines = Parallel(n_jobs=8, verbose=10)(delayed(yt_title)(i) for i in lines)
-lines = [ x for x in lines if ("2017" in x[1] and str(week) in x[1]) ]
+lines = [ x for x in lines if (u"2017" in x[1] and str(week) in x[1]) ]
 # pprint(lines)
 
 # Show numbered list of links
@@ -110,7 +114,7 @@ for n in range(0,len(lines)):
   yt_link = lines[n][0]
   print("{:3d} - {}\n\t{}".format(n, yt_link, lines[n][1]))
 
-print "Which videos? ",
+print("Which videos? ")
 
 nums = [int(x.strip("\n")) for x in sys.stdin.readline().split(" ")]
 for x in nums:
