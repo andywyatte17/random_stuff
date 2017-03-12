@@ -60,13 +60,20 @@ def draw():
 
     spl_pts = lc_splinepoints(False, # closed \
                               points)
-    print(len(spl_pts))
+    #print(len(spl_pts))
     noFill()
     stroke(0, 0, 0)
-    #for pt in spl_pts:
-    #  ellipse(pt.x, pt.y, 5, 8)
-    i = 0
+    i, flip = 0, 0
     while i+2<len(spl_pts):
+      flip = (flip+1) % 2
+      stroke(255,0,0) if flip else stroke(0,0,255)
+      for pt in spl_pts[i:i+3]:
+        ellipse(pt.x, pt.y, 9, 9)
+      i += 2
+    i, flip = 0, 0
+    while i+2<len(spl_pts):
+      flip = (flip+1) % 2
+      stroke(255,0,0) if flip else stroke(0,0,255)
       quadratic(spl_pts[i:i+3])
       i += 2
 
