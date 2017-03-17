@@ -10,12 +10,13 @@ import time
 import argparse
 import datetime as dt
 from get_links import get_links
+from util import ensure_str
 
 def get_nearest_week(day_of_year = None):
   FIRST_DAY = dt.datetime(2017, 2, 2, 0, 0, 0, 0).timetuple().tm_yday
   if day_of_year==None:
     day_of_year = dt.datetime.now().timetuple().tm_yday
-  n = (day_of_year - FIRST_DAY + 7)/7
+  n = int((day_of_year - FIRST_DAY + 7)/7)
   return 1 if n<1 else n
 
 def extract_youtube_http(x):
@@ -34,6 +35,8 @@ args_.add_argument('--week', dest='week', action='store_const',
 args_.add_argument('--test', dest='test', action='store_const',
                    const=True, default=False,
                    help='Run unit tests.')
+args_.add_argument('--restrict_searches', nargs='?',
+                   help='Restrict number of links searched for. Usually for testing only.')
 args = args_.parse_args()
 
 if args.test:
@@ -66,17 +69,21 @@ lines = output
 
 def yt_title(yt_link):
   result = subprocess_grab(["python", "-m", "youtube_dl", "--get-title", yt_link])
-  result = result.replace('\n', '')
+  result = ensure_str(result).replace('\n', '')
   return (yt_link, result)
 
 from joblib import Parallel, delayed
 lines = [ str(x) for x in lines ]
 # pprint(lines); sys.exit(0)
-# lines = lines[:5]
-lines = Parallel(n_jobs=8, verbose=10)(delayed(yt_title)(i) for i in lines)
+
+if args.restrict_searches:
+  lines = lines[:int(args.restrict_searches)]
+lines = Parallel(n_jobs=1, verbose=10)(delayed(yt_title)(i) for i in lines)
+# pprint(lines); sys.exit(0);
+week_str = str(week)
 lines = [ x for x in lines \
-           if (u"2017" in str(x[1]) and \
-             str(week) in str(x[1]))
+           if (u"2017" in ensure_str(x[1]) and \
+                week_str in ensure_str(x[1]))
         ]
 # pprint(lines); # sys.exit(0);
 
