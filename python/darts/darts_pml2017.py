@@ -107,8 +107,7 @@ def yt_title(yt_link):
 
 from joblib import Parallel, delayed
 lines = [ str(x) for x in lines ]
-print(lines)
-sys.exit(0)
+# print(lines); sys.exit(0)
 lines = lines[:1]
 lines = Parallel(n_jobs=8, verbose=10)(delayed(yt_title)(i) for i in lines)
 lines = [ str(x) for x in lines \
