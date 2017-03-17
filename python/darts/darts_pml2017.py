@@ -90,7 +90,8 @@ if not output or output=="":
   for names in ("", "Barneveld", "Wade",
                 "Taylor", "Anderson",
                 "Thornton", "van Gerwen",
-                "Lewis", "Wright"):
+                "Lewis", "Wright",
+		"Klaasen", "Huybrechts"):
     search = SEARCH + "youtube premier league darts 2017 {} week {}".format(names, week)
     got = subprocess_grab(["lynx", "-listonly", "-dump", search])
     try: output += got
@@ -105,8 +106,15 @@ def yt_title(yt_link):
   return (yt_link, subprocess_grab(["python", "-m", "youtube_dl", "--get-title", yt_link]))
 
 from joblib import Parallel, delayed
+lines = [ str(x) for x in lines ]
+print(lines)
+sys.exit(0)
+lines = lines[:1]
 lines = Parallel(n_jobs=8, verbose=10)(delayed(yt_title)(i) for i in lines)
-lines = [ x for x in lines if (u"2017" in x[1] and str(week) in x[1]) ]
+lines = [ str(x) for x in lines \
+           if (u"2017" in str(x[1]) and \
+	       str(week) in str(x[1]))
+        ]
 # pprint(lines)
 
 # Show numbered list of links
