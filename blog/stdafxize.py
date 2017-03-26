@@ -1,11 +1,26 @@
 #!/bin/python
 
 import os, sys
-from stdafx_h import *
+
+stdafx_h = R"""//
+// stdafx.h
+//
+
+#include "../OsBridge/platform.h"
+
+#if VSM_PLATFORM==VSM_PLATFORM_WINXX
+
+#include "../Fundamentals/stdafx_cmn.h"
+#include <vector>
+
+#endif
+"""
 
 stdafx_cpp = R"""//
 // stdafx.cpp
 //
+
+#include "stdafx.h"
 """
 
 def MakeStdafxPath(cppPath):
