@@ -1,8 +1,20 @@
 cmake_minimum_required(VERSION 3.0.2)
 
+# https://cognitivewaves.wordpress.com/cmake-and-visual-studio/
+
 set (LIBNAME A)
 
 project(${LIBNAME})
+
+set(SOURCES_ROOT
+  "main.cpp"
+  "a.cpp"
+  "a.h"
+)
+
+set(SOURCES_RC
+  "a.rc" "a.rc2" "resource.h"
+)
 
 macro(install_libs)
   FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_BINARY_DIR}/install/" INSTALL_DST_DIR_TMP)
@@ -17,33 +29,37 @@ macro(install_libs)
   endif()
 endmacro()
 
-set(SOURCES_ROOT
-  "./a.cpp"
-  "./a.h"
-  "./main.cpp"
-)
-
-set(SOURCES_RC
-  "./a.rc"
-  "./a.rc2"
-)
-
-set(SOURCES_F1
-  "f1/a1.cpp"
-)
-
-source_group("_Src" FILES ${SOURCES_ROOT})
-
+source_group("_Src" FILES ${SOURCES_ROOT} ${SOURCES_RC})
 source_group("rc" FILES ${SOURCES_RC})
 
-source_group("f1" FILES ${SOURCES_F1})
-
-
+# ... stdafx ?
+#if(MSVC)
+#    foreach( src_file ${SOURCES_ROOT} )
+#        set_source_files_properties(
+#            ${src_file}
+#            PROPERTIES
+#            COMPILE_FLAGS "/Yustdafx.h"
+#            )
+#    endforeach()
+#
+#    foreach( src_file ${SOURCES_MULTIWAVEFILL}
+#                      ${SOURCES_STITCHTOOBJECT} ${SOURCES_OBJECTSUMMARY}
+#                      ${SOURCES_SATINTRACE} ${SOURCES_DRAWING})
+#        set_source_files_properties(
+#            ${src_file}
+#            PROPERTIES
+#            COMPILE_FLAGS "/Yu../stdafx.h"
+#            )
+#    endforeach()
+#
+#    set_source_files_properties(stdafx.cpp
+#        PROPERTIES
+#        COMPILE_FLAGS "/Ycstdafx.h"
+#        )
+#endif()
 
 add_library(${LIBNAME} SHARED
-${SOURCES_ROOT}
-${SOURCES_RC}
-${SOURCES_F1}
+  ${SOURCES_ROOT} ${SOURCES_RC}
 )
 
 # INSTALL_DST_ROOT should be in CMAKE_PATH format - it then works correctly
@@ -55,9 +71,9 @@ SET(INSTALL_DST_ROOT "${INSTALL_DST_ROOT}/HeaderFiles/Dlls/${LIBBASE}")
 # install(CODE "FILE(REMOVE_RECURSE ${INSTALL_DST_ROOT})")
 
 # Install header files
-
 INSTALL(FILES
-   "a.h" DESTINATION "${INSTALL_DST_ROOT}/A/")
+  "a.h"
+  DESTINATION "${INSTALL_DST_ROOT}")
 
 # Give the output name something different to the Release
 set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME_DEBUG ${LIBNAME}D)
