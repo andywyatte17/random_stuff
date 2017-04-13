@@ -12,6 +12,10 @@ set(SOURCES_ROOT
   "a.h"
 )
 
+set(SOURCES_RC
+  "a.rc" "a.rc2" "resource.h"
+)
+
 macro(install_libs)
   FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_BINARY_DIR}/install/" INSTALL_DST_DIR_TMP)
   if(CMAKE_CL_64)
@@ -25,7 +29,8 @@ macro(install_libs)
   endif()
 endmacro()
 
-source_group("_Src" FILES ${SOURCES_ROOT})
+source_group("_Src" FILES ${SOURCES_ROOT} ${SOURCES_RC})
+source_group("rc" FILES ${SOURCES_RC})
 
 # ... stdafx ?
 #if(MSVC)
@@ -54,7 +59,7 @@ source_group("_Src" FILES ${SOURCES_ROOT})
 #endif()
 
 add_library(${LIBNAME} SHARED
-  ${SOURCES_ROOT}
+  ${SOURCES_ROOT} ${SOURCES_RC}
 )
 
 # INSTALL_DST_ROOT should be in CMAKE_PATH format - it then works correctly
