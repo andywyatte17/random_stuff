@@ -1,0 +1,3 @@
+class B {
+    public: B();
+};

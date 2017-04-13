@@ -9,7 +9,21 @@ project(${LIBNAME})
 set(SOURCES_ROOT
   "main.cpp"
   "a.cpp"
+  "a.h"
 )
+
+macro(install_libs)
+  FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_BINARY_DIR}/install/" INSTALL_DST_DIR_TMP)
+  if(CMAKE_CL_64)
+    INSTALL(TARGETS ${LIBNAME}
+      ARCHIVE DESTINATION "${INSTALL_DST_DIR_TMP}/libs"
+      CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel)
+  else()
+    INSTALL(TARGETS ${LIBNAME}
+      ARCHIVE DESTINATION "${INSTALL_DST_DIR_TMP}/libs"
+      CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel)
+  endif()
+endmacro()
 
 source_group("_Src" FILES ${SOURCES_ROOT})
 
@@ -45,7 +59,7 @@ add_library(${LIBNAME} SHARED
 
 # INSTALL_DST_ROOT should be in CMAKE_PATH format - it then works correctly
 #   with INSTALL(CODE "...")
-FILE(TO_CMAKE_PATH "./install" INSTALL_DST_ROOT)
+FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_BINARY_DIR}/install/" INSTALL_DST_ROOT)
 SET(INSTALL_DST_ROOT "${INSTALL_DST_ROOT}/HeaderFiles/Dlls/${LIBBASE}")
 
 # Clean-up header files folder
@@ -62,3 +76,5 @@ set_target_properties(${LIBNAME} PROPERTIES COMPILE_PDB_NAME_DEBUG ${LIBNAME}D)
 set_target_properties(${LIBNAME} PROPERTIES COMPILE_PDB_NAME_RELEASE ${LIBNAME})
 set_target_properties(${LIBNAME} PROPERTIES COMPILE_PDB_NAME_RELWITHDEBINFO ${LIBNAME})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAG} /EHsc /wd4456 /wd4458 /wd4459 /wd4457")
+
+install_libs()

@@ -45,7 +45,7 @@ add_library(${LIBNAME} SHARED
 
 # INSTALL_DST_ROOT should be in CMAKE_PATH format - it then works correctly
 #   with INSTALL(CODE "...")
-FILE(TO_CMAKE_PATH "./install" INSTALL_DST_ROOT)
+FILE(TO_CMAKE_PATH "${CMAKE_BINARY_FOLDER}/install/" INSTALL_DST_ROOT)
 SET(INSTALL_DST_ROOT "${INSTALL_DST_ROOT}/HeaderFiles/Dlls/${LIBBASE}")
 
 # Clean-up header files folder
