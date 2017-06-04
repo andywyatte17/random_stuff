@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import pickle
 
 def grab_nocache(url):
@@ -20,6 +22,7 @@ def pickle_d(the_dict):
 _pd = None
 
 def grab(url, cache = True):
+    print(url)
     global _pd
     if not _pd: _pd = unpickle_d()
     if cache and url in _pd:

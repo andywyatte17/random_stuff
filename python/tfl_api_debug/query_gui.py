@@ -3,6 +3,8 @@
 from PySide import QtCore, QtGui
 
 from tfl_api_query import *
+from query_urls import *
+import pickle
 
 def makeTreeView():
     view = QtGui.QTreeView()
@@ -28,19 +30,9 @@ def MakeVBoxLayout(views):
 
 
 def GrabDictAsHtml():
-    #s = grab("""https://api.tfl.gov.uk/Line/piccadilly/stoppoints""")
-    #s = grab("""https://api.tfl.gov.uk/line/victoria/arrivals""" + \
-    #         """""", cache=False)
-    #s = grab("https://api.tfl.gov.uk/Line/victoria/Timetable/940GZZLUEUS/to/940GZZLUSVS" + \
-    #         """""", cache=False)
-    #s = grab("https://api.tfl.gov.uk/Line/metropolitan/Timetable/940GZZLUMPK/to/940GZZLUAMS" + \
-    #         """""", cache=False)
-    #s = grab("https://api.tfl.gov.uk/Journey/JourneyResults/940GZZLUMPK/to/940GZZLUAMS" + \
-    #         """""", cache=False)
-    s = grab("https://api.tfl.gov.uk/StopPoint/940GZZLUEUS/Arrivals?mode=tube&line=northern" + \
-             """""", cache=False)
-    #s = grab("""https://api.tfl.gov.uk/line/victoria/arrivals?vehicleId=230""" + \
-    #         """""", cache=False)
+    #s = grab( AddAppId(JourneyResults()), cache=True )
+    #s = grab( AddAppId(JourneyResultsEx()), cache=True )
+    s = grab( AddAppId(Timetable()), cache=True )
     print("len(s) = {}", len(s))
     s = json.loads(s)
     #for x in s:
