@@ -4,6 +4,7 @@ from PySide import QtCore, QtGui
 
 from tfl_api_query import *
 from query_urls import *
+from result_filters import *
 import pickle
 
 def makeTreeView():
@@ -31,10 +32,11 @@ def MakeVBoxLayout(views):
 
 def GrabDictAsHtml():
     #s = grab( AddAppId(JourneyResults()), cache=True )
-    #s = grab( AddAppId(JourneyResultsEx()), cache=True )
-    s = grab( AddAppId(Timetable()), cache=True )
+    s = grab( AddAppId(JourneyResultsEx()), cache=True )
+    #s = grab( AddAppId(Timetable()), cache=True )
     print("len(s) = {}", len(s))
     s = json.loads(s)
+    s = GetJourneyResult(s, 0)
     #for x in s:
     #    if "vehicleId" in x and x['vehicleId']=="226":
     #        d = x
