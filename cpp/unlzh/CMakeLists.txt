@@ -4,5 +4,5 @@ project(unzip)
 #
 #
 
-add_executable(unlzh "unlzh.c" "unlzh_main.cpp" "unlzh_defs.h")
+add_executable(unlzh "unlzh.cpp" "unlzh_main.cpp" "unlzh_defs.h" "unlzh.h")
 

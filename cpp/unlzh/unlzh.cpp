@@ -9,6 +9,7 @@
 #include <memory.h>
 #include <malloc.h>
 #include "unlzh_defs.h"
+#include "unlzh.h"
 
 //#include "tailor.h"
 //#include "gzip.h"
@@ -39,15 +40,14 @@ typedef uint16_t ush;
 #define NPT NP
 #endif
 
-ush bitbuf;
 #define CTABLESIZE  4096
 #define PTABLESIZE 256
-static ush left[2 * NC - 1];
-static ush right[2 * NC - 1];
-static uch  c_len[NC];
-static uch  pt_len[NPT];
-static ush c_table[CTABLESIZE];
-static ush pt_table[PTABLESIZE];
+//static ush left[2 * NC - 1];
+//static ush right[2 * NC - 1];
+//static uch  c_len[NC];
+//static uch  pt_len[NPT];
+//static ush c_table[CTABLESIZE];
+//static ush pt_table[PTABLESIZE];
 
 /* decode.c */
 
@@ -124,9 +124,9 @@ local void make_table (int nchar, uch bitlen[],
     error cannot overlay c_len and outbuf
 #endif
 
-local uch pt_len[NPT];
+//local uch pt_len[NPT];
 local unsigned blocksize;
-local ush pt_table[256];
+//local ush pt_table[256];
 
 /* local ush c_table[4096]; */
 //#define c_table d_buf
@@ -142,8 +142,7 @@ local ush       bitbuf;
 local unsigned  subbitbuf;
 local int       bitcount;
 
-local void fillbuf(n)  /* Shift bitbuf n bits left, read n bits */
-    int n;
+local void fillbuf(int n)  /* Shift bitbuf n bits left, read n bits */
 {
     bitbuf <<= n;
     //bitbuf = (bitbuf << n) & 0xFFFF;  /* lose the first n bits */
@@ -157,8 +156,7 @@ local void fillbuf(n)  /* Shift bitbuf n bits left, read n bits */
     bitbuf |= subbitbuf >> (bitcount -= n);
 }
 
-local unsigned getbits(n)
-    int n;
+unsigned getbits(int n)
 {
     unsigned x;
 
@@ -176,11 +174,7 @@ local void init_getbits()
         maketbl.c -- make table for decoding
 ***********************************************************/
 
-local void make_table(nchar, bitlen, tablebits, table)
-    int nchar;
-    uch bitlen[];
-    int tablebits;
-    ush table[];
+local void make_table(int nchar, uch bitlen[], int tablebits, ush table[])
 {
     ush count[17], weight[17], start[18], *p;
     unsigned i, k, len, ch, jutbits, avail, nextcode, mask;
@@ -242,10 +236,7 @@ local void make_table(nchar, bitlen, tablebits, table)
         huf.c -- static Huffman
 ***********************************************************/
 
-local void read_pt_len(nn, nbit, i_special)
-    int nn;
-    int nbit;
-    int i_special;
+local void read_pt_len(int nn,  int nbit, int i_special)
 {
     int i, c, n;
     unsigned mask;

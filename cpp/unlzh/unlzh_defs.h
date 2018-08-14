@@ -30,9 +30,6 @@ typedef uint16_t ush;
 #define CTABLESIZE  4096
 #define PTABLESIZE 256
 
-static uch  c_len[NC];
-static uch  pt_len[NPT];
-
 #define BITS 16
 #define OUTBUFSIZ  16384
 #define DIST_BUFSIZE 0x8000
@@ -54,7 +51,6 @@ static uch  pt_len[NPT];
 #define NPT NP
 #endif
 
-ush bitbuf;
 static ush left[2 * NC - 1];
 static ush right[2 * NC - 1];
 static uch  c_len[NC];
@@ -66,11 +62,3 @@ static int in;
 static int out;
 
 #define try_byte() (inptr < insize ? inbuf[inptr++] : fill_inbuf(1))
-
-int f_get_c(int fd);
-void write_buf(int fd, char* window, int n);
-int gzip_error(const char*);
-
-#define OK 0
-#define ERROR 1
-
