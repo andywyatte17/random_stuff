@@ -4,3 +4,4 @@ output.mp4
 **/RelWithDebInfo/*
 **/Debug/*
 **/cmake/**/build
+cpp/unlzh/build/
