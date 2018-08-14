@@ -11,51 +11,13 @@
 #include "unlzh_defs.h"
 #include "unlzh.h"
 
-//#include "tailor.h"
-//#include "gzip.h"
-//#include "lzw.h" /* just for consistency checking */
-
-#define local /*..*/
-#define UCHAR_MAX 255
-typedef uint8_t uch;
-typedef uint16_t ush;
-#define BITS 16
-#define OUTBUFSIZ  16384
-#define DIST_BUFSIZE 0x8000
-#define THRESHOLD    3
-#define DDICSIZ      26624
-#define MAXDICBIT   16
-#define MATCHBIT     8
-#define MAXMATCH   256
-#define NC          (UCHAR_MAX + MAXMATCH + 2 - THRESHOLD)
-#define NP          (MAXDICBIT + 1)
-#define CBIT         9
-#define NT          (CODE_BIT + 3)
-#define PBIT         5
-#define TBIT 5
-
-#if NT > NP
-#define NPT NT
-#else
-#define NPT NP
-#endif
-
-#define CTABLESIZE  4096
-#define PTABLESIZE 256
-//static ush left[2 * NC - 1];
-//static ush right[2 * NC - 1];
-//static uch  c_len[NC];
-//static uch  pt_len[NPT];
-//static ush c_table[CTABLESIZE];
-//static ush pt_table[PTABLESIZE];
-
 /* decode.c */
-
 
 local unsigned  decode  (unsigned count, uch buffer[]);
 local void decode_start (void);
 
 /* huf.c */
+
 local void huf_decode_start (void);
 local unsigned decode_c     (void);
 local unsigned decode_p     (void);
@@ -63,6 +25,7 @@ local void read_pt_len      (int nn, int nbit, int i_special);
 local void read_c_len       (void);
 
 /* io.c */
+
 local void fillbuf      (int n);
 local unsigned getbits  (int n);
 local void init_getbits (void);
@@ -72,75 +35,14 @@ local void init_getbits (void);
 local void make_table (int nchar, uch bitlen[],
                        int tablebits, ush table[]);
 
-
-#define DICBIT    13    /* 12(-lh4-) or 13(-lh5-) */
-#define DICSIZ ((unsigned) 1 << DICBIT)
-
-#ifndef CHAR_BIT
-#  define CHAR_BIT 8
-#endif
-
-#ifndef UCHAR_MAX
-#  define UCHAR_MAX 255
-#endif
-
 #define BITBUFSIZ (CHAR_BIT * 2 * sizeof(char))
 /* Do not use CHAR_BIT * sizeof(bitbuf), does not work on machines
  * for which short is not on 16 bits (Cray).
  */
 
-/* encode.c and decode.c */
-
-#define MAXMATCH 256    /* formerly F (not more than UCHAR_MAX + 1) */
-#define THRESHOLD  3    /* choose optimal value */
-
-/* huf.c */
-
-#define NC (UCHAR_MAX + MAXMATCH + 2 - THRESHOLD)
-        /* alphabet = {0, 1, 2, ..., NC - 1} */
-#define CBIT 9  /* $\lfloor \log_2 NC \rfloor + 1$ */
-#define CODE_BIT  16  /* codeword length */
-
-#if 0
-#define NP (DICBIT + 1)
-#define NT (CODE_BIT + 3)
-#define PBIT 4  /* smallest integer such that (1U << PBIT) > NP */
-#define TBIT 5  /* smallest integer such that (1U << TBIT) > NT */
-#define NPT (1 << TBIT)
-#endif
-
-//local ush left[2 * NC - 1];
-//local ush right[2 * NC - 1];
-
-//#define left  prev
-//#define right head
-#if NC > (1<<(BITS-2))
-    error cannot overlay left+right and prev
-#endif
-
-/* local uch c_len[NC]; */
-//#define c_len outbuf
-#if NC > OUTBUFSIZ
-    error cannot overlay c_len and outbuf
-#endif
-
-//local uch pt_len[NPT];
-local unsigned blocksize;
-//local ush pt_table[256];
-
-/* local ush c_table[4096]; */
-//#define c_table d_buf
-#if (DIST_BUFSIZE-1) < 4095
-    error cannot overlay c_table and d_buf
-#endif
-
 /***********************************************************
         io.c -- input/output
 ***********************************************************/
-
-local ush       bitbuf;
-local unsigned  subbitbuf;
-local int       bitcount;
 
 local void fillbuf(int n)  /* Shift bitbuf n bits left, read n bits */
 {
@@ -156,7 +58,7 @@ local void fillbuf(int n)  /* Shift bitbuf n bits left, read n bits */
     bitbuf |= subbitbuf >> (bitcount -= n);
 }
 
-unsigned getbits(int n)
+local unsigned getbits(int n)
 {
     unsigned x;
 
