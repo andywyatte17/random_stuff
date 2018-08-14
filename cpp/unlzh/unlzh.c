@@ -6,6 +6,9 @@
 //#include <config.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <memory.h>
+#include <malloc.h>
+#include "unlzh_defs.h"
 
 //#include "tailor.h"
 //#include "gzip.h"
@@ -98,11 +101,13 @@ local void make_table (int nchar, uch bitlen[],
 #define CBIT 9  /* $\lfloor \log_2 NC \rfloor + 1$ */
 #define CODE_BIT  16  /* codeword length */
 
+#if 0
 #define NP (DICBIT + 1)
 #define NT (CODE_BIT + 3)
 #define PBIT 4  /* smallest integer such that (1U << PBIT) > NP */
 #define TBIT 5  /* smallest integer such that (1U << TBIT) > NT */
 #define NPT (1 << TBIT)
+#endif
 
 //local ush left[2 * NC - 1];
 //local ush right[2 * NC - 1];
@@ -114,7 +119,7 @@ local void make_table (int nchar, uch bitlen[],
 #endif
 
 /* local uch c_len[NC]; */
-#define c_len outbuf
+//#define c_len outbuf
 #if NC > OUTBUFSIZ
     error cannot overlay c_len and outbuf
 #endif
@@ -124,7 +129,7 @@ local unsigned blocksize;
 local ush pt_table[256];
 
 /* local ush c_table[4096]; */
-#define c_table d_buf
+//#define c_table d_buf
 #if (DIST_BUFSIZE-1) < 4095
     error cannot overlay c_table and d_buf
 #endif
@@ -141,9 +146,11 @@ local void fillbuf(n)  /* Shift bitbuf n bits left, read n bits */
     int n;
 {
     bitbuf <<= n;
+    //bitbuf = (bitbuf << n) & 0xFFFF;  /* lose the first n bits */
+
     while (n > bitcount) {
         bitbuf |= subbitbuf << (n -= bitcount);
-        subbitbuf = (unsigned)try_byte();
+        subbitbuf = (unsigned)f_get_c(in);
         if ((int)subbitbuf == EOF) subbitbuf = 0;
         bitcount = CHAR_BIT;
     }
@@ -371,9 +378,7 @@ local void decode_start()
 
 /* Decode the input and return the number of decoded bytes put in buffer
  */
-local unsigned decode(count, buffer)
-    unsigned count;
-    uch buffer[];
+local unsigned decode(unsigned count, uch buffer[])
     /* The calling function must keep the number of
        bytes to be processed.  This function decodes
        either 'count' bytes or 'DICSIZ' bytes, whichever
@@ -383,7 +388,7 @@ local unsigned decode(count, buffer)
        before calling this function.
      */
 {
-    local unsigned i;
+    local unsigned i = 0;
     unsigned r, c;
 
     r = 0;
@@ -417,18 +422,16 @@ local unsigned decode(count, buffer)
 /* ===========================================================================
  * Unlzh in to out. Return OK or ERROR.
  */
-int unlzh(in, out)
-    int in;
-    int out;
+int unlzh(int in, int out)
 {
     unsigned n;
-    ifd = in;
-    ofd = out;
+
+    uch* window = (uch*)malloc(DICSIZ);
 
     decode_start();
     while (!done) {
         n = decode((unsigned) DICSIZ, window);
-        if (!test && n > 0) {
+        if (/*!test &&*/ n > 0) {
             write_buf(out, (char*)window, n);
         }
     }
