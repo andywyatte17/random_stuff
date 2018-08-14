@@ -1,3 +1,6 @@
 Unbelievable.xml
 output.mp4
 */poplib/retr*.zip
+**/RelWithDebInfo/*
+**/Debug/*
+**/cmake/**/build
