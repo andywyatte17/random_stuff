@@ -1,2 +1,5 @@
-<canvas id="bond-battler-canvas">
-</canvas>
+<span>{{this.canvas.clientWidth.toString()}}</span>
+<span>{{this.canvas.clientHeight.toString()}}</span>
+<div id="bond-battler-canvas-div">
+    <canvas id="bond-battler-canvas" (onkeydown)="onkeydown($event)"></canvas>
+</div>

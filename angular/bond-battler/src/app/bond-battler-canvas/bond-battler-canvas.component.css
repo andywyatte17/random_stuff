@@ -1,4 +1,7 @@
 #bond-battler-canvas {
-    width: 100%;
-    height: 100%;
+    overflow: hidden;
+}
+
+#bond-battler-canvas-div {
+    display: block;
 }
