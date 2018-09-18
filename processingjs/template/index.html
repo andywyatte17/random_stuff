@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Hello Web - Processing.js Test</title>
+  <script src="processing-1.6.6.min.js"></script>
+</head>
+
+<body>
+  <h1>Processing.js Test</h1>
+  <script type="application/processing" data-processing-target="pjs">
+   void setup() {
+     size(200, 200);
+     background(100);
+     stroke(255);
+     ellipse(50, 50, 25, 25);
+     println('hello web!');
+   }
+   </script>
+  <canvas id="pjs"> </canvas>
+
+</body>
+
+</html>
