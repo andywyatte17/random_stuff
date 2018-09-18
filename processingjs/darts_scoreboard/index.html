@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Darts Scoreboard</title>
+  <script src="jquery-3.3.1.min.js"></script>
+  <script src="processing-1.6.6.min.js"></script>
+  <style>
+    .scoreBtn button {
+min-width: 5em; height: 3em; margin: 0.2em;
+}
+
+.scoreBtnX button {
+min-width: 5em; height: 3em; margin: 0.2em; background: green; color: white;
+}
+  </style>
+</head>
+
+<body>
+  <!--  -->
+
+  <h1>Darts Scoreboard</h1>
+
+  <p>
+    <label for="player1">Player 1:&nbsp;</label><input id="player1" type="text" name="player1"
+      onblur="setPlayerNames()">
+    <br>
+    <label for="player2">Player 2:&nbsp;</label><input id="player2" type="text" name="player2"
+      onblur="setPlayerNames()">
+    <br>
+    <button id="player1_clear">Clear Scores</button>
+  </p>
+  <div class="scoreBtn">
+    <button>1</button><button>2</button><button>3</button><button>4</button><button>5</button>
+    <button>6</button><button>7</button><button>8</button><button>9</button><button>10</button>
+    <br>
+    <button>11</button><button>12</button><button>13</button><button>14</button><button>15</button>
+    <button>16</button><button>17</button><button>18</button><button>19</button><button>20</button>
+  </div>
+  <div class="scoreBtnX">
+    <button>1x</button>
+    <button>2x</button>
+    <button>3x</button>
+    &nbsp;
+    <button style="background: lightsalmon">No Score</button>
+    <button style="background: lightsalmon">Bust</button>
+  </div>
+
+  <script type="application/javascript">
+    var player1 = { scores: [], name: "" };
+    var player2 = { scores: [], name: "" };
+
+    function setPlayerNames() {
+      player1.name = document.getElementById('player1').value;
+      player2.name = document.getElementById('player2').value;
+    }
+
+    function score(n) {
+      console.log(`score(${n})`);
+    }
+
+    function initUi() {
+      var kids = $(".scoreBtn").children();
+      for (var i = 0; i < kids.length; i += 1) {
+        let n = parseInt(kids[i].innerText);
+        kids[i].onclick = function () {
+          score(n);
+        };
+      }
+    }
+
+    $(document).ready(function () {
+      initUi();
+    });
+  </script>
+
+  <canvas id="pjs"> </canvas>
+
+  <!-- -->
+  <script type="application/processing" data-processing-target="pjs">
+
+   void setup() {
+     size(600, 600);
+     println('hello web!');
+     background(200);
+    }
+
+   void draw() {
+    fill(0, 0, 0);
+    textSize(20);
+    text(player1.name, 50, 50);
+    fill(0, 102, 153, 51);
+  }
+   </script>
+</body>
+
+</html>
