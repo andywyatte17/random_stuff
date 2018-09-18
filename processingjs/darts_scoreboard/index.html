@@ -44,6 +44,8 @@
         <button style="background: lightsalmon">No Score</button>
         <button style="background: lightsalmon">Bust</button>
     </div>
+    <div id="scores_area">
+    </div>
 
     <script type="application/javascript">
         var player1 = {
@@ -58,18 +60,62 @@
         };
 
         function slice(arr, start, end) {
-          var result = [];
-          end = Math.min(end, arr.length);
-          for(var i=start; i<end; i+=1)
-            result.push(arr[i]);
-          return result;
+            var result = [];
+            end = Math.min(end, arr.length);
+            for (var i = start; i < end; i += 1)
+                result.push(arr[i]);
+            return result;
         }
 
-        function player1Scores(n) { return slice(player1.scores, n*3, n*3+3).toString(); }
-
-        function player2Scores(n) { return slice(player2.scores, n*3, n*3+3).toString(); }
-
         var undoStack = [];
+
+        function bump()
+        {
+          var sa = $("#scores_area");
+          sa.html('<table id="scores_table"></table>');
+          var table = $('#scores_table');
+          function add_row() {
+            var row = document.createElement("tr");
+            table.append(row);
+            return row;
+          }
+          function add_table_bit(s, row) {
+            var td = document.createElement("td");
+            td.innerText = s;
+            row.appendChild(td);
+          }
+          function scoreSoFar(player, n)
+          {
+            var result = player.startScore;
+            for(var i=0; i<n && i<player.scores.length; i+=1)
+              result -= player.scores[i][0] * player.scores[i][1];
+            return result.toString();
+          }
+          var n1 = 2 + player1.scores.length/3;
+          var n2 = 2 + player2.scores.length/3;
+          var n = Math.max(n1, n2);
+          for(let i=0; i<n; i++) {
+            if(i===0) {
+              var row = add_row();
+              add_table_bit(player1.name, row);
+              add_table_bit("", row);
+              add_table_bit(player2.name, row);
+              add_table_bit("", row);
+            }
+            else {
+              var i1 = i - 1;
+              var row = add_row();
+              var s1 = slice(player1.scores, i1*3, i1*3+3);
+              s1 = s1.map( (v) => v[2] );
+              var s2 = slice(player2.scores, i1*3, i1*3+3);
+              s2 = s2.map( (v) => v[2] );
+              add_table_bit(scoreSoFar(player1, i1*3), row);
+              add_table_bit(s1.toString(), row);
+              add_table_bit(scoreSoFar(player2, i1*3), row);
+              add_table_bit(s2.toString(), row);
+            }
+          }
+        }
 
         function addPreUndo() {
             undoStack.push({
@@ -79,39 +125,43 @@
         }
 
         function undo() {
-          try {
-            var top = undoStack[undoStack.length-1];
-            undoStack.pop();
-            player1 = JSON.parse(top.player1);
-            player2 = JSON.parse(top.player2);
-          } finally {
-          }
+            try {
+                var top = undoStack[undoStack.length - 1];
+                undoStack.pop();
+                player1 = JSON.parse(top.player1);
+                player2 = JSON.parse(top.player2);
+                bump();
+            } finally {}
         }
 
         function setPlayerNames() {
             player1.name = document.getElementById('player1').value;
             player2.name = document.getElementById('player2').value;
+            bump();
         }
 
         function game(n) {
             addPreUndo();
             player1.startScore = n;
             player2.startScore = n;
+            bump();
         }
 
         function clearScores() {
-          addPreUndo();
+            addPreUndo();
             player1.scores = [];
             player2.scores = [];
+            bump();
         }
 
         function score(n) {
-          addPreUndo();
-          var sum = player1.scores.length + player2.scores.length;
-          if((sum%6)>=3)
-            player2.scores.push(n);
-          else
-            player1.scores.push(n);
+            addPreUndo();
+            var sum = player1.scores.length + player2.scores.length;
+            if ((sum % 6) >= 3)
+                player2.scores.push(n);
+            else
+                player1.scores.push(n);
+            bump();
         }
 
         function initUi() {
@@ -131,51 +181,8 @@
         });
     </script>
 
-    <canvas id="pjs"> </canvas>
-
     <!-- -->
 
-    <script type="application/processing" data-processing-target="pjs">
-void setup() {
-  size(600, 600);
-  println('hello web!');
-  background(200);
-}
-
-void draw() { 
-  background(200); 
-  fill(0, 0, 0); 
-  textSize(20);
-  for(int y=0; y<2+(player1.scores.length/3); y++)
-  {
-    int py = y * 30;
-    if(y==0) {
-      text(player1.name, 50, py);
-    }
-    else if(y==1) {
-      text(player1.startScore, 50, py);
-    }
-    else {
-      text(player1Scores(y-2), 50, py);
-    }
-  }
-  for(int y=0; y<2+(player2.scores.length/3); y++)
-  {
-    int py = y * 30;
-    if(y==0) {
-      text(player2.name, 250, py);
-    }
-    else if(y==1) {
-      text(player2.startScore, 250, py);
-    }
-    else {
-      text(player2Scores(y-2), 250, py);
-    }
-  }
-}
-    </script>
-
-    <!-- -->
     <script>
         if (annyang) {
             var MakeGameFunction = function(n) {
@@ -191,17 +198,18 @@ void draw() {
             };
             var commands = {};
 
-            var games = [
-                ["game 5 oh 1", 501],
-                ["game 3 oh 1", 301],
-                ["game 2 oh 1", 201]
+            var vGames = [
+                ["501", 501],
+                ["301", 301],
+                ["201", 201]
             ];
-            for (var x = 0; x < games.length; x += 1) {
-                var game = games[x];
-                commands[game[0]] = MakeGameFunction(game[1]);
+            for (var x = 0; x < vGames.length; x += 1) {
+                var vGame = vGames[x];
+                commands[vGame[0]] = MakeGameFunction(vGame[1]);
             }
 
             var amounts = ["", "single ", "double ", "treble "];
+            var nx = [1,1,2,3];
 
             for (var x = 0; x < amounts.length; x += 1) {
                 let amount = amounts[x];
@@ -221,15 +229,21 @@ void draw() {
                         var s2 = y.toString();
                         if (x === 2) s2 += "\u00b2";
                         if (x === 3) s2 += "\u00b3";
-                        commands[alternatives[z]] = MakeScoreFunction(s2);
+                        commands[alternatives[z]] = MakeScoreFunction([nx[x], y, s2]);
                     }
                 }
             }
-            commands["no score"] = MakeScoreFunction("no score");
-            commands["bust"] = MakeScoreFunction("bust");
-            commands["clear scores"] = MakeScoreFunction();
-            commands["undo"] = function() {
-                undo();
+            commands["no score"] = MakeScoreFunction([0,0,"no score"]);
+            commands["bust"] = MakeScoreFunction([0,-1,"bust"]);
+            commands["clear scores"] = function() { clearScores(); };
+            commands["undo"] = function() { undo(); };
+            commands["player one is *tag"] = function(tag) {
+              player1.name = tag;
+              bump();
+            };
+            commands["player two is *tag"] = function(tag) {
+              player2.name = tag;
+              bump();
             };
 
             console.log(commands);
