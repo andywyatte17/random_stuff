@@ -6,3 +6,4 @@ output.mp4
 **/cmake/**/build
 cpp/unlzh/build/
 python/poplib/retr-*.7z
+**/node_modules/**/*

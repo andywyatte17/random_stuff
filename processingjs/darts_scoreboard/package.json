@@ -1,0 +1,15 @@
+{
+    "name": "darts_scoreboard",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.html",
+    "scripts": {
+        "serve": "%INIT_CWD%/node_modules/.bin/dev-web-server.cmd"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "dev-web-server": "^1.6.2",
+        "serve": "^10.0.1"
+    }
+}
