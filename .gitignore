@@ -7,3 +7,7 @@ output.mp4
 cpp/unlzh/build/
 python/poplib/retr-*.7z
 **/node_modules/**/*
+python/imagemagick/.tmp/*.png
+zim/openenglishbible/openenglishbible.org/**
+zim/**
+webcam/time_lapse/last_video.sh
