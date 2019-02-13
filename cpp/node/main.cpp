@@ -27,7 +27,8 @@ int main(int n, char**)
   B    C     E 
   DF   G
 
-  DFS: ABDFCGE
+  DFS:         ABDFCGE
+  DFS-reverse: AECGBFD
   */
 
   auto Make_BDF = [=]() {
@@ -52,12 +53,21 @@ int main(int n, char**)
   a.push_back(Make_CG());
   a.push_back(Make_E());
 
-  auto f = DFS(&a);
-  for (;;) {
-    auto p = f();
-    if (!p)
+  for (auto f = DFS(&a);;) {
+    if (const auto p = f()) {
+      printf("%s", p->base_data()->uuid.c_str());
+    } else {
       break;
-    printf("%s", p->base_data()->uuid.c_str());
+    }
+  }
+  printf("\n");
+
+  for (auto f = DFS(&a, true);;) {
+    if (const auto p = f()) {
+      printf("%s", p->base_data()->uuid.c_str());
+    } else {
+      break;
+    }
   }
   printf("\n");
 }
