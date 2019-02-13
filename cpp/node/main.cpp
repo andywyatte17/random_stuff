@@ -5,11 +5,20 @@
 #include "node.h"
 #include "node_algos.h"
 
+struct S {
+  std::string uuid;
+  S() = default;
+  S(const S&) = default;
+  S& operator=(const S&) = default;
+};
+
 int main(int n, char**)
 {
+  using Node_t = Node<S>;
+
   auto MakeNode = [](std::string uuid) {
-    Node node;
-    node.m_uuid = std::make_shared<std::string>(uuid);
+    Node_t node;
+    node.mutate_base_data([&](S& s) { s.uuid = uuid; });
     return node;
   };
 
@@ -38,7 +47,7 @@ int main(int n, char**)
     return MakeNode("E");
   };
 
-  Node a = MakeNode("A");
+  auto a = MakeNode("A");
   a.push_back(Make_BDF());
   a.push_back(Make_CG());
   a.push_back(Make_E());
@@ -48,7 +57,7 @@ int main(int n, char**)
     auto p = f();
     if (!p)
       break;
-    printf("%s", p->m_uuid->c_str());
+    printf("%s", p->base_data()->uuid.c_str());
   }
   printf("\n");
 }

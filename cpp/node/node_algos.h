@@ -10,18 +10,20 @@
 #include <vector>
 
 /// Depth-first search
-inline std::function<const Node*()> DFS(const Node* node)
+template <typename BaseData>
+inline auto DFS(const Node<BaseData>* node) -> std::function<const Node<BaseData>*()>
 {
-  std::vector<const Node*> stack;
+  using Node_t = Node<BaseData>;
+  std::vector<const Node_t*> stack;
   stack.push_back(node);
-  return [=]() mutable -> const Node* {
+  return [=]() mutable -> const Node_t* {
     if (stack.empty())
-      return static_cast<const Node*>(nullptr);
+      return nullptr;
     auto top = stack.back();
     stack.pop_back();
     auto* pStack = &stack;
-    std::for_each(top->m_childNodes.rbegin(), top->m_childNodes.rend(),
-        [pStack](const std::shared_ptr<const Node>& sp) {
+    std::for_each(top->ChildNodes().rbegin(), top->ChildNodes().rend(),
+        [pStack](const std::shared_ptr<const Node_t>& sp) {
           pStack->push_back(sp.get());
         });
     return top;
