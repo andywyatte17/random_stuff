@@ -11,3 +11,5 @@ python/imagemagick/.tmp/*.png
 zim/openenglishbible/openenglishbible.org/**
 zim/**
 webcam/time_lapse/last_video.sh
+cpp/swig/bezcurve/**
+**/CMakeFiles/**
