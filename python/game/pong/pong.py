@@ -91,6 +91,7 @@ def check_collisions():
         else:
             # change ball direction
             ball_direction.x = -ball_direction.x
+            tone.play('A4', 0.25)
             return
 
     # Check for left_bat / ball collision
@@ -102,6 +103,7 @@ def check_collisions():
         else:
             # change ball direction
             ball_direction.x = -ball_direction.x
+            tone.play('F4', 0.25)
             return
 
     # Check for top- or bottom- screen collision
