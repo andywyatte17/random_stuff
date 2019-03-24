@@ -9,6 +9,9 @@ WIDTH, HEIGHT = 640, 480
 
 class BasicObject() : pass
 
+left_bat_beep = tone.create('A4', 0.25)
+right_bat_beep = tone.create('F4', 0.25)
+
 player_1_score = 0
 player_2_score = 0
 
@@ -91,7 +94,7 @@ def check_collisions():
         else:
             # change ball direction
             ball_direction.x = -ball_direction.x
-            tone.play('A4', 0.25)
+            left_bat_beep.play()
             return
 
     # Check for left_bat / ball collision
@@ -103,7 +106,7 @@ def check_collisions():
         else:
             # change ball direction
             ball_direction.x = -ball_direction.x
-            tone.play('F4', 0.25)
+            right_bat_beep.play()
             return
 
     # Check for top- or bottom- screen collision
