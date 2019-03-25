@@ -10,7 +10,7 @@
 void write();
 void read();
 
-void main()
+int main()
 {
   write();
   read();
@@ -24,34 +24,37 @@ class MemStream
 {
   unsigned pos = 0;
 
-  std::vector<uint8_t> v;
+  std::vector<uint8_t> write_buffer;
   
-  const void* const p = nullptr;
-  const unsigned n = 0;
+  const void* const p_read = nullptr;
+  const unsigned n_read = 0;
 
 public:
   /// Open buffer for writing - data goes into 'v'
-  MemStream() = default;
+  MemStream()
+  {
+    write_buffer.reserve(64 * 1024);
+  }
 
   /// Open buffer for reading - data is read from [p, p+n).
-  MemStream(const void* pIn, unsigned nIn) : p(pIn), n(nIn) {}
+  MemStream(const void* pIn, unsigned nIn) : p_read(pIn), n_read(nIn) {}
   
   int write(mtar_t * /*tar*/, const void *data, unsigned size)
   {
-    if(p)
+    if(p_read)
       return MTAR_EWRITEFAIL;
-    unsigned new_size = std::max(v.size(), pos + size);
-    v.resize(new_size);
-    std::copy_n((const uint8_t*)data, size, v.data() + pos);
+    unsigned new_size = std::max((unsigned)write_buffer.size(), pos + size);
+    write_buffer.resize(new_size);
+    std::copy_n((const uint8_t*)data, size, write_buffer.data() + pos);
     pos += size;
     return MTAR_ESUCCESS;
   }
 
   int read(mtar_t * /*tar*/, void *data, unsigned size)
   {
-    auto* src = p ? (const uint8_t*)p : v.data();
-    const unsigned end = p ? n : v.size();
-    if(pos + size <= end)
+    auto* src = p_read ? (const uint8_t*)p_read : write_buffer.data();
+    const unsigned end = p_read ? n_read : write_buffer.size();
+    if(pos + size <= /* or < ??? */ end)
     {
       std::copy_n(src + pos, size, (uint8_t*)data);
       pos += size;
@@ -62,8 +65,8 @@ public:
 
   int seek(mtar_t *tar, unsigned offset)
   {
-    const unsigned end = p ? n : v.size();
-    if(offset + pos <= end) {
+    const unsigned end = p_read ? n_read : write_buffer.size();
+    if(offset + pos <= /* or < ??? */ end) {
       pos += offset;
       return MTAR_ESUCCESS;
     }
@@ -72,7 +75,7 @@ public:
 
   std::vector<uint8_t> release_buffer()
   {
-    return std::vector<uint8_t>(std::move(v));
+    return std::vector<uint8_t>(std::move(write_buffer));
   }
 };
 
@@ -83,17 +86,17 @@ extern "C" int file_write(mtar_t *tar, const void *data, unsigned size)
   return ((MemStream *)tar->stream)->write(tar, data, size);
 }
 
-extern "C" static int file_read(mtar_t *tar, void *data, unsigned size)
+extern "C" int file_read(mtar_t *tar, void *data, unsigned size)
 {
   return ((MemStream *)tar->stream)->read(tar, data, size);
 }
 
-extern "C" static int file_seek(mtar_t *tar, unsigned offset)
+extern "C" int file_seek(mtar_t *tar, unsigned offset)
 {
   return ((MemStream *)tar->stream)->seek(tar, offset);
 }
 
-extern "C" static int file_close(mtar_t *tar)
+extern "C" int file_close(mtar_t *tar)
 {
   return MTAR_ESUCCESS;
 }
@@ -104,7 +107,7 @@ extern "C" static int file_close(mtar_t *tar)
 
 // ...
 
-std::pair<mtar_t, std::unique_ptr<MemStream>> MakeTarWriter()
+std::pair<mtar_t, std::unique_ptr<MemStream>> MakeTarWriterIntoMemory()
 {
   mtar_t tar = mtar_t{};
 
@@ -131,7 +134,7 @@ void write()
   const char *str2 = "Goodbye world";
 
   /* Open archive for writing */
-  auto tar_ms = MakeTarWriter();
+  auto tar_ms = MakeTarWriterIntoMemory();
   auto& tar = tar_ms.first;
 
   /* Write strings to files `test1.txt` and `test2.txt` */
@@ -155,7 +158,7 @@ void write()
 
 // ...
 
-std::pair<mtar_t, std::unique_ptr<MemStream>> MakeTarReader(const void* p, unsigned n)
+std::pair<mtar_t, std::unique_ptr<MemStream>> MakeTarReaderFromMemory(const void* p, unsigned n)
 {
   mtar_t tar = mtar_t{};
 
@@ -185,7 +188,7 @@ void read()
   fclose(f);
 
   mtar_header_t h;
-  auto tar_ms = MakeTarReader(v.data(), v.size());
+  auto tar_ms = MakeTarReaderFromMemory(v.data(), v.size());
   auto& tar = tar_ms.first;
 
   /* Print all file names and sizes */
