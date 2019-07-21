@@ -4,6 +4,8 @@ output.mp4
 **/RelWithDebInfo/*
 **/Debug/*
 **/cmake/**/build
+**/cmake/**/vsm_dev/**
+!build/make-cmake.bat
 cpp/unlzh/build/
 python/poplib/retr-*.7z
 **/node_modules/**/*
