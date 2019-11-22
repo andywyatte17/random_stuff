@@ -7,15 +7,19 @@ from clipboard_win_lib import *
 The data copied from various software indicates the following information about the way CF_DIBV5
 data is used in various software:
 
-+----------------+--------------+---------------+----------------+------------------------+-----------+
-| ..CF_DIBV5..   | BI_type      | bitcount      | Alpha premult? | RGBA mask              | bV5CSType |
-+----------------+--------------+---------------+----------------+------------------------+-----------+
-| Chrome_78      | BI_BITFIELDS | 32 - alpha    | Yes            | (f00, f0, f, 0)        | BGRs      |
-+----------------+--------------+---------------+----------------+------------------------+-----------+
-| Gimp_282_DIBV5 | BI_RGB       | 24 - no alpha | N/A            | (0,0,0,0)              | BGRs      |
-+----------------+--------------+---------------+----------------+------------------------+-----------+
-| Paint.NET_425  | BI_RGB       | 32 - alpha    | No             | (f00, f0, 000f, f000)  | BGRs      |
-+----------------+--------------+---------------+----------------+------------------------+-----------+
++-------------------------------+--------------+-----------------------------------------------+----------------+-----------------------+-----------+
+| ..CF_DIBV5..                  | BI_type      | bitcount                                      | Alpha premult? | RGBA mask             | bV5CSType |
++-------------------------------+--------------+-----------------------------------------------+----------------+-----------------------+-----------+
+| Chrome_78                     | BI_BITFIELDS | 32 - alpha                                    | Yes            | (f00, f0, f, 0)       | BGRs      |
++-------------------------------+--------------+-----------------------------------------------+----------------+-----------------------+-----------+
+| Gimp_282_DIBV5                | BI_RGB       | 24 - no alpha                                 | N/A            | (0,0,0,0)             | BGRs      |
++-------------------------------+--------------+-----------------------------------------------+----------------+-----------------------+-----------+
+| Paint.NET_425                 | BI_RGB       | 32 - alpha                                    | No             | (f00, f0, 000f, f000) | BGRs      |
++-------------------------------+--------------+-----------------------------------------------+----------------+-----------------------+-----------+
+| P+2 PhotoStitch 12.4.2        | BI_BITFIELDS | 32 - alpha - program allows only 0/255 alpha. | No?            | (f00, f0, 000f, f000) | ' niW'    |
++-------------------------------+--------------+-----------------------------------------------+----------------+-----------------------+-----------+
+| P+2 PhotoStitch 12.4.2 Hacked | BI_BITFIELDS | 32 - alpha                                    | No             | (f00, f0, 000f, f000) | ' niW'    |
++-------------------------------+--------------+-----------------------------------------------+----------------+-----------------------+-----------+
 
 Generated from tsv data with help of https://www.tablesgenerator.com/text_tables
 
@@ -23,7 +27,8 @@ Generated from tsv data with help of https://www.tablesgenerator.com/text_tables
 Chrome_78	BI_BITFIELDS	32 - alpha	Yes	(f00, f0, f, 0)	BGRs
 Gimp_282_DIBV5	BI_RGB	24 - no alpha	N/A	(0,0,0,0)	BGRs
 Paint.NET_425	BI_RGB	32 - alpha	No	(f00, f0, 000f, f000)	BGRs
-P+2 PhotoStitch 12.4.2	BI_BITFIELDS	32 - alpha? But all pixels are made opaque.	N/A	(f00, f0, 000f, f000)	' niW'
+P+2 PhotoStitch 12.4.2	BI_BITFIELDS	32 - alpha - program allows only 0/255 alpha.	No?	(f00, f0, 000f, f000)	' niW'
+P+2 PhotoStitch 12.4.2 Hacked	BI_BITFIELDS	32 - alpha	No	(f00, f0, 000f, f000)	' niW'
 
 '''
 
@@ -134,6 +139,10 @@ Z/8Aenr/Dw/M7Q0Nss8ICHKFBAQ0PQAAAAD///////////////////////////n5+f/g4OD/r6+v
 
 
 def Install_Pp2PhotoStitch_1242_ClipExample16x16_Png_DIBV5():
+    '''
+    This is clip-example-16x16.png loaded into Premier+ 2 PhotoStitch 12.4.2 and copied.
+    The data is the CF_DIBV5 clipboard type.
+    '''
     d = r"""fAAAABAAAAAQAAAAAQAgAAMAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAA/wAA/wAAAAAAAP8g
 bmlXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA
 AAAAAAAAAAAAAP8AAAAA/wAAAAD/AAD7AP8P6QL/PXI2/zc3N/8eHh7/Dg4O/wYGBv8DAwP/AQEB
@@ -154,6 +163,37 @@ AP///wD/////////////////////9vb2/9jY2P+lpaX/bW1t/zk5Of8WFhb/BQUF/xAQ2/8QENv/
 ENv/EBDb/xAQ2/////8A////AP//////////////////////////8/Pz/8/Pz/+ampr/TV9f/x1n
 Z/8Aenr/EBDb/xAQ2/8QENv/EBDbAP///wD///////////////////////////n5+f/g4OD/r6+v
 /0uYmP8I1NT/AOvr/xAQ2/8QENv/EBDb/xAQ2/////8A///////////////////////////8/Pz/
+6urq/7DCwv9Durr/A+/v/wD4+P8="""
+    d = base64.decodebytes(d.encode('ascii'))
+    InstallClipData(CF_DIBV5, d)
+
+
+def Install_Pp2PhotoStitch_1242_Hacked_ClipExample16x16_Png_DIBV5():
+    '''
+    Premier+ 2 PhotoStitch was hacked to use the standard Premier+ 2 copy-bitmap
+    code using clip-example-16x16.png as the source data.
+    The data is the CF_DIBV5 clipboard type.
+    '''
+    d = r"""fAAAABAAAAAQAAAAAQAgAAMAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAA/wAA/wAAAAAAAP8g
+bmlXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA
+AAAAAAAAAAAAAP8AAAAA/wAAAAD/AAD7AP8P6QL/PXI2/zc3N/8eHh7/Dg4O/wYGBv8DAwP/AQEB
+/wAAAP8AAAD/AAAA/wwAAP+5AAD/+AAA//sAAP8T6gT/QcUh/3l+bf9hYWH/QkJC/yUlJf8TExP/
+CAgI/wQEBP8BAQH/AAAA/wAAAP8AAAD/bwAA/+8AAP/4AAD/rcCD/8S9rP+4uLj/l5eX/25ubv9M
+TEz/Li4u/xcXF/8KCgr/BAQE/wEBAf8AAAD/AAAA/wAAAP9vAAD/uQAA//z29v/y8vL/39/f/8PD
+w/+goKD/fHx8/1NTU/80NDT/Ghoa/woKCv8DAwP/AQEB/wEBAf8AAAD/AAAA/wYAAP///////v7+
+//j4+P/n5+f/0NDQ/6ysrP+EhIT/WVlZ/zY2Nv8bGxv/CgoK/wMDA/8BAQH/AAAA/wAAAP8AAAD/
+////////////////+/v7//Dw8P/V1dX/s7Oz/4mJif9dXV3/NTU1/xoaGv8JCQn/AwMD/wEBAf8A
+AAD/AAAA///////////////////////9/f3/8vLy/9ra2v+2trb/iYmJ/1paWv8zMzP/FxcX/wgI
+CP8CAgL/AQEB/wAAAP////////////////////////////39/f/z8/P/2tra/7Ozs/+FhYX/U1NT
+/y0tLf8SEhL/BgYG/wICAv8BAQH//////////////////////////////////f39//Ly8v/V1dX/
+q6ur/3p6ev9GRkb/IiIi/wwMDP8DAwP/AQEB///////////////////////////////////////9
+/f3/7+/v/83Nzf+enp7/aGho/zg4OP8YGBj/BwcH/wICAv////8A////AP///wD///8A////AP//
+//////////////z8/P/m5ub/vb29/4iIiP9SUlL/JSUl/w4ODv8DAwP/EBDbPf///wD///8A////
+AP///wD/////////////////////9vb2/9jY2P+lpaX/bW1t/zk5Of8WFhb/BQUF/xAQ24UQENtd
+////AP///wD///8A//////////////////////z8/P/n5+f/vLy8/4GBgf9LS0v/ISEh/wALC/8Q
+ENvPEBDboBAQ213///8A////AP//////////////////////////8/Pz/8/Pz/+ampr/TV9f/x1n
+Z/8Aenr/EBDb7RAQ288QENuFEBDbPf///wD///////////////////////////n5+f/g4OD/r6+v
+/0uYmP8I1NT/AOvr/xAQ2/gQENvnEBDbtBAQ213///8A///////////////////////////8/Pz/
 6urq/7DCwv9Durr/A+/v/wD4+P8="""
     d = base64.decodebytes(d.encode('ascii'))
     InstallClipData(CF_DIBV5, d)
