@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 
+'''
+Code for working with Windows CF_DIBV5 clipboard data type.
+'''
+
 import struct
 from collections import OrderedDict
 from pprint import pprint
 
 def Extract_BITMAPV5HEADER(some_bytes):
+    '''
+    Extract the Windows BITMAPV5HEADER data from the start of 'some_bytes'.
+    The result is (BITMAPV5HEADER, some_bytes2) where some_bytes2 is some_bytes
+    but sliced to remove from front the data corresponding to 'BITMAPV5HEADER'.
+    '''
     u32 = lambda off,size : struct.unpack_from("<I", some_bytes[off:off+size])[0]
     i32 = lambda off,size : struct.unpack_from("<i", some_bytes[off:off+size])[0]
     u16 = lambda off,size : struct.unpack_from("<H", some_bytes[off:off+size])[0]
@@ -44,7 +53,7 @@ def Extract_BITMAPV5HEADER(some_bytes):
 
 # ...
 
-def parse_dibv5(dibv5_bytes, verbose = False):
+def ParseDibv5(dibv5_bytes, verbose = False):
     bv5h, after_header = Extract_BITMAPV5HEADER(dibv5_bytes)
 
     pprint(bv5h); print()
@@ -58,7 +67,7 @@ def parse_dibv5(dibv5_bytes, verbose = False):
         off += 12
 
     remains = len(after_header) - off
-    im_size = width * stride
+    im_size = height * stride
     if remains != im_size:
         print("Bad image input size!")
         return
