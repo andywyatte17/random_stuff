@@ -38,6 +38,25 @@ def GetHHMM(prompt = "Enter Time (hh:mm - mm *can* be >=60): "):
       if hh>=0 and mm>=0 : return (hh,mm)
 
 
+def DumpToFile(stationList):
+  global FN
+  try:
+    _ = FN[:]
+  except:
+    import time, os
+    HERE = os.path.dirname(os.path.realpath(__file__))
+    FN = os.path.join(HERE, "tube_adventure-{}.txt".format(int(time.time())))
+  import os
+  with open(FN, "w") as file:
+    for st, time, method in stationList:
+      if method == "other":
+        print("other => {} => {}".format(time, st), file=file)
+      elif method == '' or method == None:
+        print(st, file=file)
+      else:
+        print("{} => {}".format(method, st), file=file)
+
+
 def WhatNextAutocomplete():
   def autocomplete_fn(x):
     return ["go", "status", "completed", "remaining", "route", "undo", "routeEx"]
@@ -87,6 +106,7 @@ def InteractiveLoop():
     command = WhatNextAutocomplete()
     if command == "go":
       stationList = EnterGoLoop(stationList, stationData)
+      DumpToFile(stationList)
     elif command == "undo":
       if len(stationList)>1:
         stationList = stationList[0:-1]
