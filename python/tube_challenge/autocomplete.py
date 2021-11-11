@@ -1,6 +1,16 @@
-import termios, os, sys
+import os, sys
 
 def get_key():
+    import os
+    if os.name == 'nt':
+        import msvcrt
+        while True:
+            c = msvcrt.getch()
+            if c==b'\r': return '\n'
+            if c==b'\x03': quit()
+            if c!=None:
+                return c.decode('ascii')
+    import termios
     fd = sys.stdin.fileno()
     old = termios.tcgetattr(fd)
     new = termios.tcgetattr(fd)

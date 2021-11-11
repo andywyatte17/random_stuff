@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from station_data import StationData
 from pprint import pprint
 from sys import stdin
@@ -80,7 +82,7 @@ def InteractiveLoop():
   print("")
   stationList[0] = (stationList[0], GetHHMM(), None)
 
-  while (True):
+  while True:
     print("\nWhat next?")
     command = WhatNextAutocomplete()
     if command == "go":
@@ -141,6 +143,27 @@ def MyAttempt():
   stationData.PrintStatus(stationList)
 
 
+def Welcome():
+  print("""
+Tube Challenge - a text-based adventure!
+
+You will be asked a Start Station.
+
+Then you will be asked to perform a series of actions via 'What next?'.
+The most common command is 'go' - which invites you to input a next station.
+
+For every station you 'go' to you will also be asked which line/method to take
+to get to that line. A special method is 'other' which indicates some
+other means of transport such as walking or bus - type in a time in
+the format hh:mm for this value.
+
+Tab-key completion is supported - partially type in a station and use tab
+to complete the name, including tabbing again to scroll through a list of
+several matching stations. Use Tab on the 'What next?' command to see the
+full list of actions other than 'go'.
+""")
+
+
 if __name__=='__main__':
   import sys
   if not sys.stdout.isatty() or (len(sys.argv)>=2 and sys.argv[1]=="--debug"):
@@ -148,6 +171,7 @@ if __name__=='__main__':
     MyAttempt()
   else:
     try:
+      Welcome()
       InteractiveLoop()
     except:
       print(stationList)
