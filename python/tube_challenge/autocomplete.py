@@ -37,10 +37,10 @@ def get_autocomplete_string(autocomplete_fn):
       stdout.write("\n")
       stdout.flush()
       break
-    elif ord(c)==127:  # backspace
+    elif ord(c)==127 or c=='\b':  # backspace
       tabText = None
       if total != "": total = total[0:-1]
-      stdout.write("\b")
+      stdout.write("\b \b")
       stdout.flush()
     elif c=="\t":
       complete_list = autocomplete_fn(total)

@@ -117,7 +117,7 @@ class StationData(Printable):
     items = items[:]
     while len(items) % 3 != 0:
       items.append(" ")
-    split = len(items) / 3
+    split = int(len(items) / 3)
     l1,l2,l3 = items[0:split], items[split:split*2], items[split*2:split*3]
     for _1,_2,_3 in zip(l1,l2,l3):
       print("{0:<24s} {1:<24s} {2:<24s}".format(_1, _2, _3))
@@ -145,5 +145,5 @@ class StationData(Printable):
     for station, time, routeName in stationList:
       if last:
         print("{} => {} => {}".format(last, routeName, station))
-        print(self.ExtractJourney(last, station, routeName))
+        pprint(self.ExtractJourney(last, station, routeName))
       last = station

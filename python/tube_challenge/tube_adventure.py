@@ -31,6 +31,8 @@ def GetHHMM(prompt = "Enter Time (hh:mm - mm *can* be >=60): "):
     import re
     print(prompt if x==0 else "Try again - "+prompt)
     s = stdin.readline()
+    if s.lower().strip()=='undo':
+      return 'undo'
     match = re.match(r"""([0-9][0-9]*)\:([0-9][0-9])""", s)
     if match:
       hh = int(match.group(1))
@@ -80,9 +82,11 @@ def EnterGoLoop(stationList, stationData):
      go_routes = get_autocomplete_string( lambda x : go_routes )
   hh_mm = 0
   if go_routes == "other":
-    hh_mm = GetHHMM("\tEnter time for 'other' route:")
-  stationList = stationList[:]
-  stationList.append((station, hh_mm, go_routes))
+    hh_mm = GetHHMM("""\tThere is no direct route to the station.
+\tType 'undo' if this was a mistake or Enter Time (hh:mm) for 'other':""")
+  if hh_mm != 'undo':
+    stationList = stationList[:]
+    stationList.append((station, hh_mm, go_routes))
   return stationList
 
 stationData = StationData()
