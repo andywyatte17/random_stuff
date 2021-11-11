@@ -63,7 +63,7 @@ def DumpToFile(stationList):
   with open(FN, "w") as file:
     for st, time, method in stationList:
       if method == "other":
-        print("other => {} => {}".format("{.02d}:{.02d}".format(time[0], time[1]), st), file=file)
+        print("other => {} => {}".format("{:02d}:{:02d}".format(time[0], time[1]), st), file=file)
       elif method == '' or method == None:
         print(st, file=file)
       else:
@@ -133,6 +133,8 @@ def Resume(stationList):
       if found!=None:
         route, time_str, station = found.group(1).strip(), found.group(2).strip(), found.group(3).strip()
         #print(route.encode('ascii'), time_str.encode('ascii'), station.encode('ascii'))
+        time_str = time_str.split(":")
+        time_str = (int(time_str[0]), int(time_str[1]))
         stationList.append( (station, time_str, route) )
         continue
 
@@ -248,8 +250,9 @@ if __name__=='__main__':
     MyAttempt()
   else:
     try:
+      stationList = []
       if len(sys.argv)>=2 and sys.argv[1]=='--resume':
-        stationList = Resume( [] )
+        stationList = Resume(stationList)
       if len(stationList) > 0:
         InteractiveLoop(resume = True)
       else:

@@ -7,10 +7,18 @@ import data.data_routes as data_routes
 
 class TestStationData(unittest.TestCase):
 
-    def test_go_routes_central_line(self):
+    def test_go_routes_central_line_1(self):
         sd = StationData()
         routes = sd.GoRoutes("Epping", "West Ruislip")
         self.assertEqual(['central_west_ruislip'], routes)
+
+    def test_go_routes_central_line_2(self):
+        sd = StationData()
+        stationList = ( ("Holborn", None, None), ("East Acton", 0, "central_west_ruislip") )
+        completed = sd.CalculateCompleted(stationList)
+        self.assertEqual(
+            set(['Lancaster Gate', 'Tottenham Court Road', 'Marble Arch', "Shepherd's Bush (Central)", 'Oxford Circus', 'Bond Street', 'Holborn', 'East Acton', 'Notting Hill Gate', 'Holland Park', 'White City', 'Queensway']),
+            set(completed))
 
     def test_calculate_remains_fails_when_run_twice(self):
         sd = StationData()
