@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 
+'''
+tube_adventure.py - a text-based tube challenge adventure!
+
+Usage:
+  py(thon(3)) tube_adventure.py
+    or
+  py tube_adventure.py --resume - continue from last dated log
+    or
+  py tube_adventure.py --debug - debug a route attempt in my_routes.py
+
+'''
 from station_data import StationData
 from pprint import pprint
 from sys import stdin
@@ -52,7 +63,7 @@ def DumpToFile(stationList):
   with open(FN, "w") as file:
     for st, time, method in stationList:
       if method == "other":
-        print("other => {} => {}".format(time, st), file=file)
+        print("other => {} => {}".format("{.02d}:{.02d}".format(time[0], time[1]), st), file=file)
       elif method == '' or method == None:
         print(st, file=file)
       else:
@@ -97,13 +108,51 @@ getStation = GetStation(stationData)
 
 stationList = None
 
-def InteractiveLoop():
-  print("Start Station:")
-  global stationList
-  stationList = [getStation.get()]
 
-  print("")
-  stationList[0] = (stationList[0], GetHHMM(), None)
+def Resume(stationList):
+  import time, os, glob, re, sys
+  rx = re.compile(r'tube_adventure-([0-9]*)\.txt')
+  HERE = os.path.dirname(os.path.realpath(__file__))
+  fn_time = []
+  for x in glob.glob(os.path.join(HERE, "tube_adventure-*.txt")):
+    match = rx.search(x)
+    if match!=None:
+      fn_time.append( (x, int(match.group(1)) ) )
+  if len(fn_time)<=0:
+    return False
+  fn_time = sorted(fn_time, reverse=True, key=lambda x: x[1])
+  path_to_use = fn_time[0][0]
+  rx2 = re.compile("(.*)=>(.*)")
+  rx3 = re.compile("(.*)=>(.*)=>(.*)")
+  with open(path_to_use, "r") as f:
+    for line in f:
+      line = line.strip()
+      if line=='':
+        continue
+      found = rx3.match(line)
+      if found!=None:
+        route, time_str, station = found.group(1).strip(), found.group(2).strip(), found.group(3).strip()
+        print(route.encode('ascii'), time_str.encode('ascii'), station.encode('ascii'))
+        continue
+
+      found = rx2.match(line)
+      if found!=None:
+        route, station = found.group(1).strip(), found.group(2).strip()
+        print(route.encode('ascii'), station.encode('ascii'))
+        continue
+
+      print(line.strip().encode('ascii'))
+  return stationList
+
+
+def InteractiveLoop(resume = True):
+  global stationList
+
+  if not resume:
+    print("Start Station:")
+    stationList = [getStation.get()]
+    print("")
+    stationList[0] = (stationList[0], GetHHMM(), None)
 
   while True:
     print("\nWhat next?")
@@ -195,8 +244,13 @@ if __name__=='__main__':
     MyAttempt()
   else:
     try:
-      Welcome()
-      InteractiveLoop()
+      if (True or (1 in sys.argv and sys.argv[1]=='--resume')):
+        stationList = Resume(stationList)
+      if stationList != None:
+        InteractiveLoop(resume = True)
+      else:
+        Welcome()
+        InteractiveLoop(resume = False)
     except:
       print(stationList)
       stationData.PrintRoute(stationList)
