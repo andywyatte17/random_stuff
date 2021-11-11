@@ -2,6 +2,8 @@ import data.data_js as data_js
 import data.data_routes as data_routes
 from pprint import pprint
 import Levenshtein
+import json
+
 
 class Printable:
   def __repr__(self):
@@ -20,6 +22,10 @@ def FuzzyTextMatch(needle, haystack):
 
 
 class StationData(Printable):
+  '''
+    Object holding the information about tube lines, routes, stations and
+    stations on each line.
+  '''
 
   def __init__(self):
     self.lines = data_js.lines
@@ -28,6 +34,11 @@ class StationData(Printable):
     self.stationsOnLines = data_js.stationsOnLines
 
   def GoRoutes(self, fromStation, toStation):
+    '''
+      Return None or a list of routes that go from 'fromStation' to 'toStation'.
+      Example - fromStation = "Epping", toStation = "West Ruislip" - returns ['central_west_ruislip']
+      
+    '''
     results = []
     for route in self.routes.keys():
       stations = self.routes[route]["stations"]
@@ -99,6 +110,10 @@ class StationData(Printable):
     return list(set(allStations).difference(set(completed)))
 
   def CalculateCompleted(self, stationList):
+    '''
+    Return a list of stations visited by travelling through the
+    station data in 'stationList'.
+    '''
     thisStation = stationList[0][0]
     results = [ thisStation ]
     if len(stationList)==1: return results
@@ -109,13 +124,17 @@ class StationData(Printable):
     return list(set(results)) # unique
 
   def CalculateRemainsByLine(self, stationList):
-    stationsOnLines = self.stationsOnLines
+    '''
+    Return a map of the lines with values as stations on each line, where
+    the stations are those not yet visited.
+    '''
+    stationsOnLines = json.loads(json.dumps(self.stationsOnLines))
     completed = set(self.CalculateCompleted(stationList))
-    for lines in stationsOnLines.keys():
-      stationListTmp = stationsOnLines[lines]
+    for undergroundLine in stationsOnLines.keys():
+      stationListTmp = stationsOnLines[undergroundLine]
       stationListTmp = [ data_js.stations[x] for x in stationListTmp ]
       stationListTmp = [ x for x in stationListTmp if x not in completed ]
-      stationsOnLines[lines] = stationListTmp
+      stationsOnLines[undergroundLine] = stationListTmp
     return stationsOnLines
 
   def PrintStatus(self, stationList):

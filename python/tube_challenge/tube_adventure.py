@@ -132,16 +132,20 @@ def Resume(stationList):
       found = rx3.match(line)
       if found!=None:
         route, time_str, station = found.group(1).strip(), found.group(2).strip(), found.group(3).strip()
-        print(route.encode('ascii'), time_str.encode('ascii'), station.encode('ascii'))
+        #print(route.encode('ascii'), time_str.encode('ascii'), station.encode('ascii'))
+        stationList.append( (station, time_str, route) )
         continue
 
       found = rx2.match(line)
       if found!=None:
         route, station = found.group(1).strip(), found.group(2).strip()
-        print(route.encode('ascii'), station.encode('ascii'))
+        #print(route.encode('ascii'), station.encode('ascii'))
+        stationList.append( (station, 0, route) )
         continue
 
-      print(line.strip().encode('ascii'))
+      station = line.strip()
+      #print(line.strip().encode('ascii'))
+      stationList.append( (station, None, None) )
   return stationList
 
 
@@ -244,9 +248,9 @@ if __name__=='__main__':
     MyAttempt()
   else:
     try:
-      if (True or (1 in sys.argv and sys.argv[1]=='--resume')):
-        stationList = Resume(stationList)
-      if stationList != None:
+      if len(sys.argv)>=2 and sys.argv[1]=='--resume':
+        stationList = Resume( [] )
+      if len(stationList) > 0:
         InteractiveLoop(resume = True)
       else:
         Welcome()
