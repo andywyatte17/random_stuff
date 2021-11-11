@@ -1,13 +1,8 @@
 import unittest
 from station_data import StationData
 import json
-
-
-EPPING_WOODFORD_REMAINS = R"""
-{"bakerloo": ["Baker Street", "Charing Cross", "Elephant & Castle", "Embankment", "Edgware Road (Bakerloo)", "Harrow & Wealdstone", "Harlesden", "Kenton", "Kilburn Park", "Kensal Green", "Lambeth North", "Maida Vale", "Marylebone", "North Wembley", "Oxford Circus", "Paddington", "Piccadilly Circus", "Queen's Park", "Regent's Park", "Stonebridge Park", "South Kenton", "Willesden Junction", "Warwick Avenue", "Waterloo", "Wembley Central"], "central": ["Barkingside", "Bethnal Green", "Bond Street", "Bank", "Chancery Lane", "Chigwell", "East Acton", "Ealing Broadway", "Fairlop", "Greenford", "Grange Hill", "Gants Hill", "Holborn", "Hanger Lane", "Hainault", "Holland Park", "Lancaster Gate", "Liverpool Street", "Leyton", "Leytonstone", "Marble Arch", "Mile End", "North Acton", "Newbury Park", "Notting Hill Gate", "Northolt", "Oxford Circus", "Perivale", "Queensway", "Redbridge", "Ruislip Gardens", "Roding Valley", "Shepherd's Bush (Central)", "Snaresbrook", "St. Paul's", "South Ruislip", "Stratford", "South Woodford", "Tottenham Court Road", "White City", "West Ruislip", "Wanstead", "West Acton"], "circle": ["Aldgate", "Barbican", "Blackfriars", "Baker Street", "Bayswater", "Cannon Street", "Embankment", "Edgware Road (Circle Line)", "Euston Square", "Farringdon", "Goldhawk Road", "Great Portland Street", "Gloucester Road", "Hammersmith (H&C Line)", "High Street Kensington", "King's Cross St. Pancras", "Ladbroke Grove", "Latimer Road", "Liverpool Street", "Moorgate", "Monument", "Mansion House", "Notting Hill Gate", "Paddington", "Paddington (H&C Line)-Underground", "Royal Oak", "Shepherd's Bush Market", "St. James's Park", "South Kensington", "Sloane Square", "Temple", "Tower Hill", "Victoria", "Wood Lane", "Westminster", "Westbourne Park"], "district": ["Acton Town", "Aldgate East", "Bromley-by-Bow", "Becontree", "Blackfriars", "Barking", "Barons Court", "Bow Road", "Bayswater", "Cannon Street", "Chiswick Park", "Dagenham East", "Dagenham Heathway", "Ealing Broadway", "Ealing Common", "Earl's Court", "East Ham", "Embankment", "Elm Park", "East Putney", "Edgware Road (Circle Line)", "Fulham Broadway", "Gunnersbury", "Goldhawk Road", "Gloucester Road", "Hornchurch", "Hammersmith (H&C Line)", "Hammersmith (Dist&Picc Line)", "High Street Kensington", "Kensington (Olympia)", "Kew Gardens", "Ladbroke Grove", "Latimer Road", "Mile End", "Monument", "Mansion House", "Notting Hill Gate", "Paddington", "Paddington (H&C Line)-Underground", "Plaistow", "Parsons Green", "Putney Bridge", "Richmond", "Ravenscourt Park", "Royal Oak", "Shepherd's Bush Market", "Stamford Brook", "Southfields", "Stepney Green", "St. James's Park", "South Kensington", "Sloane Square", "Temple", "Turnham Green", "Tower Hill", "Upminster Bridge", "Upton Park", "Upminster", "Upney", "Victoria", "West Brompton", "West Ham", "Wimbledon", "Wimbledon Park", "West Kensington", "Wood Lane", "Whitechapel", "Westminster", "Westbourne Park"], "hammersmith-city": ["Aldgate East", "Bromley-by-Bow", "Barbican", "Barking", "Baker Street", "Bow Road", "East Ham", "Edgware Road (Circle Line)", "Euston Square", "Farringdon", "Goldhawk Road", "Great Portland Street", "Hammersmith (H&C Line)", "King's Cross St. Pancras", "Ladbroke Grove", "Latimer Road", "Liverpool Street", "Mile End", "Moorgate", "Paddington (H&C Line)-Underground", "Plaistow", "Royal Oak", "Shepherd's Bush Market", "Stepney Green", "Upton Park", "West Ham", "Wood Lane", "Whitechapel", "Westbourne Park"], "jubilee": ["Bermondsey", "Bond Street", "Baker Street", "Canning Town", "Canons Park", "Canada Water", "Canary Wharf", "Dollis Hill", "Finchley Road", "Green Park", "Kilburn", "Kingsbury", "London Bridge", "Neasden", "North Greenwich", "Queensbury", "St. John's Wood", "Stratford", "Stanmore", "Swiss Cottage", "Southwark", "West Ham", "West Hampstead", "Willesden Green", "Waterloo", "Westminster", "Wembley Park"], "metropolitan": ["Aldgate", "Amersham", "Barbican", "Baker Street", "Chalfont & Latimer", "Chesham", "Croxley", "Chorleywood", "Eastcote", "Euston Square", "Farringdon", "Finchley Road", "Great Portland Street", "Hillingdon", "Harrow-on-the-Hill", "Ickenham", "King's Cross St. Pancras", "Liverpool Street", "Moorgate", "Moor Park", "North Harrow", "Northwick Park", "Northwood", "Northwood Hills", "Pinner", "Preston Road", "Rickmansworth", "Ruislip Manor", "Ruislip", "Rayners Lane", "Uxbridge", "Watford", "West Harrow", "Wembley Park"], "northern": 
-["Archway", "Angel", "Balham", "Bank", "Borough", "Burnt Oak", "Brent Cross", "Belsize Park", "Chalk Farm", "Charing Cross", "Colindale", "Clapham Common", "Clapham North", "Clapham South", "Colliers Wood", "Camden Town", "Elephant & Castle", "East Finchley", "Edgware", "Embankment", "Euston", "Finchley Central", "Goodge Street", "Golders Green", "High Barnet", "Hendon Central", "Highgate", "Hampstead", "Kennington", "Kentish Town", "King's Cross St. Pancras", "London Bridge", "Leicester Square", "Morden", "Moorgate", "Mill Hill East", "Mornington Crescent", "Old Street", "Oval", "Stockwell", "South Wimbledon", "Totteridge & Whetstone", "Tooting Bec", "Tooting Broadway", "Tottenham Court Road", "Tufnell Park", "West Finchley", "Waterloo", "Woodside Park", "Warren Street"], "piccadilly": ["Oakwood", "Acton Town", "Alperton", "Arnos Grove", "Arsenal", "Bounds Green", "Boston Manor", "Barons Court", "Caledonian Road", "Covent Garden", "Cockfosters", "Eastcote", 
-"Ealing Common", "Earl's Court", "Finsbury Park", "Green Park", "Gloucester Road", "Holborn", "Hillingdon", "Hatton Cross", "Hyde Park Corner", "Heathrow Terminal 4", "Heathrow Terminal 5", "Heathrow Terminals 1-2-3", "Hammersmith (Dist&Picc Line)", "Hounslow Central", "Hounslow East", "Hounslow West", "Holloway Road", "Ickenham", "Knightsbridge", "King's Cross St. Pancras", "Leicester Square", "Manor House", "North Ealing", "Northfields", "Oakwood", "Osterley", "Piccadilly Circus", "Park Royal", "Ruislip Manor", "Ruislip", "Russell Square", "Ravenscourt Park", "Rayners Lane", "South Ealing", "Stamford Brook", "Southgate", "South Harrow", "South Kensington", "Sudbury Hill", "Sudbury Town", "Turnham Green", "Turnpike Lane", "Uxbridge", "Wood Green"], "victoria": ["Blackhorse Road", "Brixton", "Euston", "Finsbury Park", "Green Park", "Highbury & Islington", "King's Cross St. Pancras", "Oxford Circus", "Pimlico", "Stockwell", "Seven Sisters", "Tottenham Hale", "Victoria", "Vauxhall", "Warren Street", "Walthamstow Central"], "waterloo-city": ["Bank", "Waterloo"]}
-"""
+import data.data_js as data_js
+import data.data_routes as data_routes
 
 
 class TestStationData(unittest.TestCase):
@@ -19,14 +14,30 @@ class TestStationData(unittest.TestCase):
 
     def test_calculate_remains_fails_when_run_twice(self):
         sd = StationData()
-        stationList = [ 
-            ("Epping", None, None),
-            ("Woodford", 0, "central_west_ruislip")
-        ]
+        stationList = ( ("Epping", None, None), ("Woodford", 0, "central_west_ruislip") )
+        result = sd.CalculateRemainsByLine([("Epping", None, None)])
+        count = sum([len(result[key]) for key in result.keys()])
+        self.assertEqual(385, count)
+
         result = sd.CalculateRemainsByLine(stationList)
-        self.assertEqual(json.loads(EPPING_WOODFORD_REMAINS), result)
+        count = sum([len(result[key]) for key in result.keys()])
+        self.assertEqual(380, count)
+
         result = sd.CalculateRemainsByLine(stationList)
-        self.assertEqual(json.loads(EPPING_WOODFORD_REMAINS), result)
+        count = sum([len(result[key]) for key in result.keys()])
+        self.assertEqual(380, count)
+
+
+class TestDataJs(unittest.TestCase):
+
+    def test_district_line(self):
+        district = ['Acton Town', 'Aldgate East', 'Barking', 'Barons Court', 'Bayswater', 'Becontree', 'Blackfriars', 'Bow Road', 'Bromley-by-Bow', 'Cannon Street', 'Chiswick Park', 'Dagenham East', 'Dagenham Heathway', 'Ealing Broadway', 'Ealing Common', "Earl's Court", 'East Ham', 'East Putney', 'Edgware Road (Circle Line)', 'Elm Park', 'Embankment', 'Fulham Broadway', 'Gloucester Road', 'Gunnersbury', 'Hammersmith (Dist&Picc Line)', 'High Street Kensington', 'Hornchurch', 'Kensington (Olympia)', 'Kew Gardens', 'Ladbroke Grove', 'Latimer Road', 'Mansion House', 'Mile End', 'Monument', 'Notting Hill Gate', 'Paddington', 'Parsons Green', 'Plaistow', 'Putney Bridge', 'Ravenscourt Park', 'Richmond', 'Sloane Square', 'South Kensington', 'Southfields', "St. James's Park", 'Stamford Brook', 'Stepney Green', 'Temple', 'Tower Hill', 'Turnham Green', 'Upminster', 'Upminster Bridge', 'Upney', 'Upton Park', 'Victoria', 'West Brompton', 'West Ham', 'West Kensington', 'Westminster', 'Whitechapel', 'Wimbledon', 'Wimbledon Park']
+        district2 = set(data_js.stationsR[x] for x in district)
+        #stations = sorted(data_js.stations[x] for x in data_js.stationsOnLines['district'])
+        stations2 = set(x for x in data_js.stationsOnLines['district'])
+        #print(repr(stations2))
+        self.assertEqual(district2, stations2)
+
 
 if __name__ == '__main__':
     unittest.main()
