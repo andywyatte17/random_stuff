@@ -45,6 +45,7 @@ class StationData(Printable):
     if not route in self.routes.keys():
       return [fromStation, toStation]
     stations = self.routes[route]["stations"]
+    timings = self.routes[route]["timings"]
     fromIx = -1
     toIx = -1
     for i, j in enumerate(stations):
@@ -57,10 +58,10 @@ class StationData(Printable):
         break
     if fromIx>=0 and toIx>=0:
       if fromIx<toIx:
-        return stations[fromIx:toIx+1]
+        return stations[fromIx:toIx+1], (timings[toIx] - timings[fromIx])
       else:
-        return list(reversed(stations[toIx:fromIx+1]))
-    return []
+        return list(reversed(stations[toIx:fromIx+1])), -(timings[toIx] - timings[fromIx])
+    return [], 0
 
   def AllStations(self):
     stations = []
@@ -79,7 +80,18 @@ class StationData(Printable):
     return None
 
   def CalculateJourneyTime(self, stationList):
-    return "TO:DO"
+    minutes_sum = 0
+    last_station = None
+    for station, maybe_time, route in stationList:
+      if last_station != None:
+        if route == 'other':
+          minutes_sum += maybe_time[0] * 60 + maybe_time[1]
+        else:
+          _, timing = self.ExtractJourney(last_station, station, route)
+          minutes_sum += timing
+          pass
+      last_station = station
+    return "{:02d}:{:02d}".format(int(minutes_sum / 60), int(minutes_sum%60))
 
   def CalculateRemains(self, stationList):
     allStations = self.AllStations()
@@ -91,7 +103,7 @@ class StationData(Printable):
     results = [ thisStation ]
     if len(stationList)==1: return results
     for (toStation, time, route) in stationList[1:]:
-      routeStations = self.ExtractJourney(thisStation, toStation, route)
+      routeStations, _ = self.ExtractJourney(thisStation, toStation, route)
       results += routeStations
       thisStation = toStation
     return list(set(results)) # unique
@@ -145,5 +157,5 @@ class StationData(Printable):
     for station, time, routeName in stationList:
       if last:
         print("{} => {} => {}".format(last, routeName, station))
-        pprint(self.ExtractJourney(last, station, routeName))
+        pprint(self.ExtractJourney(last, station, routeName)[0])
       last = station
