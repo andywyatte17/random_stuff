@@ -19,17 +19,18 @@ def GetJourneyTimes(from_station = "940GZZLULBN", to_station = "940GZZLUBST", \
                     yyyymmdd = "20211113",hhmm = "1110"):
     try:
         from . import tfl_api_env
-        env = "&app_id=" + tfl_api_env.app_id + "&app_name=" + tfl_api_env.app_name
     except:
-        env = ""
+        import tfl_api_env
+    env = "&app_id=" + tfl_api_env.app_id + "&app_name=" + tfl_api_env.app_name
 
     url = "https://api.tfl.gov.uk/Journey/JourneyResults/{frm}/to/{to}".format(frm=from_station, to=to_station) + \
-          "?date={yyyymmdd}&time={hhmm}&mode=tube".format(yyyymmdd=yyyymmdd, hhmm=hhmm) + env
+          "?date={yyyymmdd}&time={hhmm}&mode=tube".format(yyyymmdd=yyyymmdd, hhmm=hhmm)
+    url = url + env
 
     #print(url)
     result = requests.get(url)
-    with open('journeyexample.json', 'wb') as f:
-        f.write( json.dumps(result.json()).encode('ascii') )
+    #with open('journeyexample.json', 'wb') as f:
+    #    f.write( json.dumps(result.json()).encode('ascii') )
 
     def IsTube(journey):
         try:
@@ -42,7 +43,9 @@ def GetJourneyTimes(from_station = "940GZZLULBN", to_station = "940GZZLUBST", \
     def ExtractDateTime(sdt2):
         return sdt2.year, sdt2.month, sdt2.day, sdt2.hour, sdt2.minute
 
-    journeys = result.json()["journeys"]
+    try:    journeys = result.json()["journeys"]
+    except: return []
+
     journeys = [ \
         {
             "startDateTime": journey["startDateTime"],
