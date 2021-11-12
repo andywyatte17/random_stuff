@@ -1,0 +1,68 @@
+Chesham
+metropolitan_chesham => Chalfont & Latimer
+metropolitan_amersham => Amersham
+metropolitan_amersham => Moor Park
+metropolitan_watford => Watford
+metropolitan_watford => Moor Park
+metropolitan_amersham => North Harrow
+other => 00:10 => Rayners Lane
+piccadilly_uxbridge => Ealing Common
+district_earls_court_ealing_broadway => Ealing Broadway
+central_white_city_ealing_broadway => White City
+central_west_ruislip => West Ruislip
+other => 00:15 => Ickenham
+metropolitan_uxbridge => Uxbridge
+metropolitan_uxbridge => Rayners Lane
+metropolitan_uxbridge => Harrow-on-the-Hill
+metropolitan_amersham => Preston Road
+metropolitan_amersham => Northwick Park
+other => 00:10 => Kenton
+bakerloo => Harrow & Wealdstone
+bakerloo => Elephant & Castle
+northern_bank => London Bridge
+jubilee => Southwark
+jubilee => West Ham
+district_upminster_richmond => Upminster
+district_upminster_richmond => Tower Hill
+circle_liverpool_street_south_circle => Aldgate
+circle_liverpool_street_south_circle => Sloane Square
+circle_liverpool_street_south_circle => Victoria
+victoria => Brixton
+victoria => Stockwell
+northern_bank => Kennington
+northern_bank => Morden
+other => 00:20 => Wimbledon
+district_earls_court_wimbledon => Earl's Court
+district_high_st_kensington_olympia => Kensington (Olympia)
+other => 00:20 => Shepherd's Bush (Central)
+central_west_ruislip => Leytonstone
+central_hainault => Hainault
+central_roding_valley => Woodford
+central_west_ruislip => Epping
+central_west_ruislip => Snaresbrook
+other => 00:30 => Walthamstow Central
+victoria => Warren Street
+other => 00:10 => Goodge Street
+northern_charing_cross => Edgware
+other => 00:20 => Canons Park
+jubilee => Stanmore
+jubilee => Baker Street
+circle_hammersmith_north_circle => Moorgate
+northern_bank => Camden Town
+northern_bank => Finchley Central
+northern_mill_hill => Mill Hill East
+northern_mill_hill => Finchley Central
+northern_bank => High Barnet
+other => 00:30 => Cockfosters
+piccadilly_heathrow_5 => South Kensington
+circle_liverpool_street_south_circle => Edgware Road (Circle Line)
+circle_hammersmith_north_circle => Hammersmith (H&C Line)
+other => 00:10 => Hammersmith (Dist&Picc Line)
+district_upminster_richmond => West Kensington
+district_upminster_richmond => Richmond
+district_upminster_richmond => Turnham Green
+district_earls_court_ealing_broadway => Acton Town
+piccadilly_heathrow_5 => Hatton Cross
+piccadilly_heathrow_4 => Heathrow Terminal 4
+piccadilly_heathrow_4 => Hatton Cross
+piccadilly_heathrow_5 => Heathrow Terminal 5
