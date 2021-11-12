@@ -1,6 +1,16 @@
-import termios, os, sys
+import os, sys
 
 def get_key():
+    import os
+    if os.name == 'nt':
+        import msvcrt
+        while True:
+            c = msvcrt.getch()
+            if c==b'\r': return '\n'
+            if c==b'\x03': quit()
+            if c!=None:
+                return c.decode('ascii')
+    import termios
     fd = sys.stdin.fileno()
     old = termios.tcgetattr(fd)
     new = termios.tcgetattr(fd)
@@ -27,10 +37,10 @@ def get_autocomplete_string(autocomplete_fn):
       stdout.write("\n")
       stdout.flush()
       break
-    elif ord(c)==127:  # backspace
+    elif ord(c)==127 or c=='\b':  # backspace
       tabText = None
       if total != "": total = total[0:-1]
-      stdout.write("\b")
+      stdout.write("\b \b")
       stdout.flush()
     elif c=="\t":
       complete_list = autocomplete_fn(total)

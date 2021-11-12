@@ -1,0 +1,81 @@
+High Barnet
+northern_bank => Finchley Central
+northern_mill_hill => Mill Hill East
+northern_mill_hill => Finchley Central
+northern_bank => Camden Town
+northern_charing_cross => Mornington Crescent
+northern_charing_cross => Edgware
+other => 00:20 => Canons Park
+jubilee => Stanmore
+jubilee => Baker Street
+metropolitan_amersham => Northwick Park
+other => 00:15 => Kenton
+bakerloo => Harrow & Wealdstone
+bakerloo => Marylebone
+bakerloo => Baker Street
+circle_hammersmith_north_circle => Hammersmith (H&C Line)
+other => 00:05 => Hammersmith (Dist&Picc Line)
+district_upminster_richmond => Earl's Court
+district_high_st_kensington_olympia => Kensington (Olympia)
+district_high_st_kensington_olympia => Earl's Court
+district_earls_court_wimbledon => High Street Kensington
+circle_liverpool_street_south_circle => Edgware Road (Circle Line)
+circle_hammersmith_north_circle => Baker Street
+metropolitan_amersham => Amersham
+metropolitan_amersham => Chalfont & Latimer
+metropolitan_chesham => Chesham
+metropolitan_chesham => Chalfont & Latimer
+metropolitan_amersham => Moor Park
+metropolitan_watford => Watford
+metropolitan_watford => Moor Park
+metropolitan_amersham => Harrow-on-the-Hill
+metropolitan_uxbridge => Uxbridge
+metropolitan_uxbridge => Ickenham
+other => 00:10 => West Ruislip
+central_west_ruislip => North Acton
+central_white_city_ealing_broadway => West Acton
+other => 00:10 => North Ealing
+piccadilly_uxbridge => South Harrow
+piccadilly_uxbridge => Ealing Common
+district_earls_court_ealing_broadway => Ealing Broadway
+district_earls_court_ealing_broadway => Acton Town
+piccadilly_heathrow_5 => Heathrow Terminal 5
+piccadilly_heathrow_5 => Hatton Cross
+piccadilly_heathrow_4 => Heathrow Terminal 4
+piccadilly_heathrow_4 => Hatton Cross
+piccadilly_heathrow_5 => Acton Town
+district_earls_court_ealing_broadway => Turnham Green
+district_upminster_richmond => Richmond
+district_upminster_richmond => Earl's Court
+district_earls_court_wimbledon => Wimbledon
+other => 00:15 => South Wimbledon
+northern_bank => Morden
+northern_bank => Stockwell
+victoria => Brixton
+victoria => Pimlico
+victoria => Stockwell
+northern_bank => Elephant & Castle
+northern_bank => Borough
+northern_bank => Elephant & Castle
+bakerloo => Waterloo
+jubilee => West Ham
+district_upminster_richmond => Upminster
+district_upminster_richmond => Aldgate East
+hammersmith => Liverpool Street
+central_west_ruislip => Leytonstone
+central_hainault => Hainault
+central_roding_valley => Woodford
+central_west_ruislip => Epping
+central_west_ruislip => Snaresbrook
+other => 00:30 => Walthamstow Central
+victoria => King's Cross St. Pancras
+piccadilly_uxbridge => Cockfosters
+piccadilly_uxbridge => Gloucester Road
+district_upminster_richmond => Aldgate East
+other => 00:10 => Aldgate
+circle_hammersmith_north_circle => Moorgate
+circle_hammersmith_north_circle => Baker Street
+bakerloo => Charing Cross
+northern_charing_cross => Euston
+northern_bank => Bank
+central_west_ruislip => East Acton

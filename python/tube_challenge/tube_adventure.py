@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+
+'''
+tube_adventure.py - a text-based tube challenge adventure!
+
+Usage:
+  py(thon(3)) tube_adventure.py
+    or
+  py tube_adventure.py --resume - continue from last dated log
+    or
+  py tube_adventure.py --debug - debug a route attempt in my_routes.py
+
+'''
 from station_data import StationData
 from pprint import pprint
 from sys import stdin
@@ -29,11 +42,32 @@ def GetHHMM(prompt = "Enter Time (hh:mm - mm *can* be >=60): "):
     import re
     print(prompt if x==0 else "Try again - "+prompt)
     s = stdin.readline()
+    if s.lower().strip()=='undo':
+      return 'undo'
     match = re.match(r"""([0-9][0-9]*)\:([0-9][0-9])""", s)
     if match:
       hh = int(match.group(1))
       mm = int(match.group(2))
       if hh>=0 and mm>=0 : return (hh,mm)
+
+
+def DumpToFile(stationList):
+  global FN
+  try:
+    _ = FN[:]
+  except:
+    import time, os
+    HERE = os.path.dirname(os.path.realpath(__file__))
+    FN = os.path.join(HERE, "tube_adventure-{}.txt".format(int(time.time())))
+  import os
+  with open(FN, "w") as file:
+    for st, time, method in stationList:
+      if method == "other":
+        print("other => {} => {}".format("{:02d}:{:02d}".format(time[0], time[1]), st), file=file)
+      elif method == '' or method == None:
+        print(st, file=file)
+      else:
+        print("{} => {}".format(method, st), file=file)
 
 
 def WhatNextAutocomplete():
@@ -59,9 +93,11 @@ def EnterGoLoop(stationList, stationData):
      go_routes = get_autocomplete_string( lambda x : go_routes )
   hh_mm = 0
   if go_routes == "other":
-    hh_mm = GetHHMM("\tEnter time for 'other' route:")
-  stationList = stationList[:]
-  stationList.append((station, hh_mm, go_routes))
+    hh_mm = GetHHMM("""\tThere is no direct route to the station.
+\tType 'undo' if this was a mistake or Enter Time (hh:mm) for 'other':""")
+  if hh_mm != 'undo':
+    stationList = stationList[:]
+    stationList.append((station, hh_mm, go_routes))
   return stationList
 
 stationData = StationData()
@@ -72,19 +108,64 @@ getStation = GetStation(stationData)
 
 stationList = None
 
-def InteractiveLoop():
-  print("Start Station:")
+
+def Resume(stationList):
+  import time, os, glob, re, sys
+  rx = re.compile(r'tube_adventure-([0-9]*)\.txt')
+  HERE = os.path.dirname(os.path.realpath(__file__))
+  fn_time = []
+  for x in glob.glob(os.path.join(HERE, "tube_adventure-*.txt")):
+    match = rx.search(x)
+    if match!=None:
+      fn_time.append( (x, int(match.group(1)) ) )
+  if len(fn_time)<=0:
+    return False
+  fn_time = sorted(fn_time, reverse=True, key=lambda x: x[1])
+  path_to_use = fn_time[0][0]
+  rx2 = re.compile("(.*)=>(.*)")
+  rx3 = re.compile("(.*)=>(.*)=>(.*)")
+  with open(path_to_use, "r") as f:
+    for line in f:
+      line = line.strip()
+      if line=='':
+        continue
+      found = rx3.match(line)
+      if found!=None:
+        route, time_str, station = found.group(1).strip(), found.group(2).strip(), found.group(3).strip()
+        #print(route.encode('ascii'), time_str.encode('ascii'), station.encode('ascii'))
+        time_str = time_str.split(":")
+        time_str = (int(time_str[0]), int(time_str[1]))
+        stationList.append( (station, time_str, route) )
+        continue
+
+      found = rx2.match(line)
+      if found!=None:
+        route, station = found.group(1).strip(), found.group(2).strip()
+        #print(route.encode('ascii'), station.encode('ascii'))
+        stationList.append( (station, 0, route) )
+        continue
+
+      station = line.strip()
+      #print(line.strip().encode('ascii'))
+      stationList.append( (station, None, None) )
+  return stationList
+
+
+def InteractiveLoop(resume = True):
   global stationList
-  stationList = [getStation.get()]
 
-  print("")
-  stationList[0] = (stationList[0], GetHHMM(), None)
+  if not resume:
+    print("Start Station:")
+    stationList = [getStation.get()]
+    print("")
+    stationList[0] = (stationList[0], GetHHMM(), None)
 
-  while (True):
+  while True:
     print("\nWhat next?")
     command = WhatNextAutocomplete()
     if command == "go":
       stationList = EnterGoLoop(stationList, stationData)
+      DumpToFile(stationList)
     elif command == "undo":
       if len(stationList)>1:
         stationList = stationList[0:-1]
@@ -141,6 +222,27 @@ def MyAttempt():
   stationData.PrintStatus(stationList)
 
 
+def Welcome():
+  print("""
+Tube Challenge - a text-based adventure!
+
+You will be asked a Start Station.
+
+Then you will be asked to perform a series of actions via 'What next?'.
+The most common command is 'go' - which invites you to input a next station.
+
+For every station you 'go' to you will also be asked which line/method to take
+to get to that line. A special method is 'other' which indicates some
+other means of transport such as walking or bus - type in a time in
+the format hh:mm for this value.
+
+Tab-key completion is supported - partially type in a station and use tab
+to complete the name, including tabbing again to scroll through a list of
+several matching stations. Use Tab on the 'What next?' command to see the
+full list of actions other than 'go'.
+""")
+
+
 if __name__=='__main__':
   import sys
   if not sys.stdout.isatty() or (len(sys.argv)>=2 and sys.argv[1]=="--debug"):
@@ -148,7 +250,14 @@ if __name__=='__main__':
     MyAttempt()
   else:
     try:
-      InteractiveLoop()
+      stationList = []
+      if len(sys.argv)>=2 and sys.argv[1]=='--resume':
+        stationList = Resume(stationList)
+      if len(stationList) > 0:
+        InteractiveLoop(resume = True)
+      else:
+        Welcome()
+        InteractiveLoop(resume = False)
     except:
       print(stationList)
       stationData.PrintRoute(stationList)

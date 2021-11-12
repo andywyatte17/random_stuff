@@ -2,6 +2,8 @@ import data.data_js as data_js
 import data.data_routes as data_routes
 from pprint import pprint
 import Levenshtein
+import json
+
 
 class Printable:
   def __repr__(self):
@@ -20,6 +22,10 @@ def FuzzyTextMatch(needle, haystack):
 
 
 class StationData(Printable):
+  '''
+    Object holding the information about tube lines, routes, stations and
+    stations on each line.
+  '''
 
   def __init__(self):
     self.lines = data_js.lines
@@ -28,6 +34,11 @@ class StationData(Printable):
     self.stationsOnLines = data_js.stationsOnLines
 
   def GoRoutes(self, fromStation, toStation):
+    '''
+      Return None or a list of routes that go from 'fromStation' to 'toStation'.
+      Example - fromStation = "Epping", toStation = "West Ruislip" - returns ['central_west_ruislip']
+      
+    '''
     results = []
     for route in self.routes.keys():
       stations = self.routes[route]["stations"]
@@ -45,6 +56,7 @@ class StationData(Printable):
     if not route in self.routes.keys():
       return [fromStation, toStation]
     stations = self.routes[route]["stations"]
+    timings = self.routes[route]["timings"]
     fromIx = -1
     toIx = -1
     for i, j in enumerate(stations):
@@ -57,10 +69,10 @@ class StationData(Printable):
         break
     if fromIx>=0 and toIx>=0:
       if fromIx<toIx:
-        return stations[fromIx:toIx+1]
+        return stations[fromIx:toIx+1], (timings[toIx] - timings[fromIx])
       else:
-        return list(reversed(stations[toIx:fromIx+1]))
-    return []
+        return list(reversed(stations[toIx:fromIx+1])), -(timings[toIx] - timings[fromIx])
+    return [], 0
 
   def AllStations(self):
     stations = []
@@ -79,7 +91,18 @@ class StationData(Printable):
     return None
 
   def CalculateJourneyTime(self, stationList):
-    return "TO:DO"
+    minutes_sum = 0
+    last_station = None
+    for station, maybe_time, route in stationList:
+      if last_station != None:
+        if route == 'other':
+          minutes_sum += maybe_time[0] * 60 + maybe_time[1]
+        else:
+          _, timing = self.ExtractJourney(last_station, station, route)
+          minutes_sum += timing
+          pass
+      last_station = station
+    return "{:02d}:{:02d}".format(int(minutes_sum / 60), int(minutes_sum%60))
 
   def CalculateRemains(self, stationList):
     allStations = self.AllStations()
@@ -87,23 +110,31 @@ class StationData(Printable):
     return list(set(allStations).difference(set(completed)))
 
   def CalculateCompleted(self, stationList):
+    '''
+    Return a list of stations visited by travelling through the
+    station data in 'stationList'.
+    '''
     thisStation = stationList[0][0]
     results = [ thisStation ]
     if len(stationList)==1: return results
     for (toStation, time, route) in stationList[1:]:
-      routeStations = self.ExtractJourney(thisStation, toStation, route)
+      routeStations, _ = self.ExtractJourney(thisStation, toStation, route)
       results += routeStations
       thisStation = toStation
     return list(set(results)) # unique
 
   def CalculateRemainsByLine(self, stationList):
-    stationsOnLines = self.stationsOnLines
+    '''
+    Return a map of the lines with values as stations on each line, where
+    the stations are those not yet visited.
+    '''
+    stationsOnLines = json.loads(json.dumps(self.stationsOnLines))
     completed = set(self.CalculateCompleted(stationList))
-    for lines in stationsOnLines.keys():
-      stationListTmp = stationsOnLines[lines]
+    for undergroundLine in stationsOnLines.keys():
+      stationListTmp = stationsOnLines[undergroundLine]
       stationListTmp = [ data_js.stations[x] for x in stationListTmp ]
       stationListTmp = [ x for x in stationListTmp if x not in completed ]
-      stationsOnLines[lines] = stationListTmp
+      stationsOnLines[undergroundLine] = stationListTmp
     return stationsOnLines
 
   def PrintStatus(self, stationList):
@@ -117,7 +148,7 @@ class StationData(Printable):
     items = items[:]
     while len(items) % 3 != 0:
       items.append(" ")
-    split = len(items) / 3
+    split = int(len(items) / 3)
     l1,l2,l3 = items[0:split], items[split:split*2], items[split*2:split*3]
     for _1,_2,_3 in zip(l1,l2,l3):
       print("{0:<24s} {1:<24s} {2:<24s}".format(_1, _2, _3))
@@ -145,5 +176,5 @@ class StationData(Printable):
     for station, time, routeName in stationList:
       if last:
         print("{} => {} => {}".format(last, routeName, station))
-        print(self.ExtractJourney(last, station, routeName))
+        pprint(self.ExtractJourney(last, station, routeName)[0])
       last = station

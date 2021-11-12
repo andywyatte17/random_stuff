@@ -117,9 +117,9 @@ routes = {
     "timings": Zeroized(('0106', '0109'))
   },
   # ...
-  "piccadilly_rayners_lane":{
-    "stations":('Acton Town', 'Ealing Common', 'North Ealing', 'Park Royal', 'Alperton', 'Sudbury Town', 'Sudbury Hill', 'South Harrow', 'Rayners Lane'),
-    "timings": Zeroized(('0656', '0658', '0700', '0702', '0705', '0707', '0710', '0712', '0716'))
+  'piccadilly_uxbridge': {
+    "stations": ('Uxbridge', 'Hillingdon', 'Ickenham', 'Ruislip', 'Ruislip Manor', 'Eastcote', 'Rayners Lane', 'South Harrow', 'Sudbury Hill', 'Sudbury Town', 'Alperton', 'Park Royal', 'North Ealing', 'Ealing Common', 'Acton Town', 'Hammersmith (Dist&Picc Line)', 'Barons Court', "Earl's Court", 'Gloucester Road', 'Knightsbridge', 'Hyde Park Corner', 'Green Park', 'Piccadilly Circus', 'Leicester Square', 'Covent Garden', 'Holborn', 'Russell Square', "King's Cross St. Pancras", 'Caledonian Road', 'Holloway Road', 'Arsenal', 'Finsbury Park', 'Manor House', 'Turnpike Lane', 'Wood Green', 'Bounds Green', 'Arnos Grove', 'Southgate', 'Oakwood', 'Cockfosters'),
+    'timings': Zeroized(('0623', '0625', '0627', '0630', '0631', '0633', '0637', '0641', '0643', '0646', '0649', '0652', '0655', '0657', '0700', '0706', '0708', '0711', '0713', '0718', '0719', '0722', '0723', '0725', '0726', '0728', '0730', '0732', '0735', '0737', '0738', '0740', '0742', '0745', '0747', '0750', '0754', '0757', '0800', '0804'))
   },
   # ...
   "piccadilly_heathrow_5":{
