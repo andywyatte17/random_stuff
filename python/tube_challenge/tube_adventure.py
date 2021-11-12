@@ -14,7 +14,19 @@ Usage:
 from station_data import StationData
 from pprint import pprint
 from sys import stdin
+import sys, os
 from autocomplete import get_autocomplete_string
+from pprint import pprint
+import datetime
+
+try:
+  HERE = os.path.dirname(os.path.realpath(__file__))
+  sys.path.append(os.path.join(HERE, ".."))
+  import tfl_api.journeyexample as journeyexample
+  import data.data_js as data_js
+finally:
+  sys.path.pop()
+
 
 class GetStation:
   def __init__(self, stationData):
@@ -72,7 +84,7 @@ def DumpToFile(stationList):
 
 def WhatNextAutocomplete():
   def autocomplete_fn(x):
-    return ["go", "status", "completed", "remaining", "route", "undo", "routeEx"]
+    return ["go", "status", "completed", "remaining", "route", "undo", "routeEx", "audition"]
   return get_autocomplete_string( autocomplete_fn )
 
 
@@ -179,6 +191,39 @@ def InteractiveLoop(resume = True):
       stationData.PrintRemains(stationList)
     elif command == "completed":
       stationData.PrintCompleted(stationList)
+    elif command == "audition":
+      last_sn, last_sn2 = None, None
+      sdt = datetime.datetime(2021, 11, 15, 5, 0)
+      try:
+        for sn, dur, way in stationList:
+          sn2 = data_js.stationsR[sn]
+          startDateTime = ""
+          approx = "."
+          if last_sn != None:
+            if way == "other":
+              journey_mins = dur[0] * 60 + dur[1]
+              sdt = sdt + datetime.timedelta(minutes = journey_mins)
+            else:
+              journeyTimes = journeyexample.GetJourneyTimes( \
+                sn2, last_sn2,
+                yyyymmdd = "{:04d}{:02d}{:02d}".format(sdt.year, sdt.month, sdt.day),
+                hhmm = "{:02d}{:02d}".format(sdt.hour, sdt.minute)
+              )
+              if journeyTimes == []:
+                journey_mins = stationData.ExtractJourney(last_sn, sn, way)[1]
+                #print(last_sn, sn, way, journey_mins)
+                sdt = sdt + datetime.timedelta(minutes = journey_mins)
+                approx = "?"
+              else:
+                jt0 = journeyTimes[0]
+                startDateTime = jt0["startDateTime"]
+                sdt2 = datetime.datetime( *jt0["startDateTime2"] )
+                sdt = sdt2 + datetime.timedelta(minutes=jt0["duration"])
+          print("{},{},{}".format(sn, startDateTime, sdt))
+          last_sn, last_sn2 = sn, sn2
+      except:
+        import traceback
+        traceback.print_exc()
 
       # print(stationData.LookupStation("Edgware Road", True))
 
